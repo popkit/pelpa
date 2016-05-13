@@ -1,0 +1,15 @@
+/.settings
+/target
+/.project
+/.buildpath
+/.classpath
+/.idea
+/leap
+out/
+*.iml
+*~
+mapi-drai-web/target/
+leap/target/
+leap-demo/target
+leap-demo/*.iml
+local/
