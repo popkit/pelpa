@@ -1,5 +1,6 @@
 package org.popkit.leap.elpa.services;
 
+import org.apache.commons.io.FileUtils;
 import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.entity.PackageInfo;
 import org.popkit.leap.elpa.entity.RecipeDo;
@@ -48,10 +49,17 @@ public class PkgBuildService {
     public void buildSingleFilePackage(File elispfile, RecipeDo recipeDo) {
         String htmlPath = PelpaUtils.getHtmlPath();
         String version = TimeVersionUtils.toVersionString(elispfile.lastModified());
+        String packagePath = htmlPath + "packages/";
         PackageInfo desc = getDesc(elispfile, recipeDo.getPkgName());
+        String readMeFile = packagePath + recipeDo.getPkgName() + "-readme.txt";
+        try {
+            FileUtils.writeStringToFile(new File(readMeFile), desc.getReadmeInfo());
+            FileUtils.copyFile(elispfile, new File(packagePath + recipeDo.getPkgName() + "-"+ version + ".el"));
+        } catch (Exception e) {
+            LeapLogger.warn("error in copy file:", e);
+        }
         String type = SINGLE;
     }
-
 
     public PackageInfo getDesc(File elispfile, String pkgName) {
         PackageInfo packageInfo = new PackageInfo();
@@ -74,7 +82,7 @@ public class PkgBuildService {
                     end = true;
                 }
                 if (start && !end) {
-                    stringBuilder.append(sCurrentLine.replaceAll(";", ""));
+                    stringBuilder.append(sCurrentLine.replaceAll(";", "")).append("\n");
                 }
                 i ++;
             }
