@@ -1,7 +1,7 @@
 package org.popkit.leap.elpa.controller;
 
 import org.popkit.core.entity.CommonResponse;
-import org.popkit.leap.elpa.services.PackageFetchService;
+import org.popkit.leap.elpa.services.PkgFetchService;
 import org.popkit.leap.elpa.services.RecipesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ElpaController {
 
     @Autowired
-    private PackageFetchService packageFetchService;
+    private PkgFetchService pkgFetchService;
 
     @Autowired
     private RecipesService recipesService;
@@ -26,7 +26,7 @@ public class ElpaController {
     public CommonResponse d8() {
         CommonResponse com = new CommonResponse();
         com.setData(recipesService.randomRecipe());
-        packageFetchService.d8();
+        pkgFetchService.d8();
         return com;
     }
 }

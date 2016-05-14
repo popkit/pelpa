@@ -3,7 +3,7 @@ package org.popkit.leap.elpa.services;
 import org.apache.commons.collections.CollectionUtils;
 import org.popkit.leap.elpa.entity.FetcherEnum;
 import org.popkit.leap.elpa.entity.RecipeDo;
-import org.popkit.leap.elpa.utils.RecipesUtils;
+import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -46,7 +46,7 @@ public class RecipesService {
     }
 
     private void initRecipes() {
-        List<RecipeDo> recipeDos = RecipesUtils.asRecipeArch(RecipesUtils.getRecipeFileList());
+        List<RecipeDo> recipeDos = PelpaUtils.asRecipeArch(PelpaUtils.getRecipeFileList());
         if (CollectionUtils.isNotEmpty(recipeDos)) {
             for (RecipeDo recipeDo : recipeDos) {
                 RECIPE_DO_LIST.putIfAbsent(recipeDo.getPkgName(), recipeDo);

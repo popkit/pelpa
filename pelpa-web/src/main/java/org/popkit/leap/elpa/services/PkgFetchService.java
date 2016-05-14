@@ -1,8 +1,8 @@
 package org.popkit.leap.elpa.services;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.popkit.core.config.LeapConfigLoader;
 import org.popkit.leap.elpa.entity.RecipeDo;
+import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +16,7 @@ import java.util.Map;
  * 2016-05-14:09:52
  */
 @Service
-public class PackageFetchService {
-    private static final String WORKING_DIR_KEY = "elpa_working_path";
+public class PkgFetchService {
 
     @Autowired
     private RecipesService recipesService;
@@ -35,8 +34,7 @@ public class PackageFetchService {
             return;
         }
 
-        String workPath = LeapConfigLoader.get(WORKING_DIR_KEY);
-        String pkgPath = workPath + recipeDo.getPkgName();
+        String pkgPath = PelpaUtils.getWorkingPath(recipeDo.getPkgName());
         Map<String, Object> extra = new HashMap<String, Object>();
         extra.put("pkgPath", pkgPath);
 

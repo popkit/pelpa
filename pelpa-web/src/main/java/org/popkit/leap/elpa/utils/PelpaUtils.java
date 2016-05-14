@@ -19,16 +19,24 @@ import java.util.List;
  * Mail aborn.jiang@gmail.com
  * 2016-05-14:06:59
  */
-public class RecipesUtils {
-
-
+public class PelpaUtils {
+    private static final String WORKING_DIR_KEY = "elpa_working_path";
     public static final String RECIPE_FILE_PATH_KEY = "elpa_recipes_path";
+    private static final String HTML_DIR_KEY = "elpa_html_path";
 
-    private RecipesUtils() {
+    private PelpaUtils() {
     }
 
     public static String getRecipeFilePath() {
         return LeapConfigLoader.get(RECIPE_FILE_PATH_KEY);
+    }
+
+    public static String getWorkingPath(String pkgName) {
+        return LeapConfigLoader.get(WORKING_DIR_KEY) + pkgName;
+    }
+
+    public static String getHtmlPath() {
+        return LeapConfigLoader.get(HTML_DIR_KEY);
     }
 
     public static List<File> getRecipeFileList() {
