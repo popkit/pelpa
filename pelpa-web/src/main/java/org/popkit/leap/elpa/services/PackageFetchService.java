@@ -6,7 +6,6 @@ import org.popkit.leap.elpa.entity.RecipeDo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,10 +36,7 @@ public class PackageFetchService {
         }
 
         String workPath = LeapConfigLoader.get(WORKING_DIR_KEY);
-        File pkgPath = new File(workPath + recipeDo.getPkgName());
-        if (!pkgPath.exists()) {
-            pkgPath.mkdir();
-        }
+        String pkgPath = workPath + recipeDo.getPkgName();
         Map<String, Object> extra = new HashMap<String, Object>();
         extra.put("pkgPath", pkgPath);
 

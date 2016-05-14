@@ -59,6 +59,11 @@ public class RecipeDo {
     }
 
     public String getRepo() {
+        if (this.repo != null &&
+                this.repo.startsWith("\"")
+                && this.repo.endsWith("\"")) {
+            return this.repo.substring(1, this.repo.length() - 1);
+        }
         return repo;
     }
 
