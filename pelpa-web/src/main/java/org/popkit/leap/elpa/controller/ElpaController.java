@@ -31,6 +31,7 @@ public class ElpaController {
         CommonResponse com = new CommonResponse();
         com.setData(recipesService.randomRecipe());
         //pkgFetchService.d8();
+        recipesService.writeRecipesJson();
         return com;
     }
 }
