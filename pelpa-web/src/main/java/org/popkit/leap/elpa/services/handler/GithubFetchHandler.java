@@ -43,6 +43,7 @@ public class GithubFetchHandler implements FetchHandler {
 
     private void update(RecipeDo recipeDo, String localPath) {
         try {
+            LeapLogger.info("github fetch:" + localPath);
             Repository repository = FileRepositoryBuilder.create(new File(localPath + "/.git"));
             System.out.println("Starting fetch");
 
@@ -56,6 +57,7 @@ public class GithubFetchHandler implements FetchHandler {
 
     private void create(RecipeDo recipeDo, String localPathDir) {
         // prepare a new folder for the cloned repository
+        LeapLogger.info("github create:" + localPathDir);
         String remote_url = GITHUB_HTTPS_ROOT + recipeDo.getRepo() + ".git";
 
         try {
