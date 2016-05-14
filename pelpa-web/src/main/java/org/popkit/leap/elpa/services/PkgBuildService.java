@@ -34,7 +34,15 @@ public class PkgBuildService {
         buildPackage(recipeDo);
     }
 
-    public void buildPackage(RecipeDo recipeDo) {
+    public boolean buildPackage(String pkgName) {
+        return buildPackage(recipesService.getRecipeDo(pkgName));
+    }
+
+    public boolean buildPackage(RecipeDo recipeDo) {
+        if (recipeDo == null) {
+            return true;
+        }
+
         String workingPath = PelpaUtils.getWorkingPath(recipeDo.getPkgName());
         File workingPathFile = new File(workingPath);
 
@@ -44,6 +52,7 @@ public class PkgBuildService {
                 buildSingleFilePackage(elispFile.get(0), recipeDo);
             }
         }
+        return true;
     }
 
     public void writeArchiveJSON() {

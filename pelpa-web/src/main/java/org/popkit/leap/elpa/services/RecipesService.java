@@ -31,6 +31,10 @@ public class RecipesService {
         initRecipes();
     }
 
+    public RecipeDo getRecipeDo(String pkgName) {
+        return RECIPE_DO_LIST.get(pkgName);
+    }
+
     public RecipeDo randomRecipe () {
         List<RecipeDo> list = getAllRecipeList();
         for (RecipeDo item : list) {

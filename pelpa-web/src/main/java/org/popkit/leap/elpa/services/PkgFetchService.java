@@ -29,9 +29,14 @@ public class PkgFetchService {
         downloadPackage(recipeDo);
     }
 
-    public void downloadPackage(RecipeDo recipeDo) {
+    public boolean downloadPackage(String pkgName) {
+        RecipeDo recipeDo = recipesService.getRecipeDo(pkgName);
+        return downloadPackage(recipeDo);
+    }
+
+    public boolean downloadPackage(RecipeDo recipeDo) {
         if (recipeDo == null) {
-            return;
+            return true;
         }
 
         String pkgPath = PelpaUtils.getWorkingPath(recipeDo.getPkgName());
@@ -45,5 +50,7 @@ public class PkgFetchService {
                 }
             }
         }
+
+        return true;
     }
 }
