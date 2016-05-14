@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.popkit.leap.elpa.entity.FetcherEnum;
+import org.popkit.leap.elpa.entity.PelpaContents;
 import org.popkit.leap.elpa.entity.RecipeDo;
 import org.popkit.leap.elpa.entity.RecipeVo;
 import org.popkit.leap.elpa.utils.PelpaUtils;
@@ -24,7 +25,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class RecipesService {
     private static final ConcurrentHashMap<String, RecipeDo> RECIPE_DO_LIST = new ConcurrentHashMap<String, RecipeDo>();
-    private static final String RECIPES_JSON = "recipes.json";
 
     @PostConstruct
     private void init() {
@@ -45,7 +45,7 @@ public class RecipesService {
     // 生成 recipes.json 文件
     public void writeRecipesJson() {
         List<RecipeDo> list = getAllRecipeList();
-        File file = new File(PelpaUtils.getHtmlPath() + RECIPES_JSON);
+        File file = new File(PelpaUtils.getHtmlPath() + PelpaContents.RECIPES_JSON_FILE_NAME);
         JSONObject jsonObject = new JSONObject();
         for (RecipeDo recipeDo : list) {
             jsonObject.put(recipeDo.getPkgName(), new RecipeVo(recipeDo));

@@ -2,10 +2,7 @@ package org.popkit.leap.elpa.services;
 
 import org.apache.commons.io.FileUtils;
 import org.popkit.core.logger.LeapLogger;
-import org.popkit.leap.elpa.entity.ArchiveVo;
-import org.popkit.leap.elpa.entity.DepsItem;
-import org.popkit.leap.elpa.entity.PackageInfo;
-import org.popkit.leap.elpa.entity.RecipeDo;
+import org.popkit.leap.elpa.entity.*;
 import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.popkit.leap.elpa.utils.TimeVersionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +25,6 @@ import java.util.List;
 public class PkgBuildService {
     private static final String SINGLE = "single";
     private static final String TAR = "tar";
-    private static final String ARCHIVE_JSON = "archive.json";
 
     @Autowired
     private RecipesService recipesService;
@@ -50,8 +46,8 @@ public class PkgBuildService {
         }
     }
 
-    public void witeArchiveJSON() {
-        File file = new File(PelpaUtils.getHtmlPath() + ARCHIVE_JSON);
+    public void writeArchiveJSON() {
+        File file = new File(PelpaUtils.getHtmlPath() + PelpaContents.ARCHIVE_JSON_FILE_NAME);
         try {
             String json = LocalCache.getArchiveJSON();
             FileUtils.writeStringToFile(file, json);
@@ -83,7 +79,7 @@ public class PkgBuildService {
         archiveVo.setKeywords(pkgInfo.getKeywords());
         archiveVo.setDeps(pkgInfo.getDeps());
 
-        LocalCache.update(recipeDo.getPkgName(), archiveVo);
+        LocalCache.updateArchive(recipeDo.getPkgName(), archiveVo);
     }
 
     public PackageInfo getPkgInfo(File elispfile, String pkgName) {

@@ -34,7 +34,7 @@ public class ElpaController {
         pkgBuildService.buildPackage(recipesService.randomRecipe());
         com.setData(recipesService.randomRecipe());
 
-        pkgBuildService.witeArchiveJSON();
+        pkgBuildService.writeArchiveJSON();
         //recipesService.writeRecipesJson();
         return com;
     }
