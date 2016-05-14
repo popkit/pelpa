@@ -21,6 +21,7 @@ import java.util.List;
  */
 public class RecipesUtils {
 
+
     public static final String RECIPE_FILE_PATH_KEY = "elpa_recipes_path";
 
     private RecipesUtils() {

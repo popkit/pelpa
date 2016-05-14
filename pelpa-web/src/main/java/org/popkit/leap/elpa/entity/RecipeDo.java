@@ -25,6 +25,10 @@ public class RecipeDo {
         return pkgName;
     }
 
+    public FetcherEnum getFetcherEnum() {
+        return FetcherEnum.getFetcher(this.fetcher);
+    }
+
     public void update(String key, String value) {
         Field[] fields = this.getClass().getDeclaredFields();
         for (Field field : fields) {
