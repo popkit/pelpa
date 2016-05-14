@@ -78,4 +78,17 @@ public class RoundMonitor {
         }
         return true;
     }
+
+    public static double finishedPercent() {
+        int finished = 0;
+        int total = 0;
+        for (String pkg : actors.keySet()) {
+            if (actors.get(pkg).isFinished()) {
+                finished ++;
+            }
+            total ++;
+        }
+
+        return ((double) finished) / total;
+    }
 }

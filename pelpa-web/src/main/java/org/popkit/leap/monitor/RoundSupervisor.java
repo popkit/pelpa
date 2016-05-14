@@ -52,7 +52,16 @@ public class RoundSupervisor {
                     if (RoundMonitor.isFinishedThisRun()) {
                         run.setEndTime(new Date());
                         run.setStatus(RoundStatus.FINISHED);
+                        LeapLogger.info("roundId:" + run.getRoundId() + "完成!");
                     }
+
+                    if (run.getEndTime() != null && run.getStatus() == RoundStatus.FINISHED) {
+                        if (run.getEndTime().getTime() + REST_TIME > new Date().getTime()) {
+                            LeapLogger.info("roundId:" + run.getRoundId() + "已经完成, 正在进行休息中!");
+                        }
+                    }
+
+                    LeapLogger.info("roundId:" + run.getStatus() + ",完成度:" + RoundMonitor.finishedPercent());
                 }
             }
         }).start();
@@ -67,7 +76,7 @@ public class RoundSupervisor {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm.SS");
         LeapLogger.info("新一轮构建开始!开始时间:" + simpleDateFormat.format(run.getStartTime())
                 + ", roundId:" + run.getRoundId());
-        //fetcherExcutorPool.excute();
-        //buildingExcutorPool.excute();
+        fetcherExcutorPool.excute();
+        buildingExcutorPool.excute();
     }
 }
