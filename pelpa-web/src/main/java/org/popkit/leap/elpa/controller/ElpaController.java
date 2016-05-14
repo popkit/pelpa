@@ -31,10 +31,11 @@ public class ElpaController {
         CommonResponse com = new CommonResponse();
 
         //pkgFetchService.d8();
-        pkgBuildService.buildPackage(recipesService.randomRecipe());
+        //pkgBuildService.buildPackage(recipesService.randomRecipe());
+        pkgFetchService.downloadPackage(recipesService.randomRecipe());
         com.setData(recipesService.randomRecipe());
 
-        pkgBuildService.writeArchiveJSON();
+        //pkgBuildService.writeArchiveJSON();
         //recipesService.writeRecipesJson();
         return com;
     }

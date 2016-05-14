@@ -34,7 +34,7 @@ public class GithubFetchHandler implements FetchHandler {
         String pkgPath = (String) extra.get("pkgPath");
         File pkgPathFile = new File(pkgPath);
         if (pkgPathFile.exists() && pkgPathFile.isDirectory()
-                && new File(pkgPath + ".git").exists()) {
+                && new File(pkgPath + "/.git").exists()) {
             update(recipeDo, pkgPath);
         } else {
             create(recipeDo, pkgPath);
@@ -43,7 +43,7 @@ public class GithubFetchHandler implements FetchHandler {
 
     private void update(RecipeDo recipeDo, String localPath) {
         try {
-            Repository repository = FileRepositoryBuilder.create(new File(localPath + ".git"));
+            Repository repository = FileRepositoryBuilder.create(new File(localPath + "/.git"));
             System.out.println("Starting fetch");
 
             Git git = new Git(repository);

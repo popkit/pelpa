@@ -64,10 +64,10 @@ public class RoundSupervisor {
         run.setStatus(RoundStatus.RUNNING);
         run.setRoundId(run.getRoundId() + 1);
         monitor.init(run.getRoundId());
-        fetcherExcutorPool.excute();
-        buildingExcutorPool.excute();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm.SS");
         LeapLogger.info("新一轮构建开始!开始时间:" + simpleDateFormat.format(run.getStartTime())
                 + ", roundId:" + run.getRoundId());
+        //fetcherExcutorPool.excute();
+        //buildingExcutorPool.excute();
     }
 }
