@@ -2,6 +2,7 @@ package org.popkit.leap.elpa.services;
 
 import org.apache.commons.io.FileUtils;
 import org.popkit.core.logger.LeapLogger;
+import org.popkit.leap.elpa.entity.ArchiveVo;
 import org.popkit.leap.elpa.entity.PackageInfo;
 import org.popkit.leap.elpa.entity.RecipeDo;
 import org.popkit.leap.elpa.utils.PelpaUtils;
@@ -25,6 +26,7 @@ import java.util.List;
 public class PkgBuildService {
     private static final String SINGLE = "single";
     private static final String TAR = "tar";
+    private static final String ARCHIVE_JSON = "archive.json";
 
     @Autowired
     private RecipesService recipesService;
@@ -46,9 +48,20 @@ public class PkgBuildService {
         }
     }
 
+    public void witeArchiveJSON() {
+        File file = new File(PelpaUtils.getHtmlPath() + ARCHIVE_JSON);
+        try {
+            String json = LocalCache.getArchiveJSON();
+            FileUtils.writeStringToFile(file, json);
+        } catch (IOException e) {
+            LeapLogger.warn("error writeArchiveJson", e);
+        }
+    }
+
     public void buildSingleFilePackage(File elispfile, RecipeDo recipeDo) {
         String htmlPath = PelpaUtils.getHtmlPath();
         String version = TimeVersionUtils.toVersionString(elispfile.lastModified());
+
         String packagePath = htmlPath + "packages/";
         PackageInfo desc = getDesc(elispfile, recipeDo.getPkgName());
         String readMeFile = packagePath + recipeDo.getPkgName() + "-readme.txt";
@@ -59,6 +72,14 @@ public class PkgBuildService {
             LeapLogger.warn("error in copy file:", e);
         }
         String type = SINGLE;
+
+        ArchiveVo archiveVo = new ArchiveVo();
+
+        archiveVo.setDesc(desc.getShortInfo());
+        archiveVo.setVer(TimeVersionUtils.toArr(elispfile.lastModified()));
+        archiveVo.setType(type);
+
+        LocalCache.update(recipeDo.getPkgName(), archiveVo);
     }
 
     public PackageInfo getDesc(File elispfile, String pkgName) {

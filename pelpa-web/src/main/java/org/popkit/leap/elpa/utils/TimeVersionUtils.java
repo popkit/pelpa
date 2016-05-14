@@ -14,15 +14,14 @@ import java.util.List;
 public class TimeVersionUtils {
     private TimeVersionUtils() {}
 
-    public static Integer[] toArr(long time) {
+    public static List<Integer> toArr(long time) {
         List<Integer> list = new ArrayList<Integer>();
         list.add(Integer.parseInt(new SimpleDateFormat("yyyyMMdd").format(time)));
         list.add(Integer.parseInt(new SimpleDateFormat("HHmm").format(time)));
-        return list.toArray(new Integer[list.size()]);
+        return list;//list.toArray(new Integer[list.size()]);
     }
 
     public static String toVersionString(long time) {
-        Integer[] arr = toArr(time);
-        return StringUtils.join(arr, ".");
+        return StringUtils.join(toArr(time), ".");
     }
 }

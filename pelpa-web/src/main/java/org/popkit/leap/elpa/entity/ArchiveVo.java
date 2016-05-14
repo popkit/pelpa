@@ -1,5 +1,7 @@
 package org.popkit.leap.elpa.entity;
 
+import com.alibaba.fastjson.JSONObject;
+
 import java.util.List;
 
 /**
@@ -13,6 +15,14 @@ public class ArchiveVo {
     private String desc;
     private String type;   // "single"
     private PropsItem props;
+
+    public String toJSONString() {
+        return JSONObject.toJSONString(this);
+    }
+    @Override
+    public String toString() {
+        return toJSONString();
+    }
 
     public List<Integer> getVer() {
         return ver;
@@ -45,4 +55,5 @@ public class ArchiveVo {
     public void setProps(PropsItem props) {
         this.props = props;
     }
+
 }
