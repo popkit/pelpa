@@ -39,6 +39,19 @@ public class PelpaUtils {
         return LeapConfigLoader.get(HTML_DIR_KEY);
     }
 
+    public static List<File> getElispFile(String dir) {
+        List<File> fileList = new ArrayList<File>();
+        File directory = new File(dir);
+        if (directory.isDirectory()) {
+            for (File file : directory.listFiles()) {
+                if (file.getName().endsWith(".el")) {
+                    fileList.add(file);
+                }
+            }
+        }
+        return fileList;
+    }
+
     public static List<File> getRecipeFileList() {
         List<File> fileList = new ArrayList<File>();
         String recipesDir = getRecipeFilePath();
