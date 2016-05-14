@@ -1,6 +1,7 @@
 package org.popkit.leap.elpa.entity;
 
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.collections.CollectionUtils;
 
 import java.util.List;
 
@@ -15,14 +16,35 @@ public class ArchiveVo {
     private String desc;
     private String type;   // "single"
     private PropsItem props;
+    private JSONObject deps;
 
     public String toJSONString() {
         return JSONObject.toJSONString(this);
     }
+
     @Override
     public String toString() {
         return toJSONString();
     }
+
+    public void setDeps(List<DepsItem> depsItemList) {
+        if (this.deps == null) {
+            this.deps = new JSONObject();
+        }
+        if (CollectionUtils.isNotEmpty(depsItemList)) {
+            for (DepsItem item : depsItemList) {
+                this.deps.put(item.getName(), item.getVersions());
+            }
+        }
+    }
+    public void setKeywords(List<String> keywords) {
+        if (props == null) {
+            this.props = new PropsItem();
+        }
+
+        this.props.setKeywords(keywords);
+    }
+
 
     public List<Integer> getVer() {
         return ver;
@@ -56,4 +78,11 @@ public class ArchiveVo {
         this.props = props;
     }
 
+    public JSONObject getDeps() {
+        return deps;
+    }
+
+    public void setDeps(JSONObject deps) {
+        this.deps = deps;
+    }
 }

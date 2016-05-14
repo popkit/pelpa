@@ -3,6 +3,7 @@ package org.popkit.leap.elpa.services;
 import org.apache.commons.io.FileUtils;
 import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.entity.ArchiveVo;
+import org.popkit.leap.elpa.entity.DepsItem;
 import org.popkit.leap.elpa.entity.PackageInfo;
 import org.popkit.leap.elpa.entity.RecipeDo;
 import org.popkit.leap.elpa.utils.PelpaUtils;
@@ -14,6 +15,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -63,10 +65,10 @@ public class PkgBuildService {
         String version = TimeVersionUtils.toVersionString(elispfile.lastModified());
 
         String packagePath = htmlPath + "packages/";
-        PackageInfo desc = getDesc(elispfile, recipeDo.getPkgName());
+        PackageInfo pkgInfo = getPkgInfo(elispfile, recipeDo.getPkgName());
         String readMeFile = packagePath + recipeDo.getPkgName() + "-readme.txt";
         try {
-            FileUtils.writeStringToFile(new File(readMeFile), desc.getReadmeInfo());
+            FileUtils.writeStringToFile(new File(readMeFile), pkgInfo.getReadmeInfo());
             FileUtils.copyFile(elispfile, new File(packagePath + recipeDo.getPkgName() + "-"+ version + ".el"));
         } catch (Exception e) {
             LeapLogger.warn("error in copy file:", e);
@@ -75,14 +77,16 @@ public class PkgBuildService {
 
         ArchiveVo archiveVo = new ArchiveVo();
 
-        archiveVo.setDesc(desc.getShortInfo());
+        archiveVo.setDesc(pkgInfo.getShortInfo());
         archiveVo.setVer(TimeVersionUtils.toArr(elispfile.lastModified()));
         archiveVo.setType(type);
+        archiveVo.setKeywords(pkgInfo.getKeywords());
+        archiveVo.setDeps(pkgInfo.getDeps());
 
         LocalCache.update(recipeDo.getPkgName(), archiveVo);
     }
 
-    public PackageInfo getDesc(File elispfile, String pkgName) {
+    public PackageInfo getPkgInfo(File elispfile, String pkgName) {
         PackageInfo packageInfo = new PackageInfo();
         BufferedReader br = null;
         StringBuilder stringBuilder = new StringBuilder("");
@@ -102,6 +106,15 @@ public class PkgBuildService {
                 if (sCurrentLine.contains(";;; Code:")) {
                     end = true;
                 }
+
+                if (sCurrentLine.trim().startsWith(";") && sCurrentLine.contains("Package-Requires:")) {
+                    packageInfo.setDeps(convetDeps(sCurrentLine));
+                }
+
+                if (sCurrentLine.trim().startsWith(";") && sCurrentLine.contains("Keywords:")) {
+                    packageInfo.setKeywords(convKeywords(sCurrentLine));
+                }
+
                 if (start && !end) {
                     stringBuilder.append(sCurrentLine.replaceAll(";", "")).append("\n");
                 }
@@ -119,6 +132,24 @@ public class PkgBuildService {
         }
         packageInfo.setReadmeInfo(stringBuilder.toString());
         return packageInfo;
+    }
+
+
+    private List<DepsItem> convetDeps(String currentline) {
+        String[] lineSplit = currentline.split(":");
+        if (lineSplit.length > 1) {
+            return DepsItem.fromString(lineSplit[1]);
+        }
+
+        return null;
+    }
+
+    private List<String> convKeywords(String currentline) {
+        String[] lineSplit = currentline.split(":");
+        if (lineSplit.length > 1) {
+            return Arrays.asList(lineSplit[1].split(","));
+        }
+        return null;
     }
 
 }
