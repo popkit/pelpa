@@ -1,6 +1,7 @@
 package org.popkit.leap.monitor;
 
 import org.popkit.core.logger.LeapLogger;
+import org.popkit.leap.elpa.entity.ActorStatus;
 import org.popkit.leap.elpa.services.PkgBuildService;
 
 /**
@@ -18,10 +19,10 @@ public class BuildingTask implements Runnable {
     }
 
     public void run() {
-        LeapLogger.info("pkgName" + pkgName + "正在进行building...");
+        LeapLogger.info("pkgName=" + pkgName + "正在进行building...");
         if (pkgBuildService.buildPackage(pkgName)) {
-            RoundMonitor.finishedBuilder(pkgName);
+            RoundMonitor.updateBuildingStatus(pkgName, ActorStatus.FINISHED);
         }
-        LeapLogger.info("pkgName" + pkgName + "building完成!");
+        LeapLogger.info("pkgName=" + pkgName + "building完成!");
     }
 }

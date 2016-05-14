@@ -1,5 +1,7 @@
 package org.popkit.leap.monitor;
 
+import org.popkit.leap.elpa.entity.ActorStatus;
+
 import java.util.Date;
 
 /**
@@ -10,8 +12,8 @@ import java.util.Date;
  */
 public class EachActor {
     private String pkgName;
-    private boolean fetchFinished;      // 是否下载成功
-    private boolean buildFinished;      // 是否构建成功
+    private ActorStatus fetchStatus;      // 是否下载成功
+    private ActorStatus buildStatus;      // 是否构建成功
     private int roundId;
     private Date startTime;        // 这个包开始更新的时间
     private Date endTime;          // 这个包更新结束的时间
@@ -19,14 +21,15 @@ public class EachActor {
     public EachActor(String pkgName, int roundId) {
         this.pkgName = pkgName;
         this.roundId = roundId;
-        this.fetchFinished = false;
-        this.buildFinished = false;
+        this.fetchStatus = ActorStatus.READY;
+        this.buildStatus = ActorStatus.READY;
         this.endTime = null;
         this.startTime = new Date();
     }
 
     public boolean isFinished() {
-        return fetchFinished && buildFinished;
+        return fetchStatus == ActorStatus.FINISHED &&
+                buildStatus == ActorStatus.FINISHED;
     }
 
     public String getPkgName() {
@@ -37,20 +40,8 @@ public class EachActor {
         this.pkgName = pkgName;
     }
 
-    public boolean isFetchFinished() {
-        return fetchFinished;
-    }
-
-    public void setFetchFinished(boolean fetchFinished) {
-        this.fetchFinished = fetchFinished;
-    }
-
     public boolean isBuildFinished() {
-        return buildFinished;
-    }
-
-    public void setBuildFinished(boolean buildFinished) {
-        this.buildFinished = buildFinished;
+        return buildStatus == ActorStatus.FINISHED;
     }
 
     public int getRoundId() {
@@ -75,5 +66,21 @@ public class EachActor {
 
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
+    }
+
+    public ActorStatus getFetchStatus() {
+        return fetchStatus;
+    }
+
+    public void setFetchStatus(ActorStatus fetchStatus) {
+        this.fetchStatus = fetchStatus;
+    }
+
+    public ActorStatus getBuildStatus() {
+        return buildStatus;
+    }
+
+    public void setBuildStatus(ActorStatus buildStatus) {
+        this.buildStatus = buildStatus;
     }
 }

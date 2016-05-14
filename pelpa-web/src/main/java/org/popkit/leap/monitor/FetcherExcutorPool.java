@@ -1,5 +1,6 @@
 package org.popkit.leap.monitor;
 
+import org.popkit.leap.elpa.entity.ActorStatus;
 import org.popkit.leap.elpa.services.PkgFetchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,7 +35,8 @@ public class FetcherExcutorPool {
                             // TODO
                         }
                     } else {
-                        exector.execute(new FetcherTask(pkgName, pkgFetchService));
+                        exector.submit(new FetcherTask(pkgName, pkgFetchService));
+                        RoundMonitor.updateFetcherStatus(pkgName, ActorStatus.WORKING);
                     }
                 }
             }

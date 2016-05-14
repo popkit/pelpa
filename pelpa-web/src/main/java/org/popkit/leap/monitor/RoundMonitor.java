@@ -3,6 +3,7 @@ package org.popkit.leap.monitor;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.popkit.core.logger.LeapLogger;
+import org.popkit.leap.elpa.entity.ActorStatus;
 import org.popkit.leap.elpa.entity.RecipeDo;
 import org.popkit.leap.elpa.services.RecipesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,17 +43,17 @@ public class RoundMonitor {
         }
     }
 
-    public static void finishedFetcher(String pkg) {
-        actors.get(pkg).setFetchFinished(true);
+    public static void updateFetcherStatus(String pkg, ActorStatus actStatus) {
+        actors.get(pkg).setFetchStatus(actStatus);
     }
 
-    public static void finishedBuilder(String pkg) {
-        actors.get(pkg).setBuildFinished(true);
+    public static void updateBuildingStatus(String pkg, ActorStatus actStatus) {
+        actors.get(pkg).setBuildStatus(actStatus);
     }
 
     public static String nexFetcherPkg() {
         for (String pkg : actors.keySet()) {
-            if (!actors.get(pkg).isFetchFinished()) {
+            if (actors.get(pkg).getFetchStatus() == ActorStatus.READY) {
                 return pkg;
             }
         }
@@ -61,7 +62,8 @@ public class RoundMonitor {
 
     public static String nextBuildingPkg() {
         for (String pkg : actors.keySet()) {
-            if (!actors.get(pkg).isBuildFinished() && actors.get(pkg).isFetchFinished()) {
+            if (!actors.get(pkg).isBuildFinished()
+                    && actors.get(pkg).getBuildStatus() == ActorStatus.READY) {
                 return pkg;
             }
         }

@@ -1,5 +1,6 @@
 package org.popkit.leap.monitor;
 
+import org.popkit.leap.elpa.entity.ActorStatus;
 import org.popkit.leap.elpa.services.PkgBuildService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,7 @@ public class BuildingExcutorPool {
                         }
                     } else {
                         exector.execute(new BuildingTask(pkgName, pkgBuildService));
+                        RoundMonitor.updateBuildingStatus(pkgName, ActorStatus.WORKING);
                     }
                 }
             }
