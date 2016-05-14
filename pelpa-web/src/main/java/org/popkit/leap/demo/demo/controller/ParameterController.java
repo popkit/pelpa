@@ -2,7 +2,6 @@ package org.popkit.leap.demo.demo.controller;
 
 import org.popkit.core.annotation.LeapSupport;
 import org.popkit.core.entity.CommonResponse;
-import org.popkit.leap.demo.common.BaseController;
 import org.popkit.leap.demo.demo.entity.ParamReq;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 @RequestMapping(value = "demo")
-public class ParameterController extends BaseController {
+public class ParameterController extends org.popkit.leap.common.BaseController {
 
     @RequestMapping(value = "parameter.html")
     @LeapSupport

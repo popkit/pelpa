@@ -1,4 +1,4 @@
-package org.popkit.leap.demo.common;
+package org.popkit.leap.common;
 
 import org.springframework.stereotype.Controller;
 

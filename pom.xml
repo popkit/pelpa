@@ -9,10 +9,10 @@
 
   <modules>
     <module>leap</module>
-    <module>pelpa</module>
+    <module>pelpa-web</module>
   </modules>
 
-  <name>leap-demo-web</name>
+  <name>pelpa</name>
   <url>http://maven.apache.org</url>
 
   <dependencies>

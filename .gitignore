@@ -10,6 +10,6 @@ out/
 *~
 mapi-drai-web/target/
 leap/target/
-leap-demo/target
-leap-demo/*.iml
+pelpa-web/target/
+pelpa-web/*.iml
 local/
