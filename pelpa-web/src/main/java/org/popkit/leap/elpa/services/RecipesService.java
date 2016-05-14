@@ -32,7 +32,6 @@ public class RecipesService {
     }
 
     public RecipeDo randomRecipe () {
-
         List<RecipeDo> list = getAllRecipeList();
         for (RecipeDo item : list) {
             if (item.getFetcherEnum() == FetcherEnum.GITHUB) {
@@ -43,6 +42,7 @@ public class RecipesService {
         return null;
     }
 
+    // 生成 recipes.json 文件
     public void writeRecipesJson() {
         List<RecipeDo> list = getAllRecipeList();
         File file = new File(PelpaUtils.getHtmlPath() + RECIPES_JSON);

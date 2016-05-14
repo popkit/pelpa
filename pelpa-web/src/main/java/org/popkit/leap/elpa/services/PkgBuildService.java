@@ -2,6 +2,7 @@ package org.popkit.leap.elpa.services;
 
 import org.popkit.leap.elpa.entity.RecipeDo;
 import org.popkit.leap.elpa.utils.PelpaUtils;
+import org.popkit.leap.elpa.utils.TimeVersionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +39,10 @@ public class PkgBuildService {
 
     public void buildSingleFilePackage(File elispfile, RecipeDo recipeDo) {
         String htmlPath = PelpaUtils.getHtmlPath();
+        TimeVersionUtils.toVersionString(elispfile.lastModified());
 
     }
+
+
 
 }

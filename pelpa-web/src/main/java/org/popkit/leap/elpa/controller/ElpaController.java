@@ -29,9 +29,12 @@ public class ElpaController {
     @RequestMapping(value = "d8")
     public CommonResponse d8() {
         CommonResponse com = new CommonResponse();
-        com.setData(recipesService.randomRecipe());
+
         //pkgFetchService.d8();
-        recipesService.writeRecipesJson();
+        pkgBuildService.buildPackage(recipesService.randomRecipe());
+        com.setData(recipesService.randomRecipe());
+
+        //recipesService.writeRecipesJson();
         return com;
     }
 }
