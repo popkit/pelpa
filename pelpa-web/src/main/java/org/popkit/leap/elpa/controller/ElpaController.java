@@ -1,7 +1,9 @@
 package org.popkit.leap.elpa.controller;
 
 import com.alibaba.fastjson.JSONObject;
+
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.popkit.core.entity.CommonResponse;
 import org.popkit.leap.elpa.entity.ActorStatus;
 import org.popkit.leap.elpa.services.PkgBuildService;
@@ -46,23 +48,39 @@ public class ElpaController {
         int unstartedNo = 0;
         int finishedNo = 0;
         int ongingNo = 0;
+        List<String> pkgReady = new ArrayList<String>();
+        List<String> pkgFinished = new ArrayList<String>();
+        List<String> pkgOnging = new ArrayList<String>();
 
         if (MapUtils.isNotEmpty(actorMap)) {
             for (String pkg : actorMap.keySet()) {
                 EachActor actor = actorMap.get(pkg);
-                if (actor.getBuildStatus() == ActorStatus.READY && unstartedNo < 50) {
-                    unstarted.add(actor);
-                    unstartedNo ++;
-                } else if (actor.getBuildStatus() == ActorStatus.WORKING && ongingNo < 50) {
-                    onging.add(actor);
-                    ongingNo ++;
-                } else if (actor.getBuildStatus() == ActorStatus.FINISHED && finishedNo < 50) {
-                    finished.add(actor);
-                    finishedNo ++;
+                if (actor.getBuildStatus() == ActorStatus.READY) {
+                    if (unstartedNo < 50) {
+                        unstarted.add(actor);
+                        unstartedNo++;
+                    }
+                    pkgReady.add(pkg);
+                } else if (actor.getBuildStatus() == ActorStatus.WORKING) {
+                    if ( ongingNo < 50) {
+                        onging.add(actor);
+                        ongingNo++;
+                    }
+                    pkgOnging.add(pkg);
+                } else if (actor.getBuildStatus() == ActorStatus.FINISHED) {
+                    if (finishedNo < 50) {
+                        finished.add(actor);
+                        finishedNo++;
+                    }
+                    pkgFinished.add(pkg);
                 }
             }
         }
 
+        request.setAttribute("percent",  RoundMonitor.finishedPercent());
+        request.setAttribute("pkgReady", pkgReady.size() + ":" + StringUtils.join(pkgReady, ","));
+        request.setAttribute("pkgOnging", pkgOnging.size() + ":" + StringUtils.join(pkgOnging, ","));
+        request.setAttribute("pkgFinished", pkgFinished.size() + ":" + StringUtils.join(pkgFinished, ","));
         request.setAttribute("unstarted", unstarted);
         request.setAttribute("finished", finished);
         request.setAttribute("onging", onging);
