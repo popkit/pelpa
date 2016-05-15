@@ -6,11 +6,14 @@ import org.popkit.leap.elpa.entity.RoundRun;
 import org.popkit.leap.elpa.entity.RoundStatus;
 import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.popkit.leap.monitor.entity.BuildStatus;
+import org.popkit.leap.monitor.entity.DiskStatus;
+import org.popkit.leap.monitor.utils.DiskUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -23,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class RoundSupervisor {
     private static final String BUILD_STATUS_FILE = "build-status.json";
+    private static final String DISK_STATUS_FILE = "disk_status.json";
 
     @Autowired
     private RoundMonitor monitor;
@@ -73,6 +77,7 @@ public class RoundSupervisor {
                     } else {
                         LeapLogger.info("roundId:" + run.getStatus() + ",完成度:" + RoundMonitor.finishedPercent());
                     }
+                    updateDiskStatus();
                 }
             }
         }).start();
@@ -106,5 +111,33 @@ public class RoundSupervisor {
         }
     }
 
+    private void updateDiskStatus() {
+        DiskStatus diskStatus = getDiskStatus();
+        String htmlPath = PelpaUtils.getHtmlPath();
+        File file = new File(htmlPath + DISK_STATUS_FILE);
+        try {
+            if (diskStatus != null && diskStatus.getAvail() != null && diskStatus.getUsed() != null) {
+                FileUtils.writeStringToFile(file, diskStatus.toJSONString());
+                LeapLogger.warn("updateDiskStatus success!");
+            }
+        } catch (Exception e) {
+            LeapLogger.warn("error in updateDiskStatus!");
+        }
+    }
+
+    private DiskStatus getDiskStatus() {
+        File[] roots = File.listRoots();
+        /* For each filesystem root, print some info */
+        for (File root : roots) {
+            if ("/".equalsIgnoreCase(root.getAbsolutePath())) {
+                DiskStatus diskStatus = new DiskStatus();
+                diskStatus.setAvail(DiskUtils.humanReadableByteCount(root.getFreeSpace(), false));
+                DecimalFormat df = new DecimalFormat("#.00");
+                diskStatus.setUsed(df.format(((double)(root.getTotalSpace() - root.getFreeSpace())/root.getTotalSpace())*100) + "%");
+                return diskStatus;
+            }
+        }
+        return null;
+    }
 
 }
