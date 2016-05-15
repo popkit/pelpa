@@ -49,7 +49,7 @@ public class RoundSupervisor {
                         nextRun();    // 新一轮构建开始
                     }
 
-                    if (RoundMonitor.isFinishedThisRun()) {
+                    if (RoundMonitor.isFinishedThisRun() && run.getEndTime() != null) {
                         run.setEndTime(new Date());
                         run.setStatus(RoundStatus.FINISHED);
                         LeapLogger.info("roundId:" + run.getRoundId() + "完成!");
@@ -57,7 +57,9 @@ public class RoundSupervisor {
 
                     if (run.getEndTime() != null && run.getStatus() == RoundStatus.FINISHED) {
                         if (run.getEndTime().getTime() + REST_TIME > new Date().getTime()) {
-                            LeapLogger.info("roundId:" + run.getRoundId() + "已经完成, 正在进行休息中!");
+                            long next = ((run.getEndTime().getTime() + REST_TIME) - new Date().getTime())/1000;
+                            LeapLogger.info("roundId:" + run.getRoundId()
+                                    + "已经完成, 正在进行休息中! 离下次开始还有:" + next + "s!");
                         }
                     } else {
                         LeapLogger.info("roundId:" + run.getStatus() + ",完成度:" + RoundMonitor.finishedPercent());
@@ -76,7 +78,7 @@ public class RoundSupervisor {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm.SS");
         LeapLogger.info("新一轮构建开始!开始时间:" + simpleDateFormat.format(run.getStartTime())
                 + ", roundId:" + run.getRoundId());
-        //fetcherExcutorPool.excute();
-        //buildingExcutorPool.excute();
+        fetcherExcutorPool.excute();
+        buildingExcutorPool.excute();
     }
 }

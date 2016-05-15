@@ -3,6 +3,7 @@ package org.popkit.leap.elpa.services;
 import org.apache.commons.io.FileUtils;
 import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.entity.*;
+import org.popkit.leap.elpa.services.handler.GithubFetchHandler;
 import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.popkit.leap.elpa.utils.TimeVersionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +71,10 @@ public class PkgBuildService {
 
     public void buildSingleFilePackage(File elispfile, RecipeDo recipeDo) {
         String htmlPath = PelpaUtils.getHtmlPath();
-        String version = TimeVersionUtils.toVersionString(elispfile.lastModified());
+        long lastcommit = GithubFetchHandler.getLastCommiterTime(recipeDo.getPkgName());
+        lastcommit = lastcommit == 0 ? elispfile.lastModified() : lastcommit;
+        String version = TimeVersionUtils.toVersionString(lastcommit);
+        LeapLogger.info("pkg:" + recipeDo.getPkgName() + ", 版本号:" + version);
 
         String packagePath = htmlPath + "packages/";
         PackageInfo pkgInfo = getPkgInfo(elispfile, recipeDo.getPkgName());
@@ -84,9 +88,8 @@ public class PkgBuildService {
         String type = SINGLE;
 
         ArchiveVo archiveVo = new ArchiveVo();
-
         archiveVo.setDesc(pkgInfo.getShortInfo());
-        archiveVo.setVer(TimeVersionUtils.toArr(elispfile.lastModified()));
+        archiveVo.setVer(TimeVersionUtils.toArr(lastcommit));
         archiveVo.setType(type);
         archiveVo.setKeywords(pkgInfo.getKeywords());
         archiveVo.setDeps(pkgInfo.getDeps());

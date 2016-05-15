@@ -6,20 +6,18 @@ import org.eclipse.jgit.api.errors.InvalidRefNameException;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.eclipse.jgit.revwalk.RevSort;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.transport.FetchResult;
-import org.eclipse.jgit.treewalk.filter.PathFilter;
 import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.entity.FetcherEnum;
 import org.popkit.leap.elpa.entity.RecipeDo;
 import org.popkit.leap.elpa.services.FetchHandler;
+import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Map;
 
 /**
@@ -93,30 +91,23 @@ public class GithubFetchHandler implements FetchHandler {
         }
     }
 
-    public static void main(String[] args) throws IOException, InvalidRefNameException, GitAPIException {
+    public static long getLastCommiterTime(String pkgName) {
         try {
-            Repository repository = FileRepositoryBuilder.create(new File("/Users/aborn/github/pelpa/working/nclip" + "/.git"));
-            Git git = new Git(repository);
-            Iterable<RevCommit> commits = git.log().all().call();
-            int count = 0;
-            for (RevCommit commit : commits) {
-
-                System.out.println("LogCommit: " + commit + ("time" + new SimpleDateFormat("yyyy-MM-dd hh:mm.SS").format(commit.getCommitTime())));
-                count++;
-            }
-
+            String workingPath = PelpaUtils.getWorkingPath(pkgName);
+            Repository repository = FileRepositoryBuilder.create(new File(workingPath + "/.git"));
             RevWalk revWalk = new RevWalk( repository );
-            revWalk.markStart( revWalk.parseCommit( repository.resolve( Constants.HEAD ) ) );
-            revWalk.setTreeFilter( PathFilter.create("nclip.el" ));
-            revWalk.sort( RevSort.COMMIT_TIME_DESC );
-            revWalk.sort( RevSort.REVERSE, false);
+            revWalk.markStart( revWalk.parseCommit(repository.resolve(Constants.HEAD)));
+            // revWalk.sort(RevSort.COMMIT_TIME_DESC );
+            // revWalk.sort(RevSort.REVERSE, false);
             RevCommit commit = revWalk.next();
             revWalk.dispose();
-
-            System.out.println(count);
-
+            return commit.getCommitterIdent().getWhen().getTime();
         } catch (Exception e) {
             LeapLogger.warn("error", e);
         }
+        return 0;
+    }
+
+    public static void main(String[] args) throws IOException, InvalidRefNameException, GitAPIException {
     }
 }
