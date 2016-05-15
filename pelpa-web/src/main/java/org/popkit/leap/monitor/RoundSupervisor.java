@@ -49,8 +49,10 @@ public class RoundSupervisor {
                         nextRun();    // 新一轮构建开始
                     }
 
-                    if (RoundMonitor.isFinishedThisRun() && run.getEndTime() != null) {
-                        run.setEndTime(new Date());
+                    if (RoundMonitor.isFinishedThisRun()) {
+                        if (run.getEndTime() == null) {
+                            run.setEndTime(new Date());
+                        }
                         run.setStatus(RoundStatus.FINISHED);
                         LeapLogger.info("roundId:" + run.getRoundId() + "完成!");
                     }
