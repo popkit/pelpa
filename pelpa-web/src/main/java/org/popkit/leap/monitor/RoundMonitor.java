@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -41,6 +42,10 @@ public class RoundMonitor {
         } else {
             LeapLogger.warn("本次初始化RecipeList为空, roundId=" + roundid);
         }
+    }
+
+    public static Map<String, EachActor> getActors() {
+        return actors;
     }
 
     public static void updateFetcherStatus(String pkg, ActorStatus actStatus) {

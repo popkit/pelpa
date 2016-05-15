@@ -13,7 +13,84 @@
 <#include "/layout/navbar.ftl"/>
 
 <div class="ui container ak-main-container">
-    <h2>pelpa</h2>
+<#if (unstarted?? && unstarted?size > 0)>
+    <table class="ui red table">
+        <thead>
+        <tr>
+            <th>包名</th>
+            <th>状态</th>
+            <th>下载状态</th>
+            <th>构建状态</th>
+            <th>开始时间</th>
+            <th>结束时间</th>
+        </tr>
+        </thead>
+        <tbody>
+            <#list unstarted as item >
+            <tr>
+                <td>${item.pkgName}</td>
+                <td>${item.fetchStatus}</td>
+                <td>${item.buildStatus}</td>
+                <td>${(item.startTime?string('yy-MM-dd hh:mm'))!}</td>
+                <td>${(item.endTime?string('yy-MM-dd hh:mm'))!}</td>
+            </tr>
+            </#list>
+        </tbody>
+    </table>
+</#if>
+
+
+<#if (onging?? && onging?size > 0)>
+    <table class="ui orange table">
+        <thead>
+        <tr>
+            <th>包名</th>
+            <th>状态</th>
+            <th>下载状态</th>
+            <th>构建状态</th>
+            <th>开始时间</th>
+            <th>结束时间</th>
+        </tr>
+        </thead>
+        <tbody>
+            <#list onging as item >
+            <tr>
+                <td>${item.pkgName}</td>
+                <td>${item.fetchStatus}</td>
+                <td>${item.buildStatus}</td>
+                <td>${(item.startTime?string('yy-MM-dd hh:mm'))!}</td>
+                <td>${(item.endTime?string('yy-MM-dd hh:mm'))!}</td>
+            </tr>
+            </#list>
+        </tbody>
+    </table>
+</#if>
+
+<#if (finished?? && finished?size > 0)>
+    <table class="ui green table">
+        <thead>
+        <tr>
+            <th>包名</th>
+            <th>状态</th>
+            <th>下载状态</th>
+            <th>构建状态</th>
+            <th>开始时间</th>
+            <th>结束时间</th>
+        </tr>
+        </thead>
+        <tbody>
+            <#list finished as item >
+            <tr>
+                <td>${item.pkgName}</td>
+                <td>${item.fetchStatus}</td>
+                <td>${item.buildStatus}</td>
+                <td>${(item.startTime?string('yy-MM-dd hh:mm'))!}</td>
+                <td>${(item.endTime?string('yy-MM-dd hh:mm'))!}</td>
+            </tr>
+            </#list>
+        </tbody>
+    </table>
+</#if>
 </div>
 
 </body>

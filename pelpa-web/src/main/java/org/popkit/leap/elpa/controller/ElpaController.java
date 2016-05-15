@@ -1,14 +1,22 @@
 package org.popkit.leap.elpa.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.collections.MapUtils;
 import org.popkit.core.entity.CommonResponse;
+import org.popkit.leap.elpa.entity.ActorStatus;
 import org.popkit.leap.elpa.services.PkgBuildService;
 import org.popkit.leap.elpa.services.PkgFetchService;
 import org.popkit.leap.elpa.services.RecipesService;
+import org.popkit.leap.monitor.EachActor;
 import org.popkit.leap.monitor.RoundMonitor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Aborn Jiang
@@ -29,7 +37,35 @@ public class ElpaController {
     private PkgBuildService pkgBuildService;
 
     @RequestMapping(value = "index.html")
-    public String index() {
+    public String index(HttpServletRequest request) {
+        Map<String, EachActor> actorMap = RoundMonitor.getActors();
+        List<EachActor> unstarted = new ArrayList<EachActor>();
+        List<EachActor> finished = new ArrayList<EachActor>();
+        List<EachActor> onging = new ArrayList<EachActor>();
+
+        int unstartedNo = 0;
+        int finishedNo = 0;
+        int ongingNo = 0;
+
+        if (MapUtils.isNotEmpty(actorMap)) {
+            for (String pkg : actorMap.keySet()) {
+                EachActor actor = actorMap.get(pkg);
+                if (actor.getBuildStatus() == ActorStatus.READY && unstartedNo < 50) {
+                    unstarted.add(actor);
+                    unstartedNo ++;
+                } else if (actor.getBuildStatus() == ActorStatus.WORKING && ongingNo < 50) {
+                    onging.add(actor);
+                    ongingNo ++;
+                } else if (actor.getBuildStatus() == ActorStatus.FINISHED && finishedNo < 50) {
+                    finished.add(actor);
+                    finishedNo ++;
+                }
+            }
+        }
+
+        request.setAttribute("unstarted", unstarted);
+        request.setAttribute("finished", finished);
+        request.setAttribute("onging", onging);
         return "";
     }
 
