@@ -53,6 +53,8 @@ public class PkgBuildService {
                 buildSingleFilePackage(elispFile.get(0), recipeDo);
             }
         }
+
+        // update json when each package build success
         writeArchiveJSON();
         return true;
     }

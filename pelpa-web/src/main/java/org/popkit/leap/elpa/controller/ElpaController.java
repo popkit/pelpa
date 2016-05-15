@@ -6,6 +6,8 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.popkit.core.entity.CommonResponse;
 import org.popkit.leap.elpa.entity.ActorStatus;
+import org.popkit.leap.elpa.entity.ArchiveVo;
+import org.popkit.leap.elpa.services.LocalCache;
 import org.popkit.leap.elpa.services.PkgBuildService;
 import org.popkit.leap.elpa.services.PkgFetchService;
 import org.popkit.leap.elpa.services.RecipesService;
@@ -92,9 +94,10 @@ public class ElpaController {
         CommonResponse com = new CommonResponse();
 
         //pkgFetchService.d8();
-        pkgFetchService.downloadPackage("nclip");
-        pkgBuildService.buildPackage("nclip");
+        //pkgFetchService.downloadPackage("nclip");
+        //pkgBuildService.buildPackage("nclip");
         com.setData(recipesService.randomRecipe());
+        Map<String, ArchiveVo> map = LocalCache.getArchive();
 
         //pkgBuildService.writeArchiveJSON();
         //recipesService.writeRecipesJson();

@@ -22,6 +22,10 @@ public class ArchiveVo {
         return JSONObject.toJSONString(this);
     }
 
+    public static ArchiveVo fromJSONString(String json) {
+        return JSONObject.parseObject(json, ArchiveVo.class);
+    }
+
     @Override
     public String toString() {
         return toJSONString();
@@ -43,6 +47,14 @@ public class ArchiveVo {
         }
 
         this.props.setKeywords(keywords);
+    }
+
+    public void setPropsUrl(String url) {
+        if (props == null) {
+            this.props = new PropsItem();
+        }
+
+        this.props.setUrl(url);
     }
 
 
