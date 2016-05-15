@@ -18,7 +18,6 @@
         <thead>
         <tr>
             <th>包名</th>
-            <th>状态</th>
             <th>下载状态</th>
             <th>构建状态</th>
             <th>开始时间</th>
@@ -45,7 +44,6 @@
         <thead>
         <tr>
             <th>包名</th>
-            <th>状态</th>
             <th>下载状态</th>
             <th>构建状态</th>
             <th>开始时间</th>
@@ -71,7 +69,6 @@
         <thead>
         <tr>
             <th>包名</th>
-            <th>状态</th>
             <th>下载状态</th>
             <th>构建状态</th>
             <th>开始时间</th>

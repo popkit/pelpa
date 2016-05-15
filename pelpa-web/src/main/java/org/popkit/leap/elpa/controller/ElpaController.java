@@ -66,7 +66,7 @@ public class ElpaController {
         request.setAttribute("unstarted", unstarted);
         request.setAttribute("finished", finished);
         request.setAttribute("onging", onging);
-        return "";
+        return "elpa/index";
     }
 
     @RequestMapping(value = "d8")
