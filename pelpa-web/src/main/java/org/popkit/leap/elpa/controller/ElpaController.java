@@ -51,4 +51,12 @@ public class ElpaController {
         commonResponse.setData(jsonObject);
         return commonResponse;
     }
+
+    @RequestMapping(value = "heart")
+    public CommonResponse hert() {
+        CommonResponse commonResponse = new CommonResponse();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("ok", "200");
+        return commonResponse;
+    }
 }
