@@ -61,7 +61,6 @@ public class RoundSupervisor {
                     if (RoundMonitor.isFinishedThisRun()) {
                         if (run.getEndTime() == null) {
                             run.setEndTime(new Date());
-                            updateBuildStatus();
                         }
                         run.setStatus(RoundStatus.FINISHED);
                         LeapLogger.info("roundId:" + run.getRoundId() + "完成!");
@@ -72,12 +71,13 @@ public class RoundSupervisor {
                             long next = ((run.getEndTime().getTime() + REST_TIME) - new Date().getTime())/1000;
                             LeapLogger.info("roundId:" + run.getRoundId()
                                     + "已经完成, 正在进行休息中! 离下次开始还有:" + next + "s!");
-                            updateBuildStatus();
                         }
                     } else {
                         LeapLogger.info("roundId:" + run.getStatus() + ",完成度:" + RoundMonitor.finishedPercent());
                     }
+
                     updateDiskStatus();
+                    updateBuildStatus();
                 }
             }
         }).start();
@@ -118,7 +118,7 @@ public class RoundSupervisor {
         try {
             if (diskStatus != null && diskStatus.getAvail() != null && diskStatus.getUsed() != null) {
                 FileUtils.writeStringToFile(file, diskStatus.toJSONString());
-                LeapLogger.warn("updateDiskStatus success!");
+                // LeapLogger.warn("updateDiskStatus success!");
             }
         } catch (Exception e) {
             LeapLogger.warn("error in updateDiskStatus!");

@@ -28,6 +28,11 @@ public class ElpaController {
     @Autowired
     private PkgBuildService pkgBuildService;
 
+    @RequestMapping(value = "index.html")
+    public String index() {
+        return "";
+    }
+
     @RequestMapping(value = "d8")
     public CommonResponse d8() {
         CommonResponse com = new CommonResponse();
@@ -52,8 +57,15 @@ public class ElpaController {
         return commonResponse;
     }
 
+    // 显示有哪些finished
+    @RequestMapping(value = "finished")
+    public CommonResponse finished() {
+        CommonResponse commonResponse = new CommonResponse();
+        return commonResponse;
+    }
+
     @RequestMapping(value = "heart")
-    public CommonResponse hert() {
+    public CommonResponse heart() {
         CommonResponse commonResponse = new CommonResponse();
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("ok", "200");
