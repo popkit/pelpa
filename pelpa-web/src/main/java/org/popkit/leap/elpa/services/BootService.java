@@ -1,6 +1,7 @@
 package org.popkit.leap.elpa.services;
 
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.popkit.core.logger.LeapLogger;
@@ -9,6 +10,7 @@ import org.popkit.leap.elpa.entity.PelpaContents;
 import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,10 +24,10 @@ import java.util.Map;
 @Service
 public class BootService {
 
+    @PostConstruct
+    private void init() {
 
-    private static void init() {
         String htmlPath = PelpaUtils.getHtmlPath();
-
         if (StringUtils.isBlank(htmlPath)) {
             htmlPath = "/Users/aborn/github/popkit-elpa/html/";
         }
@@ -35,8 +37,13 @@ public class BootService {
         try {
             String archiveJSON = FileUtils.readFileToString(archiveFile, "UTF-8");
             Map<String, ArchiveVo> archiveVoMap = convert2archivemap(JSONObject.parseObject(archiveJSON));
-            if (null != archiveVoMap) {
-                //
+            int archiveNumber = 0;
+            if (MapUtils.isNotEmpty(archiveVoMap)) {
+                for (String pkgName : archiveVoMap.keySet()) {
+                    LocalCache.updateArchive(pkgName, archiveVoMap.get(pkgName));
+                    archiveNumber ++;
+                }
+                LeapLogger.info("LocalCache archive list update success! init archiveNumber:" + archiveNumber);
             }
         } catch (Exception e) {
             LeapLogger.warn("error in readFileToString", e);
@@ -57,6 +64,5 @@ public class BootService {
     }
 
     public static void main(String[] args) {
-        init();
     }
 }

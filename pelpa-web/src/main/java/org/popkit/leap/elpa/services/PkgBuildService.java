@@ -52,14 +52,17 @@ public class PkgBuildService {
                 buildSingleFilePackage(elispFile.get(0), recipeDo);
             }
         }
+        writeArchiveJSON();
         return true;
     }
 
+    // 更新json数据
     public void writeArchiveJSON() {
         File file = new File(PelpaUtils.getHtmlPath() + PelpaContents.ARCHIVE_JSON_FILE_NAME);
         try {
             String json = LocalCache.getArchiveJSON();
             FileUtils.writeStringToFile(file, json);
+            LeapLogger.info("archive file :" + file.getAbsolutePath() + "更新成功!");
         } catch (IOException e) {
             LeapLogger.warn("error writeArchiveJson", e);
         }

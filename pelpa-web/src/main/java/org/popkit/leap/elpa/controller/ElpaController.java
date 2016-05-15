@@ -31,7 +31,7 @@ public class ElpaController {
         CommonResponse com = new CommonResponse();
 
         //pkgFetchService.d8();
-        //pkgBuildService.buildPackage(recipesService.randomRecipe());
+        pkgBuildService.buildPackage(recipesService.randomRecipe());
         pkgFetchService.downloadPackage("nclip");
         com.setData(recipesService.randomRecipe());
 
