@@ -32,7 +32,7 @@ public class ElpaController {
 
         //pkgFetchService.d8();
         //pkgBuildService.buildPackage(recipesService.randomRecipe());
-        pkgFetchService.downloadPackage(recipesService.randomRecipe());
+        pkgFetchService.downloadPackage("nclip");
         com.setData(recipesService.randomRecipe());
 
         //pkgBuildService.writeArchiveJSON();
