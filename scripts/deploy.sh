@@ -18,10 +18,10 @@ mvn compile
 mvn package -Dmaven.test.skip=ture
 
 # remove old file
-rm -rf ${CATALINA_HOME}/webapps/mapi-drai-web
+rm -rf ${CATALINA_HOME}/webapps/pelpa
 
 # use new war files
-cp -r mapi-drai-web/target/mapi-drai-web ${CATALINA_HOME}/webapps/
+cp -r pelpa-web/target/pelpa ${CATALINA_HOME}/webapps/
 
 # stop tomcat and start it
 ${CATALINA_HOME}/bin/catalina.sh stop
