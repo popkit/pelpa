@@ -3,6 +3,7 @@ package org.popkit.leap.elpa.utils;
 import org.apache.commons.lang3.StringUtils;
 import org.popkit.core.config.LeapConfigLoader;
 import org.popkit.core.logger.LeapLogger;
+import org.popkit.leap.elpa.constents.EnvEnum;
 import org.popkit.leap.elpa.entity.RecipeDo;
 
 import java.io.BufferedReader;
@@ -37,6 +38,15 @@ public class PelpaUtils {
 
     public static String getHtmlPath() {
         return LeapConfigLoader.get(HTML_DIR_KEY);
+    }
+
+    public static EnvEnum getEnv() {
+        String envString = LeapConfigLoader.get("elpa_env");
+        if ("PRODUCTION".equalsIgnoreCase(envString)) {
+            return EnvEnum.PRODUCTION;
+        }
+
+        return EnvEnum.BETA;
     }
 
     public static List<File> getElispFile(String dir) {

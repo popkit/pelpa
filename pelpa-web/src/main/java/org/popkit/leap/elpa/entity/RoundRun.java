@@ -12,6 +12,7 @@ public class RoundRun {
     private int roundId;      // 依次递增
     private Date startTime;
     private Date endTime = null;
+
     private RoundStatus status;
 
     public int getRoundId() {

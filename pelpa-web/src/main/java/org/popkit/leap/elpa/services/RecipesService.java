@@ -3,6 +3,8 @@ package org.popkit.leap.elpa.services;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
+import org.popkit.core.logger.LeapLogger;
+import org.popkit.leap.elpa.constents.EnvEnum;
 import org.popkit.leap.elpa.entity.FetcherEnum;
 import org.popkit.leap.elpa.entity.PelpaContents;
 import org.popkit.leap.elpa.entity.RecipeDo;
@@ -64,7 +66,8 @@ public class RecipesService {
     }
 
     public List<RecipeDo> getAllRecipeList() {
-        boolean debug = true;
+        boolean debug = EnvEnum.BETA == PelpaUtils.getEnv();
+        LeapLogger.info("当前运行环境为:" + PelpaUtils.getEnv());
         List<RecipeDo> recipeDos = new ArrayList<RecipeDo>();
         int i=0;
         for (String item : RECIPE_DO_LIST.keySet()) {
