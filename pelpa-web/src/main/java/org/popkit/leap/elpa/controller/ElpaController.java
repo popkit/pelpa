@@ -1,9 +1,11 @@
 package org.popkit.leap.elpa.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import org.popkit.core.entity.CommonResponse;
 import org.popkit.leap.elpa.services.PkgBuildService;
 import org.popkit.leap.elpa.services.PkgFetchService;
 import org.popkit.leap.elpa.services.RecipesService;
+import org.popkit.leap.monitor.RoundMonitor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,5 +40,15 @@ public class ElpaController {
         //pkgBuildService.writeArchiveJSON();
         //recipesService.writeRecipesJson();
         return com;
+    }
+
+    @RequestMapping(value = "monitor")
+    public CommonResponse monitor() {
+        CommonResponse commonResponse = new CommonResponse();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("status", RoundMonitor.finishedPercent());
+
+        commonResponse.setData(jsonObject);
+        return commonResponse;
     }
 }

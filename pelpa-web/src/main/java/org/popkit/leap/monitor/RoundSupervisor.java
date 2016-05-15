@@ -59,9 +59,9 @@ public class RoundSupervisor {
                         if (run.getEndTime().getTime() + REST_TIME > new Date().getTime()) {
                             LeapLogger.info("roundId:" + run.getRoundId() + "已经完成, 正在进行休息中!");
                         }
+                    } else {
+                        LeapLogger.info("roundId:" + run.getStatus() + ",完成度:" + RoundMonitor.finishedPercent());
                     }
-
-                    LeapLogger.info("roundId:" + run.getStatus() + ",完成度:" + RoundMonitor.finishedPercent());
                 }
             }
         }).start();
