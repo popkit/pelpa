@@ -40,7 +40,7 @@ public class DepsItem {
                 }
             }
         } catch (Exception e) {
-            LeapLogger.warn("error in fromString", e);
+            LeapLogger.warn("error parser DepsItem form string:" + str, e);
         }
         return depsItems;
     }

@@ -46,10 +46,12 @@ public class RecipeParser {
         for (String keyValue : keyValuePair) {
             try {
                 if (StringUtils.isNotBlank(keyValue) && keyValue.split("").length > 1) {
-                    String key = keyValue.split(" ")[0];
-                    String value = keyValue.split(" ")[1];
+                    String key = keyValue.split(" ")[0].trim();
+                    String value = keyValue.split(" ")[1].trim();
                     if ("files".equalsIgnoreCase(key)) {
                         recipeDo.update(key, fileValue(value));
+                    } else if ("repo".endsWith(key)) {
+                        recipeDo.update(key, trimIt(value));
                     } else {
                         recipeDo.update(key, value);
                     }
@@ -60,6 +62,10 @@ public class RecipeParser {
             }
         }
         return recipeDo;
+    }
+
+    private static String trimIt(String orgin) {
+        return orgin.replaceAll("\"", "").trim();
     }
 
     private static String fileValue(String origin) {

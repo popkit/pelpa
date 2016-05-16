@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.entity.ArchiveVo;
 import org.popkit.leap.elpa.entity.PelpaContents;
+import org.popkit.leap.elpa.utils.ArchiveParser;
 import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.springframework.stereotype.Service;
 
@@ -57,7 +58,12 @@ public class BootService {
                 ArchiveVo archiveVo = JSONObject.parseObject(jsonObject.get(pkg).toString(), ArchiveVo.class);
                 map.put(pkg, archiveVo);
             } catch (Exception e) {
-                LeapLogger.warn("parse archive exception, pkg:" + pkg, e);
+                try {
+                    ArchiveVo archiveVo = ArchiveParser.parserFromJSONObject((JSONObject) jsonObject.get(pkg));
+                    map.put(pkg, archiveVo);
+                } catch (Exception e2) {
+                    LeapLogger.warn("error in boot init" + pkg, e2);
+                }
             }
         }
         return map;

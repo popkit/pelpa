@@ -27,7 +27,7 @@ import java.util.Map;
  */
 @Service
 public class GithubFetchHandler implements FetchHandler {
-    private static final String GITHUB_HTTPS_ROOT = "https://github.com/";
+    public static final String GITHUB_HTTPS_ROOT = "https://github.com/";
 
     public boolean validate(RecipeDo recipeDo, Map<String, Object> extra) {
         if (recipeDo.getFetcherEnum() == FetcherEnum.GITHUB) {

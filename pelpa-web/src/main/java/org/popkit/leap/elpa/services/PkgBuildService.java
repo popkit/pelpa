@@ -125,6 +125,9 @@ public class PkgBuildService {
         archiveVo.setType(TYPE_SINGLE);
         archiveVo.setKeywords(pkgInfo.getKeywords());
         archiveVo.setDeps(pkgInfo.getDeps());
+        if (FetcherEnum.getFetcher(recipeDo.getFetcher()) == FetcherEnum.GITHUB) {
+            archiveVo.setPropsUrl(GithubFetchHandler.GITHUB_HTTPS_ROOT + recipeDo.getRepo());
+        }
 
         LocalCache.updateArchive(recipeDo.getPkgName(), archiveVo);
     }

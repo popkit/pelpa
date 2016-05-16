@@ -7,10 +7,12 @@ import org.popkit.core.entity.CommonResponse;
 import org.popkit.core.entity.SimpleResult;
 import org.popkit.leap.elpa.entity.ActorStatus;
 import org.popkit.leap.elpa.entity.ArchiveVo;
+import org.popkit.leap.elpa.entity.RecipeDo;
 import org.popkit.leap.elpa.services.LocalCache;
 import org.popkit.leap.elpa.services.PkgBuildService;
 import org.popkit.leap.elpa.services.PkgFetchService;
 import org.popkit.leap.elpa.services.RecipesService;
+import org.popkit.leap.elpa.utils.RecipeParser;
 import org.popkit.leap.monitor.EachActor;
 import org.popkit.leap.monitor.RoundMonitor;
 import org.popkit.leap.monitor.RoundSupervisor;
@@ -130,7 +132,7 @@ public class ElpaController {
     public CommonResponse build(String pkgName) {
         CommonResponse commonResponse = new CommonResponse();
         if (StringUtils.isNotBlank(pkgName)) {
-            //RecipeDo recipeDo = RecipeParser.parsePkgRecipe(pkgName);
+            RecipeDo recipeDo = RecipeParser.parsePkgRecipe(pkgName);
             SimpleResult simpleResult = pkgBuildService.buildPackage(pkgName);
             commonResponse.setData(simpleResult);
         }

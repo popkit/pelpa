@@ -1,6 +1,6 @@
 <div class="ui fixed inverted menu">
     <div class="ui container">
-        <a href="#" class="header item">
+        <a href="/index.html" class="header item">
             <img class="logo" src="/assets/image/favicon.ico" style="margin-right: 15px">
             POPKIT ELPA
         </a>
