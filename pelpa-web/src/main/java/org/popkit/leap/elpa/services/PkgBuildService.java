@@ -98,8 +98,37 @@ public class PkgBuildService {
     }
 
     public void buildMultiFilesPackage(RecipeDo recipeDo, List<File> elispFile) {
-        ArchiveVo archiveVo = new ArchiveVo();
-        archiveVo.setType(TYPE_TAR);
+        try {
+            FileTarHandler.tar(recipeDo.getPkgName(), recipeDo);
+            File pkgFile = null;
+            for (File file : elispFile) {
+                if ((recipeDo.getPkgName() + ".el").endsWith(file.getName())) {
+                    pkgFile = file;
+                }
+            }
+
+            if (pkgFile != null) {
+                PackageInfo pkgInfo = getPkgInfo(pkgFile, recipeDo.getPkgName());
+                ArchiveVo archiveVo = new ArchiveVo();
+                archiveVo.setDesc(pkgInfo.getShortInfo());
+
+                long lastcommit = GithubFetchHandler.getLastCommiterTime(recipeDo.getPkgName());
+                lastcommit = lastcommit == 0 ? pkgFile.lastModified() : lastcommit;
+                archiveVo.setVer(TimeVersionUtils.toArr(lastcommit));
+                archiveVo.setType(TYPE_TAR);
+                archiveVo.setKeywords(pkgInfo.getKeywords());
+                archiveVo.setDeps(pkgInfo.getDeps());
+
+                if (FetcherEnum.getFetcher(recipeDo.getFetcher()) == FetcherEnum.GITHUB) {
+                    archiveVo.setPropsUrl(GithubFetchHandler.GITHUB_HTTPS_ROOT + recipeDo.getRepo());
+                }
+
+                LocalCache.updateArchive(recipeDo.getPkgName(), archiveVo);
+            }
+        } catch (Exception e) {
+            LeapLogger.warn("generate tar file failed, pkgName:" + recipeDo.getPkgName(), e);
+        }
+
     }
 
     public void buildSingleFilePackage(RecipeDo recipeDo, File elispfile) {

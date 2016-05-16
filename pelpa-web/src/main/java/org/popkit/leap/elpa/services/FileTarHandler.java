@@ -60,7 +60,8 @@ public class FileTarHandler {
 
         List<File> fileList = new ArrayList<File>();
         for (File item : new File(pkgWorkingPath).listFiles()) {
-            if (isSatisfy(recipeDo.getFiles(), item.getName())) {
+            if ((!item.getName().startsWith(".")) &&
+                    isSatisfy(recipeDo.getFiles(), item.getName())) {
                 fileList.add(item);
             }
         }
@@ -77,22 +78,26 @@ public class FileTarHandler {
             return true;
         }
 
-        for (String item : fileNameArr) {
-            if (currentFile.matches(item)) {
-                return true;
+        try {
+            for (String item : fileNameArr) {
+                if ("*.el".equals(item) && currentFile.endsWith(".el")) {
+                    return true;
+                } else if (currentFile.equals(item)) {
+                    return true;
+                }
             }
+        } catch (Exception e) {
+            //
         }
 
         return false;
     }
 
     public static void main(String[] args) {
-        String pkgName = "ac-html-bootstrap";
-        try {
-            tar(pkgName, null);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+        String reg = "^*.el";
+        String fileName = "abc.el";
+        System.out.println(fileName.matches(reg));
     }
 
     public static void tarFolder(String parent, String path, TarOutputStream out) throws IOException {
@@ -144,6 +149,4 @@ public class FileTarHandler {
             origin.close();
         }
     }
-
-
 }
