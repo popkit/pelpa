@@ -9,6 +9,7 @@ import org.popkit.leap.elpa.services.RecipesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -49,10 +50,16 @@ public class RoundMonitor {
     }
 
     public static void updateFetcherStatus(String pkg, ActorStatus actStatus) {
+        if (actStatus == ActorStatus.WORKING) {
+            actors.get(pkg).setStartTime(new Date());
+        }
         actors.get(pkg).setFetchStatus(actStatus);
     }
 
     public static void updateBuildingStatus(String pkg, ActorStatus actStatus) {
+        if (actStatus == ActorStatus.FINISHED) {
+            actors.get(pkg).setEndTime(new Date());
+        }
         actors.get(pkg).setBuildStatus(actStatus);
     }
 
