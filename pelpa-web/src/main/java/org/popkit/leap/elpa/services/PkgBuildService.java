@@ -44,17 +44,47 @@ public class PkgBuildService {
         File workingPathFile = new File(workingPath);
 
         if (workingPathFile.exists() && workingPathFile.isDirectory()) {
-            List<File> elispFiles = PelpaUtils.getElispFile(workingPath);
-            if (elispFiles.size() == 1) {
-                buildSingleFilePackage(recipeDo, elispFiles.get(0));
+            File singleFile = getSingleFile(recipeDo, workingPath);
+            if (singleFile != null) {
+                LeapLogger.info("#single#" + recipeDo.getPkgName() + "  file:" + singleFile.getAbsolutePath());
+                buildSingleFilePackage(recipeDo, singleFile);
             } else {
-                buildMultiFilesPackage(recipeDo, elispFiles);
+                buildMultiFilesPackage(recipeDo, PelpaUtils.getElispFile(workingPath));
             }
         }
 
         // update archive.json when each package build success
         writeArchiveJSON();
         return SimpleResult.success("成功,pkgName=" + recipeDo.getPkgName());
+    }
+
+    public File getSingleFile(RecipeDo recipeDo, String workingPath) {
+        try {
+            List<String> recipeDoFiles = recipeDo.getFileList();
+            String recipeFile = null;
+
+            if (recipeDoFiles.size() > 1) {
+                return null;
+            } else if (recipeDoFiles.size() == 1) {
+                recipeFile = recipeDoFiles.get(0);
+            }
+
+            List<File> elispFiles = PelpaUtils.getElispFile(workingPath);
+            if (elispFiles.size() == 1) {
+                return elispFiles.get(0);
+            } else {
+                if (null != recipeFile) {
+                    for (File file : elispFiles) {
+                        if (recipeFile.equals(file.getName())) {
+                            return file;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            LeapLogger.warn("exception in getSingleFile", e);
+        }
+        return null;   // multi files
     }
 
     public void writeArchiveJSON() {

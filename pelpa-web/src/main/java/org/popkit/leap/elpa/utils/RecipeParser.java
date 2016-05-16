@@ -40,7 +40,7 @@ public class RecipeParser {
 
         String[] suArr = sub.split(" ");
         RecipeDo recipeDo = new RecipeDo();
-        recipeDo.setPkgName(suArr[0]);
+        recipeDo.setPkgName(suArr[0].trim());
         String[] keyValuePair = sub.substring(sub.indexOf(suArr[0]) + suArr[0].length()).split(":");
 
         for (String keyValue : keyValuePair) {

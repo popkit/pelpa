@@ -53,22 +53,9 @@ public class LocalCache {
     }
 
     private static ArchiveVo convert(ArchiveVo archiveVo) {
-        ArchiveVo archiveVo1 = ArchiveVo.fromJSONString(archiveVo.toJSONString());
         if (StringUtils.isBlank(archiveVo.getDesc())) {
-            archiveVo1.setDesc(" ");
-            return archiveVo1;
+            archiveVo.setDesc(" ");
         }
-
-        /**
-        if (archiveVo1 != null && archiveVo1.getProps() != null) {
-            PropsItem propsItem = archiveVo1.getProps();
-            if (StringUtils.isNotBlank(propsItem.getUrl())) {
-                propsItem.setUrl(url(propsItem.getUrl()));
-                return archiveVo1;
-            }
-        }
-         **/
-
         return archiveVo;
     }
 
