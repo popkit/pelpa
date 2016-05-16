@@ -15,6 +15,10 @@
 
 <div class="ui container ak-main-container">
 
+    <div class="ui orange message">
+        ${currentRun}
+    </div>
+
     <div class="ui green message">
             <div>${percent}</div>
     </div>
@@ -60,8 +64,8 @@
                 <td>${item.pkgName}</td>
                 <td>${item.fetchStatus}</td>
                 <td>${item.buildStatus}</td>
-                <td>${(item.startTime?string('yy-MM-dd hh:mm'))!}</td>
-                <td>${(item.endTime?string('yy-MM-dd hh:mm'))!}</td>
+                <td>${(item.startTime?string('yy-MM-dd hh:mm.SS'))!}</td>
+                <td>${(item.endTime?string('yy-MM-dd hh:mm.SS'))!}</td>
             </tr>
             </#list>
         </tbody>
@@ -86,8 +90,8 @@
                 <td>${item.pkgName}</td>
                 <td>${item.fetchStatus}</td>
                 <td>${item.buildStatus}</td>
-                <td>${(item.startTime?string('yy-MM-dd hh:mm'))!}</td>
-                <td>${(item.endTime?string('yy-MM-dd hh:mm'))!}</td>
+                <td>${(item.startTime?string('yy-MM-dd hh:mm.SS'))!}</td>
+                <td>${(item.endTime?string('yy-MM-dd hh:mm.SS'))!}</td>
             </tr>
             </#list>
         </tbody>
@@ -111,8 +115,8 @@
                 <td>${item.pkgName}</td>
                 <td>${item.fetchStatus}</td>
                 <td>${item.buildStatus}</td>
-                <td>${(item.startTime?string('yy-MM-dd hh:mm'))!}</td>
-                <td>${(item.endTime?string('yy-MM-dd hh:mm'))!}</td>
+                <td>${(item.startTime?string('yy-MM-dd hh:mm.SS'))!}</td>
+                <td>${(item.endTime?string('yy-MM-dd hh:mm.SS'))!}</td>
             </tr>
             </#list>
         </tbody>

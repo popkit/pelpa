@@ -34,8 +34,8 @@ public class BuildingExcutorPool {
                             // TODO
                         }
                     } else {
-                        exector.execute(new BuildingTask(pkgName, pkgBuildService));
                         RoundMonitor.updateBuildingStatus(pkgName, ActorStatus.WORKING);
+                        exector.execute(new BuildingTask(pkgName, pkgBuildService));
                     }
                 }
             }

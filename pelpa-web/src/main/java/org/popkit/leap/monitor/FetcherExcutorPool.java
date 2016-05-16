@@ -35,8 +35,8 @@ public class FetcherExcutorPool {
                             // TODO
                         }
                     } else {
-                        exector.submit(new FetcherTask(pkgName, pkgFetchService));
                         RoundMonitor.updateFetcherStatus(pkgName, ActorStatus.WORKING);
+                        exector.submit(new FetcherTask(pkgName, pkgFetchService));
                     }
                 }
             }

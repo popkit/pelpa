@@ -13,6 +13,7 @@ import org.popkit.leap.elpa.services.PkgFetchService;
 import org.popkit.leap.elpa.services.RecipesService;
 import org.popkit.leap.monitor.EachActor;
 import org.popkit.leap.monitor.RoundMonitor;
+import org.popkit.leap.monitor.RoundSupervisor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -88,6 +89,8 @@ public class ElpaController {
         request.setAttribute("unstarted", unstarted);
         request.setAttribute("finished", finished);
         request.setAttribute("onging", onging);
+
+        request.setAttribute("currentRun", RoundSupervisor.getCurrentRun().tohumanable());
         return "elpa/index";
     }
 

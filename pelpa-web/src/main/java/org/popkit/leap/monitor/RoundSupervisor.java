@@ -98,6 +98,10 @@ public class RoundSupervisor {
         buildingExcutorPool.excute();
     }
 
+    public static RoundRun getCurrentRun() {
+        return run;
+    }
+
     private void updateBuildStatus() {
         BuildStatus buildStatus = new BuildStatus(run);
         String htmlPath = PelpaUtils.getHtmlPath();
