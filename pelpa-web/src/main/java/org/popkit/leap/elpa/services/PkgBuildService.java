@@ -99,7 +99,6 @@ public class PkgBuildService {
 
     public void buildMultiFilesPackage(RecipeDo recipeDo, List<File> elispFile) {
         try {
-            FileTarHandler.tar(recipeDo.getPkgName(), recipeDo);
             File pkgFile = null;
             for (File file : elispFile) {
                 if ((recipeDo.getPkgName() + ".el").endsWith(file.getName())) {
@@ -123,6 +122,11 @@ public class PkgBuildService {
                     archiveVo.setPropsUrl(GithubFetchHandler.GITHUB_HTTPS_ROOT + recipeDo.getRepo());
                 }
 
+                PelpaUtils.generatePkgElispFileContent(recipeDo.getPkgName(),
+                        TimeVersionUtils.toVersionString(lastcommit), archiveVo.getDesc(),
+                        archiveVo.getProps().getKeywords());
+
+                FileTarHandler.tar(recipeDo.getPkgName(), recipeDo);
                 LocalCache.updateArchive(recipeDo.getPkgName(), archiveVo);
             }
         } catch (Exception e) {

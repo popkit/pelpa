@@ -20,7 +20,7 @@ public class RecipeVo {
         this.fetcher = recipeDo.getFetcher();
         this.repo = recipeDo.getRepo();
         if (StringUtils.isNotBlank(recipeDo.getFiles())) {
-            this.files = Arrays.asList(recipeDo.getFiles().split(" "));
+            this.files = Arrays.asList(recipeDo.getFiles().split("\\s+"));
         }
     }
 

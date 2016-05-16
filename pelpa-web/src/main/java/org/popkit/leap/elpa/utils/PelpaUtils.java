@@ -1,5 +1,6 @@
 package org.popkit.leap.elpa.utils;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.popkit.core.config.LeapConfigLoader;
@@ -34,6 +35,53 @@ public class PelpaUtils {
 
     public static String getWorkingPath(String pkgName) {
         return LeapConfigLoader.get(WORKING_DIR_KEY) + pkgName;
+    }
+
+    public static String getPkgElispFileName(String pkgName) {
+        return getWorkingPath(pkgName) +  "/" + pkgName + "-pkg.el";
+    }
+
+    /**
+     (define-package "ztree" "20150703.113" "Text mode directory tree" 'nil :keywords
+     '("files" "tools")
+     :url "https://github.com/fourier/ztree")
+     * @param pkgName
+     * @return
+     */
+    public static void generatePkgElispFileContent(String pkgName, String version,
+                                                   String shortInfo, List<String> keywords) {
+        StringBuilder stringBuilder = new StringBuilder("");
+        stringBuilder.append("(define-package ").append(wrap(pkgName)).append(" ")
+                .append(wrap(version)).append(" ").append(wrap(shortInfo)).append(" 'nil ")
+                .append(keywords(keywords));
+
+        stringBuilder.append(")");
+        File file = new File(getPkgElispFileName(pkgName));
+        try {
+            FileUtils.writeStringToFile(file, stringBuilder.toString());
+        } catch (IOException e) {
+            //
+        }
+    }
+
+    private static String keywords(List<String> keywords) {
+        if (CollectionUtils.isNotEmpty(keywords)) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(":keywords").append(" '(");
+            for (String k : keywords) {
+                sb.append(wrap(k.trim())).append(" ");
+            }
+            sb.append(")");
+            return sb.toString();
+        }
+        return "";
+    }
+
+    private static String wrap(String string) {
+        if (string == null) {
+            string = "";
+        }
+        return "\"" + string + "\"";
     }
 
     public static String getHtmlPath() {

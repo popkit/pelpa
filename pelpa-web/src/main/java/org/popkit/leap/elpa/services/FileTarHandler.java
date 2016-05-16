@@ -59,6 +59,11 @@ public class FileTarHandler {
         String tmpTarWorking = pkgWorkingPath + "/" + recipeDo.getPkgName() + "-"+ version + "";
 
         List<File> fileList = new ArrayList<File>();
+        File pkgElispFile = new File(PelpaUtils.getPkgElispFileName(recipeDo.getPkgName()));
+        if (pkgElispFile.exists()) {
+            fileList.add(pkgElispFile);
+        }
+
         for (File item : new File(pkgWorkingPath).listFiles()) {
             if ((!item.getName().startsWith(".")) &&
                     isSatisfy(recipeDo.getFiles(), item.getName())) {
