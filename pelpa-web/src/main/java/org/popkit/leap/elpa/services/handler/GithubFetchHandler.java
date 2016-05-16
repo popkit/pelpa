@@ -52,11 +52,11 @@ public class GithubFetchHandler implements FetchHandler {
         try {
             LeapLogger.info("github fetch:" + localPath);
             Repository repository = FileRepositoryBuilder.create(new File(localPath + "/.git"));
-            System.out.println("Starting fetch");
+            //System.out.println("Starting fetch");
 
             Git git = new Git(repository);
             FetchResult result = git.fetch().setCheckFetchedObjects(true).call();
-            System.out.println("Messages: " + result.getMessages());
+            //System.out.println("Messages: " + result.getMessages());
         } catch (Exception e) {
             LeapLogger.warn("error update" + localPath, e);
         }

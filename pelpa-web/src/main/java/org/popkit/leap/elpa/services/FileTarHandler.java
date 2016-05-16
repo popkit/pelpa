@@ -84,6 +84,7 @@ public class FileTarHandler {
         }
 
         try {
+            // TODO support common regex
             for (String item : fileNameArr) {
                 if ("*.el".equals(item) && currentFile.endsWith(".el")) {
                     return true;
