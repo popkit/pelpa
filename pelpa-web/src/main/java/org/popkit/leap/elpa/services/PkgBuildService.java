@@ -181,7 +181,7 @@ public class PkgBuildService {
     }
 
 
-    private List<DepsItem> convetDeps(String currentline) {
+    private static List<DepsItem> convetDeps(String currentline) {
         String[] lineSplit = currentline.split(":");
         if (lineSplit.length > 1) {
             return DepsItem.fromString(lineSplit[1]);
@@ -199,5 +199,10 @@ public class PkgBuildService {
     }
 
 
+    public static void main(String[] args) {
+        String test = ";; Package-Requires: ((emacs \"24.4\") (cl-lib \"0.5\")(avy \"0.3.0\"))";
+        List<DepsItem> depsItems = convetDeps(test);
+        System.out.println(depsItems);
+    }
 
 }

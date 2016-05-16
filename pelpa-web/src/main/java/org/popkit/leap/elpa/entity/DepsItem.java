@@ -26,9 +26,9 @@ public class DepsItem {
      * @return
      */
     public static List<DepsItem> fromString(String str) {
-        String pureStr = str.trim().replaceAll("\\(", "")
-                .replaceAll("\\)", "").replaceAll("\"", "");
-        String[] pureStrArr = pureStr.split(" ");
+        String pureStr = str.trim().replaceAll("\\(", " ")
+                .replaceAll("\\)", " ").replaceAll("\"", " ");
+        String[] pureStrArr = pureStr.trim().split("\\s+");
         List<DepsItem> depsItems = new ArrayList<DepsItem>();
         try {
             for (int i = 0; i < pureStrArr.length; i++) {
