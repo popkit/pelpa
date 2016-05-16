@@ -38,18 +38,18 @@ public class RecipeParser {
             return null;
         }
 
-        String[] suArr = sub.split(" ");
+        String[] suArr = sub.split("\\s+");
         RecipeDo recipeDo = new RecipeDo();
         recipeDo.setPkgName(suArr[0].trim());
         String[] keyValuePair = sub.substring(sub.indexOf(suArr[0]) + suArr[0].length()).split(":");
 
         for (String keyValue : keyValuePair) {
             try {
-                if (StringUtils.isNotBlank(keyValue) && keyValue.split("").length > 1) {
-                    String key = keyValue.split(" ")[0].trim();
-                    String value = keyValue.split(" ")[1].trim();
+                if (StringUtils.isNotBlank(keyValue) && keyValue.split("\\s+").length > 1) {
+                    String key = keyValue.split("\\s+")[0].trim();
+                    String value = keyValue.split("\\s+")[1].trim();
                     if ("files".equalsIgnoreCase(key)) {
-                        recipeDo.update(key, fileValue(value));
+                        recipeDo.update(key, fileValue(keyValue));
                     } else if ("repo".endsWith(key)) {
                         recipeDo.update(key, trimIt(value));
                     } else {
@@ -72,6 +72,7 @@ public class RecipeParser {
         if (StringUtils.isBlank(origin)) {
             return origin;
         }
-        return origin.replaceAll("\"","").replaceAll("\\(", "").replaceAll("\\)", "").trim();
+        String fileContent = origin.substring(origin.indexOf("files") + "files".length());
+        return fileContent.replaceAll("\"","").replaceAll("\\(", "").replaceAll("\\)", "").trim();
     }
 }
