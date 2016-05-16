@@ -2,6 +2,7 @@ package org.popkit.leap.elpa.services;
 
 import org.apache.commons.lang3.StringUtils;
 import org.popkit.leap.elpa.entity.DepsItem;
+import org.popkit.leap.elpa.entity.PropsItem;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -27,6 +28,30 @@ public class ArchiveContentsGenerator {
 
     public static String wrapQuote(String origin) {
         return "\"" + origin + "\"";
+    }
+
+    public static String buildProps(PropsItem propsItem) {
+        return wrapBracket(wrapUrl(propsItem.getUrl())
+        + " " + wrapKeywords(propsItem.getKeywords()));
+    }
+
+    public static String wrapUrl(String url) {
+        return wrapBracket(
+                "url: ." + wrapQuote(url)
+        );
+    }
+
+    public static String wrapKeywords(List<String> keywords) {
+        if (CollectionUtils.isEmpty(keywords)) {
+            return wrapBracket(":keywords " + wrapQuote(""));
+        }
+
+        StringBuilder sb = new StringBuilder("");
+        for (String keyword : keywords) {
+            sb.append(" ").append(wrapQuote(keyword));
+        }
+
+        return wrapBracket(":keywords " + sb.toString());
     }
 
     public static String buildDeps(List<DepsItem> depsItemList) {
