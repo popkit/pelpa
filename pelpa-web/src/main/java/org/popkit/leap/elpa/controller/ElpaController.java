@@ -101,6 +101,15 @@ public class ElpaController {
 
         //pkgBuildService.writeArchiveJSON();
         //recipesService.writeRecipesJson();
+        pkgBuildService.writeArchiveJSON();
+        return com;
+    }
+
+    @RequestMapping(value = "updateArchiveJSON")
+    public CommonResponse updateArchiveJSON() {
+        CommonResponse com = new CommonResponse();
+        com.setData(LocalCache.getArchiveJSON());
+        pkgBuildService.writeArchiveJSON();
         return com;
     }
 

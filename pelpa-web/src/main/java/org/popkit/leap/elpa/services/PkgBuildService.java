@@ -63,7 +63,7 @@ public class PkgBuildService {
     public void writeArchiveJSON() {
         File file = new File(PelpaUtils.getHtmlPath() + PelpaContents.ARCHIVE_JSON_FILE_NAME);
         try {
-            String json = LocalCache.getArchiveJSON();
+            String json = LocalCache.getArchiveJSON();//.replaceAll("/","\\\\/");
             FileUtils.writeStringToFile(file, json);
             LeapLogger.info("archive file :" + file.getAbsolutePath() + "更新成功!");
         } catch (IOException e) {

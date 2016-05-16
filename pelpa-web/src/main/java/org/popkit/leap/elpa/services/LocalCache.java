@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.popkit.leap.elpa.entity.ArchiveVo;
-import org.popkit.leap.elpa.entity.PropsItem;
 import org.popkit.leap.elpa.entity.RecipeVo;
 
 import java.util.Map;
@@ -55,6 +54,12 @@ public class LocalCache {
 
     private static ArchiveVo convert(ArchiveVo archiveVo) {
         ArchiveVo archiveVo1 = ArchiveVo.fromJSONString(archiveVo.toJSONString());
+        if (StringUtils.isBlank(archiveVo.getDesc())) {
+            archiveVo1.setDesc(" ");
+            return archiveVo1;
+        }
+
+        /**
         if (archiveVo1 != null && archiveVo1.getProps() != null) {
             PropsItem propsItem = archiveVo1.getProps();
             if (StringUtils.isNotBlank(propsItem.getUrl())) {
@@ -62,6 +67,7 @@ public class LocalCache {
                 return archiveVo1;
             }
         }
+         **/
 
         return archiveVo;
     }
@@ -77,7 +83,8 @@ public class LocalCache {
     }
 
     public static String url(String url) {
-        return url.replaceAll("/","\\\\/");
+        return url;
+        //return url.replaceAll("/","\\/");
     }
 
     public static void main(String[] args) {
