@@ -1,17 +1,15 @@
 package org.popkit.leap.elpa.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.popkit.core.entity.CommonResponse;
 import org.popkit.core.entity.SimpleResult;
 import org.popkit.leap.elpa.entity.ActorStatus;
 import org.popkit.leap.elpa.entity.ArchiveVo;
 import org.popkit.leap.elpa.entity.RecipeDo;
-import org.popkit.leap.elpa.services.LocalCache;
-import org.popkit.leap.elpa.services.PkgBuildService;
-import org.popkit.leap.elpa.services.PkgFetchService;
-import org.popkit.leap.elpa.services.RecipesService;
+import org.popkit.leap.elpa.services.*;
+import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.popkit.leap.elpa.utils.RecipeParser;
 import org.popkit.leap.monitor.EachActor;
 import org.popkit.leap.monitor.RoundMonitor;
@@ -21,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +41,9 @@ public class ElpaController {
 
     @Autowired
     private PkgBuildService pkgBuildService;
+
+    @Autowired
+    private ArchiveContentsGenerator archiveContentsGenerator;
 
     @RequestMapping(value = "index.html")
     public String index(HttpServletRequest request) {
@@ -67,7 +69,7 @@ public class ElpaController {
                     }
                     pkgReady.add(pkg);
                 } else if (actor.getBuildStatus() == ActorStatus.WORKING) {
-                    if ( ongingNo < 50) {
+                    if (ongingNo < 50) {
                         onging.add(actor);
                         ongingNo++;
                     }
@@ -82,7 +84,7 @@ public class ElpaController {
             }
         }
 
-        request.setAttribute("percent",  RoundMonitor.finishedPercent());
+        request.setAttribute("percent", RoundMonitor.finishedPercent());
 
         request.setAttribute("pkgReady", "共有" + pkgReady.size() + "个:" + StringUtils.join(pkgReady, ","));
         request.setAttribute("pkgOnging", "共有" + pkgOnging.size() + "个:" + StringUtils.join(pkgOnging, ","));
@@ -128,6 +130,23 @@ public class ElpaController {
         return com;
     }
 
+    @RequestMapping(value = "updateAC")
+    public CommonResponse updateAC() {
+        CommonResponse commonResponse = new CommonResponse();
+        String htmlPath = PelpaUtils.getHtmlPath();
+        File archiveContents = new File(htmlPath + "packages/archive-contents");
+        String result = archiveContentsGenerator.generator();
+        try {
+            if (StringUtils.isNotBlank(result)) {
+                FileUtils.writeStringToFile(archiveContents, result, "UTF-8");
+            }
+        } catch (Exception e) {
+            //
+        }
+        commonResponse.setData(result);
+        return commonResponse;
+    }
+
     @RequestMapping(value = "build.html")
     public CommonResponse build(String pkgName) {
         CommonResponse commonResponse = new CommonResponse();
@@ -139,18 +158,4 @@ public class ElpaController {
         return commonResponse;
     }
 
-    // 显示有哪些finished
-    @RequestMapping(value = "finished")
-    public CommonResponse finished() {
-        CommonResponse commonResponse = new CommonResponse();
-        return commonResponse;
-    }
-
-    @RequestMapping(value = "heart")
-    public CommonResponse heart() {
-        CommonResponse commonResponse = new CommonResponse();
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("ok", "200");
-        return commonResponse;
-    }
 }
