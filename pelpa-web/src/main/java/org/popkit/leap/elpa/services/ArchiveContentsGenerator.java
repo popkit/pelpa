@@ -22,8 +22,16 @@ public class ArchiveContentsGenerator {
         return result;
     }
 
-    public static String wrapBracket(String orgin) {
-        return "(" + orgin + ")";
+    public static String wrapBracket(String origin) {
+        return "(" + origin + ")";
+    }
+
+    public static String wrapSBracket(String origin) {
+        return "[" + origin + "]";
+    }
+
+    public static String wrapVersion(List<Integer> versionList) {
+        return wrapBracket(StringUtils.join(versionList, " "));
     }
 
     public static String wrapQuote(String origin) {
