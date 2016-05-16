@@ -1,5 +1,6 @@
 package org.popkit.leap.elpa.utils;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.popkit.core.config.LeapConfigLoader;
 import org.popkit.core.logger.LeapLogger;
@@ -8,7 +9,6 @@ import org.popkit.leap.elpa.entity.RecipeDo;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -86,16 +86,8 @@ public class PelpaUtils {
         for (File item : fileList) {
             BufferedReader br = null;
             try {
-                br = new BufferedReader(new FileReader(item));
-                String sCurrentLine;
-                StringBuilder current = new StringBuilder("");
-                while ((sCurrentLine = br.readLine()) != null) {
-                    if (StringUtils.isNotBlank(sCurrentLine) && (!sCurrentLine.trim().startsWith(";"))) {
-                        current.append(sCurrentLine);
-                    }
-                }
-
-                RecipeDo resItem = RecipeParser.convert(current.toString());
+                String contetnString = FileUtils.readFileToString(item, "UTF-8");
+                RecipeDo resItem = RecipeParser.parse(contetnString);
                 if (resItem != null) {
                     recipeList.add(resItem);
                 }

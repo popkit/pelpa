@@ -5,6 +5,9 @@ import org.popkit.leap.elpa.annotation.Record;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by Aborn Jiang
@@ -27,6 +30,14 @@ public class RecipeDo {
 
     public FetcherEnum getFetcherEnum() {
         return FetcherEnum.getFetcher(this.fetcher);
+    }
+
+    public List<String> getFileList() {
+        if (StringUtils.isNotBlank(this.files)) {
+            return Arrays.asList(this.files.split(" "));
+        } else {
+            return new ArrayList<String>();
+        }
     }
 
     public void update(String key, String value) {

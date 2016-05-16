@@ -1,17 +1,17 @@
 package org.popkit.leap.elpa.controller;
 
 import com.alibaba.fastjson.JSONObject;
-
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.popkit.core.entity.CommonResponse;
-import org.popkit.core.entity.SimpleResult;
 import org.popkit.leap.elpa.entity.ActorStatus;
 import org.popkit.leap.elpa.entity.ArchiveVo;
+import org.popkit.leap.elpa.entity.RecipeDo;
 import org.popkit.leap.elpa.services.LocalCache;
 import org.popkit.leap.elpa.services.PkgBuildService;
 import org.popkit.leap.elpa.services.PkgFetchService;
 import org.popkit.leap.elpa.services.RecipesService;
+import org.popkit.leap.elpa.utils.RecipeParser;
 import org.popkit.leap.monitor.EachActor;
 import org.popkit.leap.monitor.RoundMonitor;
 import org.popkit.leap.monitor.RoundSupervisor;
@@ -111,6 +111,14 @@ public class ElpaController {
         return com;
     }
 
+    @RequestMapping(value = "updateRecipeJSON")
+    public CommonResponse updateRecipeJSON() {
+        CommonResponse com = new CommonResponse();
+        com.setData(recipesService.getAllRecipeList());
+        recipesService.writeRecipesJson();
+        return com;
+    }
+
     @RequestMapping(value = "updateArchiveJSON")
     public CommonResponse updateArchiveJSON() {
         CommonResponse com = new CommonResponse();
@@ -123,19 +131,10 @@ public class ElpaController {
     public CommonResponse build(String pkgName) {
         CommonResponse commonResponse = new CommonResponse();
         if (StringUtils.isNotBlank(pkgName)) {
-            SimpleResult simpleResult = pkgBuildService.buildPackage(pkgName);
-            commonResponse.setData(simpleResult);
+            RecipeDo recipeDo = RecipeParser.parsePkgRecipe(pkgName);
+            //SimpleResult simpleResult = pkgBuildService.buildPackage(pkgName);
+            commonResponse.setData(recipeDo);
         }
-        return commonResponse;
-    }
-
-    @RequestMapping(value = "monitor")
-    public CommonResponse monitor() {
-        CommonResponse commonResponse = new CommonResponse();
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("status", RoundMonitor.finishedPercent());
-
-        commonResponse.setData(jsonObject);
         return commonResponse;
     }
 
