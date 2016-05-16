@@ -14,11 +14,33 @@
 <#include "/layout/navbar.ftl"/>
 
 <div class="ui container ak-main-container">
+
     <div class="ui green message">
-            <div>${pkgReady}</div>
-            <div>${pkgOnging}</div>
-            <div>${pkgFinished}</div>
             <div>${percent}</div>
+    </div>
+
+    <div class="ui styled fluid accordion">
+        <div class="title">
+            <i class="dropdown icon"></i>
+            还没开始的包有哪些?
+        </div>
+        <div class="content">
+            <p class="transition hidden">${pkgReady}</p>
+        </div>
+        <div class="title">
+            <i class="dropdown icon"></i>
+            正在进行中的包有哪些?
+        </div>
+        <div class="content">
+            <p>${pkgOnging}</p>
+        </div>
+        <div class="title">
+            <i class="dropdown icon"></i>
+            已经完成的包有哪些?
+        </div>
+        <div class="content">
+            <p>${pkgFinished}</p>
+        </div>
     </div>
 
 <#if (unstarted?? && unstarted?size > 0)>
@@ -97,6 +119,10 @@
     </table>
 </#if>
 </div>
+
+<script type="text/javascript">
+    $('.ui.accordion').accordion();
+</script>
 
 </body>
 </html>

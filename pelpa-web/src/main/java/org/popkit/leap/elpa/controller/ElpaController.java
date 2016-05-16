@@ -80,9 +80,11 @@ public class ElpaController {
         }
 
         request.setAttribute("percent",  RoundMonitor.finishedPercent());
-        request.setAttribute("pkgReady", pkgReady.size() + ":" + StringUtils.join(pkgReady, ","));
-        request.setAttribute("pkgOnging", pkgOnging.size() + ":" + StringUtils.join(pkgOnging, ","));
-        request.setAttribute("pkgFinished", pkgFinished.size() + ":" + StringUtils.join(pkgFinished, ","));
+
+        request.setAttribute("pkgReady", "共有" + pkgReady.size() + "个:" + StringUtils.join(pkgReady, ","));
+        request.setAttribute("pkgOnging", "共有" + pkgOnging.size() + "个:" + StringUtils.join(pkgOnging, ","));
+        request.setAttribute("pkgFinished", "共有" + pkgFinished.size() + "个:" + StringUtils.join(pkgFinished, ","));
+
         request.setAttribute("unstarted", unstarted);
         request.setAttribute("finished", finished);
         request.setAttribute("onging", onging);

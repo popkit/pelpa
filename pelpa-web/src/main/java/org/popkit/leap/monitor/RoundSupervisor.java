@@ -105,7 +105,6 @@ public class RoundSupervisor {
 
         try {
             FileUtils.writeStringToFile(file, buildStatus.toJSONString());
-            LeapLogger.warn("updateBuildStatus success!");
         } catch (Exception e) {
             LeapLogger.warn("error in updateBuildStatus!");
         }
@@ -118,7 +117,6 @@ public class RoundSupervisor {
         try {
             if (diskStatus != null && diskStatus.getAvail() != null && diskStatus.getUsed() != null) {
                 FileUtils.writeStringToFile(file, diskStatus.toJSONString());
-                // LeapLogger.warn("updateDiskStatus success!");
             }
         } catch (Exception e) {
             LeapLogger.warn("error in updateDiskStatus!");
