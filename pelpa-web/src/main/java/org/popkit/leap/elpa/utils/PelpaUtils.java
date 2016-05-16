@@ -95,7 +95,7 @@ public class PelpaUtils {
                     }
                 }
 
-                RecipeDo resItem = convert(current.toString());
+                RecipeDo resItem = RecipeParser.convert(current.toString());
                 if (resItem != null) {
                     recipeList.add(resItem);
                 }
@@ -112,36 +112,5 @@ public class PelpaUtils {
         }
 
         return recipeList;
-    }
-
-    private static RecipeDo convert(String origin) {
-        String sub = null;
-        try {
-            sub = origin.substring(origin.indexOf('(') + 1, origin.indexOf(')'));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (sub == null) {
-            return null;
-        }
-
-        String[] suArr = sub.split(" ");
-        RecipeDo recipeDo = new RecipeDo();
-        recipeDo.setPkgName(suArr[0]);
-        String[] keyValuePair = sub.substring(sub.indexOf(suArr[0]) + suArr[0].length()).split(":");
-
-        for (String keyValue : keyValuePair) {
-            try {
-                if (StringUtils.isNotBlank(keyValue) && keyValue.split("").length > 1) {
-                    String key = keyValue.split(" ")[0];
-                    String value = keyValue.split(" ")[1];
-                    recipeDo.update(key, value);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                continue;
-            }
-        }
-        return recipeDo;
     }
 }

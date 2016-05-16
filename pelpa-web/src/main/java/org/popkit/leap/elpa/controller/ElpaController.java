@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.popkit.core.entity.CommonResponse;
+import org.popkit.core.entity.SimpleResult;
 import org.popkit.leap.elpa.entity.ActorStatus;
 import org.popkit.leap.elpa.entity.ArchiveVo;
 import org.popkit.leap.elpa.services.LocalCache;
@@ -116,6 +117,16 @@ public class ElpaController {
         com.setData(LocalCache.getArchiveJSON());
         pkgBuildService.writeArchiveJSON();
         return com;
+    }
+
+    @RequestMapping(value = "build.html")
+    public CommonResponse build(String pkgName) {
+        CommonResponse commonResponse = new CommonResponse();
+        if (StringUtils.isNotBlank(pkgName)) {
+            SimpleResult simpleResult = pkgBuildService.buildPackage(pkgName);
+            commonResponse.setData(simpleResult);
+        }
+        return commonResponse;
     }
 
     @RequestMapping(value = "monitor")

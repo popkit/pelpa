@@ -48,7 +48,9 @@ public class RecipesService {
         return null;
     }
 
-    // 生成 recipes.json 文件
+    /**
+     * generate/update recipes.json file
+     */
     public void writeRecipesJson() {
         List<RecipeDo> list = getAllRecipeList();
         File file = new File(PelpaUtils.getHtmlPath() + PelpaContents.RECIPES_JSON_FILE_NAME);

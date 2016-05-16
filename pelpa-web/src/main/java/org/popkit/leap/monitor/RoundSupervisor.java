@@ -63,7 +63,6 @@ public class RoundSupervisor {
                             run.setEndTime(new Date());
                         }
                         run.setStatus(RoundStatus.FINISHED);
-                        LeapLogger.info("roundId:" + run.getRoundId() + "完成!");
                     }
 
                     if (run.getEndTime() != null && run.getStatus() == RoundStatus.FINISHED) {
@@ -94,6 +93,7 @@ public class RoundSupervisor {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm.SS");
         LeapLogger.info("新一轮构建开始!开始时间:" + simpleDateFormat.format(run.getStartTime())
                 + ", roundId:" + run.getRoundId());
+
         fetcherExcutorPool.excute();
         buildingExcutorPool.excute();
     }

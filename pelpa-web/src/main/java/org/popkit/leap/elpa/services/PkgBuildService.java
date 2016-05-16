@@ -1,6 +1,7 @@
 package org.popkit.leap.elpa.services;
 
 import org.apache.commons.io.FileUtils;
+import org.popkit.core.entity.SimpleResult;
 import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.entity.*;
 import org.popkit.leap.elpa.services.handler.GithubFetchHandler;
@@ -24,54 +25,54 @@ import java.util.List;
  */
 @Service
 public class PkgBuildService {
-    private static final String SINGLE = "single";
-    private static final String TAR = "tar";
+    private static final String TYPE_SINGLE = "single";
+    private static final String TYPE_TAR = "tar";
 
     @Autowired
     private RecipesService recipesService;
 
-    public void d8() {
-        RecipeDo recipeDo = recipesService.randomRecipe();
-        buildPackage(recipeDo);
-    }
-
-    public boolean buildPackage(String pkgName) {
+    public SimpleResult buildPackage(String pkgName) {
         return buildPackage(recipesService.getRecipeDo(pkgName));
     }
 
-    public boolean buildPackage(RecipeDo recipeDo) {
+    public SimpleResult buildPackage(RecipeDo recipeDo) {
         if (recipeDo == null) {
-            return true;
+            return SimpleResult.fail("传入的recipeDo为null!");
         }
 
         String workingPath = PelpaUtils.getWorkingPath(recipeDo.getPkgName());
         File workingPathFile = new File(workingPath);
 
         if (workingPathFile.exists() && workingPathFile.isDirectory()) {
-            List<File> elispFile = PelpaUtils.getElispFile(workingPath);
-            if (elispFile.size() == 1) {
-                buildSingleFilePackage(elispFile.get(0), recipeDo);
+            List<File> elispFiles = PelpaUtils.getElispFile(workingPath);
+            if (elispFiles.size() == 1) {
+                buildSingleFilePackage(recipeDo, elispFiles.get(0));
+            } else {
+                buildMultiFilesPackage(recipeDo, elispFiles);
             }
         }
 
-        // update json when each package build success
+        // update archive.json when each package build success
         writeArchiveJSON();
-        return true;
+        return SimpleResult.success("成功,pkgName=" + recipeDo.getPkgName());
     }
 
-    // 更新json数据
     public void writeArchiveJSON() {
         File file = new File(PelpaUtils.getHtmlPath() + PelpaContents.ARCHIVE_JSON_FILE_NAME);
         try {
-            String json = LocalCache.getArchiveJSON();//.replaceAll("/","\\\\/");
+            String json = LocalCache.getArchiveJSON();
             FileUtils.writeStringToFile(file, json);
-            LeapLogger.info("archive file :" + file.getAbsolutePath() + "更新成功!");
         } catch (IOException e) {
             LeapLogger.warn("error writeArchiveJson", e);
         }
     }
 
-    public void buildSingleFilePackage(File elispfile, RecipeDo recipeDo) {
+    public void buildMultiFilesPackage(RecipeDo recipeDo, List<File> elispFile) {
+        ArchiveVo archiveVo = new ArchiveVo();
+        archiveVo.setType(TYPE_TAR);
+    }
+
+    public void buildSingleFilePackage(RecipeDo recipeDo, File elispfile) {
         String htmlPath = PelpaUtils.getHtmlPath();
         long lastcommit = GithubFetchHandler.getLastCommiterTime(recipeDo.getPkgName());
         lastcommit = lastcommit == 0 ? elispfile.lastModified() : lastcommit;
@@ -87,12 +88,11 @@ public class PkgBuildService {
         } catch (Exception e) {
             LeapLogger.warn("error in copy file:", e);
         }
-        String type = SINGLE;
 
         ArchiveVo archiveVo = new ArchiveVo();
         archiveVo.setDesc(pkgInfo.getShortInfo());
         archiveVo.setVer(TimeVersionUtils.toArr(lastcommit));
-        archiveVo.setType(type);
+        archiveVo.setType(TYPE_SINGLE);
         archiveVo.setKeywords(pkgInfo.getKeywords());
         archiveVo.setDeps(pkgInfo.getDeps());
 

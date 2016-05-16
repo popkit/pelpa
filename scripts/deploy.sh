@@ -25,7 +25,7 @@ cp -r pelpa-web/target/pelpa ${CATALINA_HOME}/webapps/
 
 # stop tomcat and start it
 ${CATALINA_HOME}/bin/catalina.sh stop
-#kill -9 `ps -ef |grep tomcat|grep -v grep|awk '{print $2}'`
+kill -9 `ps -ef |grep tomcat|grep -v grep|awk '{print $2}'`
 ${CATALINA_HOME}/bin/catalina.sh start
 
 
