@@ -21,6 +21,12 @@
             <artifactId>org.eclipse.jgit</artifactId>
             <version>3.5.0.201409260305-r</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.kamranzafar</groupId>
+            <artifactId>jtar</artifactId>
+            <version>2.3</version>
+        </dependency>
     </dependencies>
 
     <build>

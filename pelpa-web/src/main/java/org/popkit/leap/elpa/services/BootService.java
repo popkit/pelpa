@@ -9,6 +9,7 @@ import org.popkit.leap.elpa.entity.ArchiveVo;
 import org.popkit.leap.elpa.entity.PelpaContents;
 import org.popkit.leap.elpa.utils.ArchiveParser;
 import org.popkit.leap.elpa.utils.PelpaUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -24,6 +25,9 @@ import java.util.Map;
  */
 @Service
 public class BootService {
+
+    @Autowired
+    private RecipesService recipesService;
 
     @PostConstruct
     private void init() {
@@ -44,6 +48,7 @@ public class BootService {
                     LocalCache.updateArchive(pkgName, archiveVoMap.get(pkgName));
                     archiveNumber ++;
                 }
+                //recipesService.writeRecipesJson();
                 LeapLogger.info("LocalCache archive list update success! init archiveNumber:" + archiveNumber);
             }
         } catch (Exception e) {
