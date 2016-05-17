@@ -52,7 +52,7 @@ public class ArchiveContentsGenerator {
                     String type = archiveVo.getType();
                     String props = buildProps(archiveVo.getProps());
                     String itemValueString = wrapSBracket(version
-                            + " " + deps + " " + shortInfo + " " + type + " " + props
+                            + " " + deps + " " + wrapQuote(shortInfo) + " " + type + " " + props
                     );
                     sbList.append(wrapPair(pkgName, itemValueString));
                 }
