@@ -1,11 +1,16 @@
 package org.popkit.leap.elpa.services;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.popkit.leap.elpa.entity.DepsItem;
 import org.popkit.leap.elpa.entity.PropsItem;
+import org.popkit.leap.elpa.entity.RecipeDo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -16,7 +21,38 @@ import java.util.List;
 @Service
 public class ArchiveContentsGenerator {
 
+    @Autowired
+    private RecipesService recipesService;
+
+    public static void main(String[] args) {
+        List<String> list = new ArrayList<String>();
+        list.add("abc");
+        list.add("zbc");
+        list.add("kkk");
+        Collections.sort(list, new Comparator<String>() {
+            public int compare(String o1, String o2) {
+                return o2.compareTo(o1);
+            }
+        });
+
+        System.out.print("" + list);
+    }
+
+
     public String generator() {
+        List<RecipeDo> recipeDos = recipesService.getAllRecipeList();
+        if (CollectionUtils.isNotEmpty(recipeDos)) {
+            List<String> recipesNames = new ArrayList<String>();
+            for (RecipeDo recipeDo : recipeDos) {
+                recipesNames.add(recipeDo.getPkgName());
+            }
+            Collections.sort(recipesNames, new Comparator<String>() {
+                public int compare(String o1, String o2) {
+                    return o1.compareTo(o2);
+                }
+            });
+        }
+
         String result = "";
 
         return result;
