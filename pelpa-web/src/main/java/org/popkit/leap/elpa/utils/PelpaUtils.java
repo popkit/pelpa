@@ -25,8 +25,13 @@ public class PelpaUtils {
     private static final String WORKING_DIR_KEY = "elpa_working_path";
     public static final String RECIPE_FILE_PATH_KEY = "elpa_recipes_path";
     private static final String HTML_DIR_KEY = "elpa_html_path";
+    private static final String LOG_FILE_KEY = "elpa_log_file";
 
     private PelpaUtils() {
+    }
+
+    public static String getLogFileName() {
+        return LeapConfigLoader.get(LOG_FILE_KEY);
     }
 
     public static String getRecipeFilePath() {
