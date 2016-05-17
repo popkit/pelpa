@@ -2,6 +2,7 @@ package org.popkit.leap.elpa.services;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.popkit.leap.elpa.entity.ArchiveVo;
 import org.popkit.leap.elpa.entity.DepsItem;
 import org.popkit.leap.elpa.entity.PropsItem;
 import org.popkit.leap.elpa.entity.RecipeDo;
@@ -25,19 +26,7 @@ public class ArchiveContentsGenerator {
     private RecipesService recipesService;
 
     public static void main(String[] args) {
-        List<String> list = new ArrayList<String>();
-        list.add("abc");
-        list.add("zbc");
-        list.add("kkk");
-        Collections.sort(list, new Comparator<String>() {
-            public int compare(String o1, String o2) {
-                return o2.compareTo(o1);
-            }
-        });
-
-        System.out.print("" + list);
     }
-
 
     public String generator() {
         List<RecipeDo> recipeDos = recipesService.getAllRecipeList();
@@ -48,14 +37,35 @@ public class ArchiveContentsGenerator {
             }
             Collections.sort(recipesNames, new Comparator<String>() {
                 public int compare(String o1, String o2) {
-                    return o1.compareTo(o2);
+                    return o2.compareTo(o1);    // z -> a
                 }
             });
+
+            StringBuilder sbList = new StringBuilder("");
+            for (String pkgName : recipesNames) {
+                RecipeDo recipeDo = recipesService.getRecipeDo(pkgName);
+                ArchiveVo archiveVo = LocalCache.getArchive(pkgName);
+                if (recipeDo != null && archiveVo != null) {
+                    String version = wrapBracket(StringUtils.join(archiveVo.getVer(), " "));
+                    String deps = buildDeps(archiveVo.getDepsList());
+                    String shortInfo = archiveVo.getDesc();
+                    String type = archiveVo.getType();
+                    String props = buildProps(archiveVo.getProps());
+                    String itemValueString = wrapSBracket(version
+                            + " " + deps + " " + shortInfo + " " + type + " " + props
+                    );
+                    sbList.append(wrapPair(pkgName, itemValueString));
+                }
+            }
+            String result = wrapBracket("1 " + sbList.toString());
+            return result;
+        } else {
+            return StringUtils.EMPTY;
         }
+    }
 
-        String result = "";
-
-        return result;
+    public static String wrapPair(String key, String value) {
+        return "(" + key + " . " + value + ")";
     }
 
     public static String wrapBracket(String origin) {

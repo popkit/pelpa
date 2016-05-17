@@ -1,8 +1,11 @@
 package org.popkit.leap.elpa.entity;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
+import org.popkit.core.logger.LeapLogger;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,6 +44,39 @@ public class ArchiveVo {
             }
         }
     }
+
+    public List<DepsItem> getDepsList() {
+        if (deps == null) {
+            return new ArrayList<DepsItem>();
+        }
+        List<DepsItem> result = new ArrayList<DepsItem>();
+        for (String key : deps.keySet()) {
+            DepsItem depsItem = new DepsItem();
+            depsItem.setName(key);
+            JSONArray jsonArray = deps.getJSONArray(key);
+            List<Integer> version = convert(jsonArray);
+            if (version != null) {
+                depsItem.setVersions(version);
+                result.add(depsItem);
+            }
+        }
+        return result;
+    }
+
+    private List<Integer> convert(JSONArray jsonArray) {
+        try {
+            List<Integer> result = new ArrayList<Integer>();
+            for (int i = 0; i < jsonArray.size(); i++) {
+                String version = jsonArray.getString(i);
+                result.add(Integer.parseInt(version));
+            }
+            return result;
+        } catch (Exception e) {
+            LeapLogger.warn("error convert jsonArray to List<Integer>", e);
+            return null;
+        }
+    }
+
     public void setKeywords(List<String> keywords) {
         if (props == null) {
             this.props = new PropsItem();

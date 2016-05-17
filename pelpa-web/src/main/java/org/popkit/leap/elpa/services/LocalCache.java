@@ -22,6 +22,10 @@ public class LocalCache {
         return archive;
     }
 
+    public static ArchiveVo getArchive(String pkgName) {
+        return archive.get(pkgName);
+    }
+
     public static void updateArchive(String pkgName, ArchiveVo archiveVo) {
         archive.put(pkgName, archiveVo);
     }
