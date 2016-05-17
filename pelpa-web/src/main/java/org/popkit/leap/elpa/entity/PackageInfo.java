@@ -22,7 +22,11 @@ public class PackageInfo {
     }
 
     public void setShortInfo(String shortInfo) {
-        this.shortInfo = shortInfo;
+        if (shortInfo == null) {
+            this.shortInfo = "";
+        } else {
+            this.shortInfo = shortInfo.trim();
+        }
     }
 
     public String getReadmeInfo() {
