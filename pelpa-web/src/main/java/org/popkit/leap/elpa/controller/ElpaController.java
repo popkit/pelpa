@@ -63,13 +63,14 @@ public class ElpaController {
         if (MapUtils.isNotEmpty(actorMap)) {
             for (String pkg : actorMap.keySet()) {
                 EachActor actor = actorMap.get(pkg);
-                if (actor.getBuildStatus() == ActorStatus.READY) {
+                if (actor.getFetchStatus() == ActorStatus.READY) {
                     if (unstartedNo < 50) {
                         unstarted.add(actor);
                         unstartedNo++;
                     }
                     pkgReady.add(pkg);
-                } else if (actor.getBuildStatus() == ActorStatus.WORKING) {
+                } else if (actor.getBuildStatus() == ActorStatus.WORKING
+                        || actor.getFetchStatus() == ActorStatus.WORKING) {
                     if (ongingNo < 50) {
                         onging.add(actor);
                         ongingNo++;
