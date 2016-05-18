@@ -6,7 +6,6 @@ import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.popkit.core.logger.LeapLogger;
-import org.popkit.leap.elpa.services.ArchiveContentsGenerator;
 import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.springframework.stereotype.Service;
 
@@ -72,7 +71,7 @@ public class LogScanner {
         JSONObject jsonObject = new JSONObject();
         if (MapUtils.isNotEmpty(logItemMap)) {
             for (String item : logItemMap.keySet()) {
-                jsonObject.put(ArchiveContentsGenerator.wrapQuote(item), logItemMap.get(item).getCount());
+                jsonObject.put(item, logItemMap.get(item).getCount());
             }
         }
 
