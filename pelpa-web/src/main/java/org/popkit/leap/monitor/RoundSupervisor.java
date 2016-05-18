@@ -4,6 +4,7 @@ import org.apache.commons.io.FileUtils;
 import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.entity.RoundRun;
 import org.popkit.leap.elpa.entity.RoundStatus;
+import org.popkit.leap.elpa.services.ArchiveContentsGenerator;
 import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.popkit.leap.monitor.entity.BuildStatus;
 import org.popkit.leap.monitor.entity.DiskStatus;
@@ -37,6 +38,9 @@ public class RoundSupervisor {
     @Autowired
     private BuildingExcutorPool buildingExcutorPool;
 
+    @Autowired
+    private ArchiveContentsGenerator archiveContentsGenerator;
+
     public static final long REST_TIME = 2*60*60*1000;    // ms
     private static volatile RoundRun run = new RoundRun();
 
@@ -63,6 +67,7 @@ public class RoundSupervisor {
                             run.setEndTime(new Date());
                         }
                         run.setStatus(RoundStatus.FINISHED);
+                        archiveContentsGenerator.generator();
                     }
 
                     if (run.getEndTime() != null && run.getStatus() == RoundStatus.FINISHED) {

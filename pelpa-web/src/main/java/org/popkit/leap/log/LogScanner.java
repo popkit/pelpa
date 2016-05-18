@@ -1,16 +1,24 @@
 package org.popkit.leap.log;
 
+import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections.map.HashedMap;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.popkit.core.logger.LeapLogger;
+import org.popkit.leap.elpa.utils.PelpaUtils;
+import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,11 +27,55 @@ import java.util.regex.Pattern;
  * Mail aborn.jiang@gmail.com
  * 2016-05-15:18:44
  */
+@Service
 public class LogScanner {
 
     public static String getLogFileName() {
-        // return PelpaUtils.getLogFileName();
-        return "/Users/aborn/github/pelpa/local/melpa.access.log";
+        return PelpaUtils.getLogFileName();
+        //return "/Users/aborn/github/pelpa/local/melpa.access.log";
+    }
+
+    @PostConstruct
+    public void generatorLogFile() {
+        new Thread(
+                new Runnable() {
+                    public void run() {
+                        while (true) {
+                            String log = toJSONString();
+                            if (StringUtils.isNotBlank(log)) {
+                                File logFile = new File(PelpaUtils.getHtmlPath() + "download_counts.json");
+                                try {
+                                    FileUtils.writeStringToFile(logFile, log);
+                                    LeapLogger.info("write log to file: " + logFile.getAbsolutePath() + " success!");
+                                } catch (IOException ie) {
+                                    LeapLogger.warn("write log to file: " + logFile.getAbsolutePath() + " failed!");
+                                }
+                            } else {
+                                LeapLogger.warn("write log to download_counts failed because it empty!");
+                            }
+
+                            try {
+                                TimeUnit.MINUTES.sleep(15);    // generate it every 15 minutes
+                            } catch (InterruptedException e) {
+                                LeapLogger.warn("write log download_counts thread InterruptedException!");
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+        ).start();
+    }
+
+    public static String toJSONString() {
+        Map<String, EachLogItem> logItemMap = readLogScanFile();
+        JSONObject jsonObject = new JSONObject();
+        if (MapUtils.isNotEmpty(logItemMap)) {
+            for (String item : logItemMap.keySet()) {
+                jsonObject.put(item, logItemMap.get(item).getCount());
+            }
+        }
+
+        return jsonObject.toJSONString();
     }
 
     public static Map<String, EachLogItem> readLogScanFile() {
