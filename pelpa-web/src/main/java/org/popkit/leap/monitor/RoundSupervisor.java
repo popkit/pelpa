@@ -67,7 +67,7 @@ public class RoundSupervisor {
                             run.setEndTime(new Date());
                         }
                         run.setStatus(RoundStatus.FINISHED);
-                        //archiveContentsGenerator.generator();
+                        archiveContentsGenerator.generator();
                     }
 
                     if (run.getEndTime() != null && run.getStatus() == RoundStatus.FINISHED) {

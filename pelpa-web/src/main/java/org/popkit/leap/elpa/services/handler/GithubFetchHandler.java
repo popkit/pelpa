@@ -1,6 +1,8 @@
 package org.popkit.leap.elpa.services.handler;
 
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.PullCommand;
+import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRefNameException;
 import org.eclipse.jgit.lib.Constants;
@@ -8,7 +10,6 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.eclipse.jgit.transport.FetchResult;
 import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.entity.FetcherEnum;
 import org.popkit.leap.elpa.entity.RecipeDo;
@@ -55,7 +56,15 @@ public class GithubFetchHandler implements FetchHandler {
             //System.out.println("Starting fetch");
 
             Git git = new Git(repository);
-            FetchResult result = git.fetch().setCheckFetchedObjects(true).call();
+            PullCommand pullCommand = git.pull();
+            PullResult result = pullCommand.call();
+
+            // http://stackoverflow.com/questions/13399990/usage-of-pull-command-in-jgit
+            //FetchResult fetchResult = result.getFetchResult();
+            //MergeResult mergeResult = result.getMergeResult();
+            //mergeResult.getMergeStatus();  // this should be interesting
+
+            //FetchResult result = git.fetch().setCheckFetchedObjects(true).call();
             //System.out.println("Messages: " + result.getMessages());
         } catch (Exception e) {
             LeapLogger.warn("error update" + localPath, e);

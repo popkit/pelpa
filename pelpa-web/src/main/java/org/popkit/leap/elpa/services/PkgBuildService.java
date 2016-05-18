@@ -7,6 +7,7 @@ import org.popkit.leap.elpa.entity.*;
 import org.popkit.leap.elpa.services.handler.GithubFetchHandler;
 import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.popkit.leap.elpa.utils.TimeVersionUtils;
+import org.popkit.leap.monitor.RoundMonitor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -54,7 +55,10 @@ public class PkgBuildService {
         }
 
         // update archive.json when each package build success
-        writeArchiveJSON();
+        if (RoundMonitor.finishedPercentValue() > 0.8) {
+            LeapLogger.info("#archive# write archive.json!");
+            writeArchiveJSON();
+        }
         return SimpleResult.success("成功,pkgName=" + recipeDo.getPkgName());
     }
 
