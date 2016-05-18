@@ -55,10 +55,10 @@ public class PkgBuildService {
         }
 
         // update archive.json when each package build success
-        if (RoundMonitor.finishedPercentValue() > 0.8) {
-            LeapLogger.info("#archive# write archive.json!");
-            writeArchiveJSON();
-        }
+        //if (RoundMonitor.finishedPercentValue() > 0.8) {
+        LeapLogger.info("#archive# write archive.json!" + RoundMonitor.finishedPercentValue());
+        writeArchiveJSON();
+        //}
         return SimpleResult.success("成功,pkgName=" + recipeDo.getPkgName());
     }
 
