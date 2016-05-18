@@ -116,6 +116,6 @@ public class RoundMonitor {
             total ++;
         }
 
-        return (double) finished/total;
+        return ((double) finished)/total;
     }
 }
