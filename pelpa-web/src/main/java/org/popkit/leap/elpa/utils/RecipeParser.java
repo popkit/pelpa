@@ -41,16 +41,18 @@ public class RecipeParser {
         String[] suArr = sub.split("\\s+");
         RecipeDo recipeDo = new RecipeDo();
         recipeDo.setPkgName(suArr[0].trim());
-        String[] keyValuePair = sub.substring(sub.indexOf(suArr[0]) + suArr[0].length()).split(":");
+        String[] keyValuePair = sub.substring(sub.indexOf(suArr[0]) + suArr[0].length()).trim().split("\\s+");
 
-        for (String keyValue : keyValuePair) {
+        for (int i=0; i<keyValuePair.length; i++) {
             try {
-                if (StringUtils.isNotBlank(keyValue) && keyValue.split("\\s+").length > 1) {
-                    String key = keyValue.split("\\s+")[0].trim();
-                    String value = keyValue.split("\\s+")[1].trim();
+                String current = keyValuePair[i].trim();
+                if (StringUtils.isNotBlank(current) && current.startsWith(":")
+                        && (i+1) < keyValuePair.length) {
+                    String key = current.substring(1);
+                    String value = keyValuePair[i+1].trim();
                     if ("files".equalsIgnoreCase(key)) {
-                        recipeDo.update(key, fileValue(keyValue));
-                    } else if ("repo".endsWith(key)) {
+                        recipeDo.update(key, fileValue(value));
+                    } else if ("repo".endsWith(key) || "url".equals(key)) {
                         recipeDo.update(key, trimIt(value));
                     } else {
                         recipeDo.update(key, value);
@@ -69,10 +71,6 @@ public class RecipeParser {
     }
 
     private static String fileValue(String origin) {
-        if (StringUtils.isBlank(origin)) {
-            return origin;
-        }
-        String fileContent = origin.substring(origin.indexOf("files") + "files".length());
-        return fileContent.replaceAll("\"","").replaceAll("\\(", "").replaceAll("\\)", "").trim();
+        return origin.replaceAll("\"","").replaceAll("\\(", "").replaceAll("\\)", "").trim();
     }
 }

@@ -8,6 +8,7 @@ package org.popkit.leap.elpa.entity;
 public enum FetcherEnum {
 
     GITHUB("github"),
+    GIT("git"),      // Like gist
     UNKNOWN("null")
     ;
     private String fetcher;
