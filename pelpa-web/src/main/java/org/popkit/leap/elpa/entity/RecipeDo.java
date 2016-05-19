@@ -24,6 +24,8 @@ public class RecipeDo {
 
     private String files;
 
+    private String url;
+
     public String getPkgName() {
         return pkgName;
     }
@@ -96,5 +98,13 @@ public class RecipeDo {
 
     public void setFiles(String files) {
         this.files = files;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

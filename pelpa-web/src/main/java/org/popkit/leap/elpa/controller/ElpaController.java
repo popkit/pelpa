@@ -1,5 +1,6 @@
 package org.popkit.leap.elpa.controller;
 
+import com.alibaba.fastjson.JSON;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -107,13 +108,29 @@ public class ElpaController {
         //pkgFetchService.d8();
         //pkgFetchService.downloadPackage("nclip");
         //pkgBuildService.buildPackage("nclip");
-        com.setData(recipesService.randomRecipe());
+        //com.setData(recipesService.randomRecipe());
+        com.setData(recipesService.getRecipeDo("tango-2-theme"));
         Map<String, ArchiveVo> map = LocalCache.getArchive();
 
         //pkgBuildService.writeArchiveJSON();
         //recipesService.writeRecipesJson();
-        pkgBuildService.writeArchiveJSON();
+        //pkgBuildService.writeArchiveJSON();
         return com;
+    }
+
+    @RequestMapping(value = "recipe.html")
+    public void recipe(String pkgName) {
+        //String path = "/Users/aborn/github/popkit-elpa/recipes/";
+        String pathConfig = PelpaUtils.getRecipeFilePath();
+        File item = new File(pathConfig + pkgName);
+        try {
+            String contetnString = FileUtils.readFileToString(item, "UTF-8");
+            RecipeDo resItem = RecipeParser.parse(contetnString);
+            System.out.println("resItem:" + JSON.toJSONString(resItem));
+        } catch (Exception e) {
+
+        }
+
     }
 
     @RequestMapping(value = "updateRecipeJSON")

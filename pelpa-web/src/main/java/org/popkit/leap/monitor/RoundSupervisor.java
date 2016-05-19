@@ -2,6 +2,7 @@ package org.popkit.leap.monitor;
 
 import org.apache.commons.io.FileUtils;
 import org.popkit.core.logger.LeapLogger;
+import org.popkit.leap.elpa.constents.EnvEnum;
 import org.popkit.leap.elpa.entity.RoundRun;
 import org.popkit.leap.elpa.entity.RoundStatus;
 import org.popkit.leap.elpa.services.ArchiveContentsGenerator;
@@ -99,8 +100,10 @@ public class RoundSupervisor {
         LeapLogger.info("新一轮构建开始!开始时间:" + simpleDateFormat.format(run.getStartTime())
                 + ", roundId:" + run.getRoundId());
 
-        fetcherExcutorPool.excute();
-        buildingExcutorPool.excute();
+        if (PelpaUtils.getEnv() == EnvEnum.PRODUCTION) {
+            fetcherExcutorPool.excute();
+            buildingExcutorPool.excute();
+        }
     }
 
     public static RoundRun getCurrentRun() {
