@@ -8,6 +8,10 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 
 /**
+ *
+ * http://gist.popkit.org/tango-2-theme/tango-2-theme.el
+ * https://appkit.popkit.org/gist/get.json?pkgName=tango-2-theme&url=https://gist.github.com/2024464.git
+ *
  * cannot download gist file in china
  * Created by Aborn Jiang
  * Mail aborn.jiang@gmail.com
