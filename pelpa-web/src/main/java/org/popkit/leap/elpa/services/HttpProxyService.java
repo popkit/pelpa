@@ -48,9 +48,11 @@ public class HttpProxyService {
         CloseableHttpClient httpclient = HttpClients.createDefault();
         StringEntity stringEntity = new StringEntity(obj.toJSONString());
         stringEntity.setContentType("application/json");
+        LeapLogger.info("#getJSON#" + url);
         //httpPost.setEntity(stringEntity);
         try {
             CloseableHttpResponse response = httpclient.execute(httpPost);
+            LeapLogger.info("#getJSON#" + response.getStatusLine().getStatusCode());
             if (response.getStatusLine().getStatusCode() == 200) {
 
                 HttpEntity responseEntity = response.getEntity();
@@ -63,8 +65,8 @@ public class HttpProxyService {
                     stringBuilder.append(output);
                 }
 
-                JSONObject jsonObject = JSONObject.parseObject(stringBuilder.toString());
-                String status = jsonObject.getString("status");
+                //JSONObject jsonObject = JSONObject.parseObject(stringBuilder.toString());
+                LeapLogger.info("#getJSON# OK OK" + stringBuilder.toString());
                 EntityUtils.consume(responseEntity);
                 return stringBuilder.toString();
             } else {
