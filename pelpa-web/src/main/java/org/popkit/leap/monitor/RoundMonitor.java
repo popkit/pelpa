@@ -75,7 +75,8 @@ public class RoundMonitor {
     public static String nextBuildingPkg() {
         for (String pkg : actors.keySet()) {
             if (!actors.get(pkg).isBuildFinished()
-                    && actors.get(pkg).getBuildStatus() == ActorStatus.READY) {
+                    && actors.get(pkg).getBuildStatus() == ActorStatus.READY
+                    && actors.get(pkg).getFetchStatus() == ActorStatus.FINISHED) {
                 return pkg;
             }
         }
