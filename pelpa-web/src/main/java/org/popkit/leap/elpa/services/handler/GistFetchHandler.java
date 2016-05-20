@@ -46,6 +46,7 @@ public class GistFetchHandler implements FetchHandler {
     private FetchJSON getFetchFile(String pkgName, String url) {
         String jsonUrl = getJSONUrl(pkgName, url);
         try {
+            LeapLogger.info("#httpProxyService.getJSON#" + jsonUrl);
             String result = httpProxyService.getJSON(jsonUrl);
             if (StringUtils.isNotBlank(result)) {
                 return JSON.parseObject(result, FetchJSON.class);
