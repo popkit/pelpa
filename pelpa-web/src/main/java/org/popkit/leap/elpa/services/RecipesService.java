@@ -37,6 +37,15 @@ public class RecipesService {
         return RECIPE_DO_LIST.get(pkgName);
     }
 
+    public static boolean updateLastCommit(String pkgName, long lastcommit) {
+        if (RECIPE_DO_LIST.containsKey(pkgName)) {
+            RECIPE_DO_LIST.get(pkgName).setLastCommit(lastcommit);
+            return RECIPE_DO_LIST.get(pkgName).getLastCommit() == lastcommit;
+        } else {
+            return false;
+        }
+    }
+
     public RecipeDo randomRecipe () {
         List<RecipeDo> list = getAllRecipeList();
         for (RecipeDo item : list) {

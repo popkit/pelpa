@@ -26,6 +26,8 @@ public class RecipeDo {
 
     private String url;
 
+    private long lastCommit;
+
     public String getPkgName() {
         return pkgName;
     }
@@ -106,5 +108,13 @@ public class RecipeDo {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public long getLastCommit() {
+        return lastCommit;
+    }
+
+    public void setLastCommit(long lastCommit) {
+        this.lastCommit = lastCommit;
     }
 }

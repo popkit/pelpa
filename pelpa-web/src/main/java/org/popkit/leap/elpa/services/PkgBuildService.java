@@ -141,8 +141,14 @@ public class PkgBuildService {
 
     public void buildSingleFilePackage(RecipeDo recipeDo, File elispfile) {
         String htmlPath = PelpaUtils.getHtmlPath();
-        long lastcommit = GithubFetchHandler.getLastCommiterTime(recipeDo.getPkgName());
-        lastcommit = lastcommit == 0 ? elispfile.lastModified() : lastcommit;
+        long lastcommit = 0;
+        if (recipeDo.getLastCommit() > 0) {
+            lastcommit = recipeDo.getLastCommit();
+        } else {
+            GithubFetchHandler.getLastCommiterTime(recipeDo.getPkgName());
+            lastcommit = lastcommit == 0 ? elispfile.lastModified() : lastcommit;
+        }
+
         String version = TimeVersionUtils.toVersionString(lastcommit);
         LeapLogger.info("pkg:" + recipeDo.getPkgName() + ", 版本号:" + version);
 

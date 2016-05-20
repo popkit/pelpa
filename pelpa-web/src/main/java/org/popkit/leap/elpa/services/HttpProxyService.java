@@ -9,6 +9,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.popkit.leap.elpa.utils.FetchRemoteFileUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -22,6 +23,10 @@ import java.io.InputStreamReader;
  */
 @Service
 public class HttpProxyService {
+
+    public boolean downloadGistFile(String url, String workingPath) {
+        return FetchRemoteFileUtils.downloadFile(url, workingPath);
+    }
 
     public String getJSON(String url) throws IOException {
         //String url = "http://example.com";
@@ -49,6 +54,7 @@ public class HttpProxyService {
 
                 HttpEntity responseEntity = response.getEntity();
                 BufferedReader br = new BufferedReader(new InputStreamReader((responseEntity.getContent())));
+
                 String output;
                 // 读取输入流
                 StringBuilder stringBuilder = new StringBuilder();

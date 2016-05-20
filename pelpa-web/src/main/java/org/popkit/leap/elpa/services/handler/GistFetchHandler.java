@@ -3,10 +3,13 @@ package org.popkit.leap.elpa.services.handler;
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang3.StringUtils;
 import org.popkit.core.config.LeapConfigLoader;
+import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.entity.FetcherEnum;
 import org.popkit.leap.elpa.entity.RecipeDo;
 import org.popkit.leap.elpa.services.FetchHandler;
 import org.popkit.leap.elpa.services.HttpProxyService;
+import org.popkit.leap.elpa.services.RecipesService;
+import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.popkit.leap.gist.FetchJSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -64,6 +67,18 @@ public class GistFetchHandler implements FetchHandler {
 
     public void execute(RecipeDo recipeDo, Map<String, Object> extra) {
         FetchJSON fetchFile = getFetchFile(recipeDo.getPkgName(), recipeDo.getUrl());
-        System.out.println(fetchFile);
+        if (fetchFile != null) {
+            String gistFileUrl = getGistFileUrl(fetchFile.getPkgFile());
+            String workingPath = PelpaUtils.getWorkingPath(recipeDo.getPkgName()) + gistFileUrl.substring(gistFileUrl.lastIndexOf("/"));
+            boolean status = RecipesService.updateLastCommit(recipeDo.getPkgName(), fetchFile.getLastCommit());
+            System.out.println("update " + recipeDo.getPkgName() + " lastcommit, status=" + status);
+            boolean downloadStatus = httpProxyService.downloadGistFile(gistFileUrl, workingPath);
+            if (!downloadStatus) {
+                LeapLogger.info("error fetch " + recipeDo.getPkgName());
+            }
+            System.out.println("download " + recipeDo.getPkgName() + " status=" + downloadStatus);
+        } else {
+            LeapLogger.info("error fetch " + recipeDo.getPkgName() + ", error in fetchFIleJSON");
+        }
     }
 }
