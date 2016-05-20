@@ -9,6 +9,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.utils.FetchRemoteFileUtils;
 import org.springframework.stereotype.Service;
 
@@ -31,8 +32,8 @@ public class HttpProxyService {
     public String getJSON(String url) throws IOException {
         //String url = "http://example.com";
         // 默认链接超时设置为500ms,请求超时(SocketTimeout)设置为300ms
-        int socketTimeout = 300;  // 请求超时
-        int connectTimeout = 500; // 链接超时
+        int socketTimeout = 5000;  // 请求超时
+        int connectTimeout = 10000; // 链接超时
 
         // 设置请求参数
         RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(socketTimeout).
@@ -69,6 +70,8 @@ public class HttpProxyService {
             } else {
                 //
             }
+        } catch (Exception e) {
+            LeapLogger.warn("#getJSON# exception" + url);
         } finally {
             httpclient.close();
         }
