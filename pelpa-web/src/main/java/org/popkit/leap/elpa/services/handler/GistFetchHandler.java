@@ -52,6 +52,7 @@ public class GistFetchHandler implements FetchHandler {
                 return JSON.parseObject(result, FetchJSON.class);
             }
         } catch (Exception e) {
+            LeapLogger.warn("error in getFetchFile for pkgName=" + pkgName + e.getMessage(), e);
         }
         return null;
     }
