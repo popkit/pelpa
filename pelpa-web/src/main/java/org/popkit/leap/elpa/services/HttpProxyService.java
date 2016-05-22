@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -38,7 +38,7 @@ public class HttpProxyService {
         // 设置请求参数
         RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(socketTimeout).
                 setConnectTimeout(connectTimeout).build();
-        HttpGet httpPost = new HttpGet(url);
+        HttpPost httpPost = new HttpPost(url);
         //
         httpPost.setConfig(requestConfig);
         JSONObject obj = new JSONObject();
