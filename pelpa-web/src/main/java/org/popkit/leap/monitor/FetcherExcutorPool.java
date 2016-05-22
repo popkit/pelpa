@@ -21,7 +21,7 @@ public class FetcherExcutorPool {
     private PkgFetchService pkgFetchService;
 
     // 初始起10个工作线程
-    private static final ExecutorService exector = Executors.newFixedThreadPool(10);
+    private static final ExecutorService exector = Executors.newFixedThreadPool(3);
 
     public void excute() {
         new Thread(new Runnable() {
