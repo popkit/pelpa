@@ -3,3 +3,6 @@ realgud-byebug
 org-rtm
 imenu-list
 minizinc-mode
+
+aok emacswiki
+https://www.emacswiki.org/emacs/download/aok.el
