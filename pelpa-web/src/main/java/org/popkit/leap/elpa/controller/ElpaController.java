@@ -6,7 +6,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.popkit.core.entity.CommonResponse;
 import org.popkit.core.entity.SimpleResult;
-import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.entity.ActorStatus;
 import org.popkit.leap.elpa.entity.ArchiveVo;
 import org.popkit.leap.elpa.entity.RecipeDo;
@@ -152,18 +151,7 @@ public class ElpaController {
     @RequestMapping(value = "updateAC")
     public CommonResponse updateAC() {
         CommonResponse commonResponse = new CommonResponse();
-        String htmlPath = PelpaUtils.getHtmlPath();
-        String fileName = htmlPath + "packages/archive-contents";
-        File archiveContents = new File(fileName);
-        String result = archiveContentsGenerator.generator();
-        try {
-            LeapLogger.info("write content to " + fileName);
-            if (StringUtils.isNotBlank(result)) {
-                FileUtils.writeStringToFile(archiveContents, result);
-            }
-        } catch (Exception e) {
-            LeapLogger.warn("error write to archive-contents file failed! fileName=" + fileName);
-        }
+        String result = archiveContentsGenerator.updateAC();
         commonResponse.setData(result);
         return commonResponse;
     }

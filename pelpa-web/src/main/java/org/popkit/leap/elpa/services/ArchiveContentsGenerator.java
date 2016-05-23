@@ -1,14 +1,18 @@
 package org.popkit.leap.elpa.services;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.entity.ArchiveVo;
 import org.popkit.leap.elpa.entity.DepsItem;
 import org.popkit.leap.elpa.entity.PropsItem;
 import org.popkit.leap.elpa.entity.RecipeDo;
+import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -26,6 +30,22 @@ public class ArchiveContentsGenerator {
     private RecipesService recipesService;
 
     public static void main(String[] args) {
+    }
+
+    public String updateAC() {
+        String htmlPath = PelpaUtils.getHtmlPath();
+        String fileName = htmlPath + "packages/archive-contents";
+        File archiveContents = new File(fileName);
+        String result = generator();
+        try {
+            LeapLogger.info("write content to " + fileName);
+            if (StringUtils.isNotBlank(result)) {
+                FileUtils.writeStringToFile(archiveContents, result);
+            }
+        } catch (Exception e) {
+            LeapLogger.warn("error write to archive-contents file failed! fileName=" + fileName);
+        }
+        return result;
     }
 
     public String generator() {
