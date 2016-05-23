@@ -64,6 +64,33 @@ public class ArchiveContentsGenerator {
         }
     }
 
+    public List<String> diff() {
+        List<String> result = new ArrayList<String>();
+        List<RecipeDo> recipeDos = recipesService.getAllRecipeList();
+        if (CollectionUtils.isNotEmpty(recipeDos)) {
+            List<String> recipesNames = new ArrayList<String>();
+            for (RecipeDo recipeDo : recipeDos) {
+                recipesNames.add(recipeDo.getPkgName());
+            }
+            Collections.sort(recipesNames, new Comparator<String>() {
+                public int compare(String o1, String o2) {
+                    return o2.compareTo(o1);    // z -> a
+                }
+            });
+
+            for (String pkgName : recipesNames) {
+                RecipeDo recipeDo = recipesService.getRecipeDo(pkgName);
+                ArchiveVo archiveVo = LocalCache.getArchive(pkgName);
+                if (recipeDo == null || archiveVo == null) {
+                    result.add(pkgName);
+                }
+            }
+            return result;
+        } else {
+            return Collections.EMPTY_LIST;
+        }
+    }
+
     public static String wrapPair(String key, String value) {
         return "(" + key + " . " + value + ")";
     }

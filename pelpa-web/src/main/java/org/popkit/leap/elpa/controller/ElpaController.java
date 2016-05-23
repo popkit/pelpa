@@ -180,4 +180,12 @@ public class ElpaController {
         return commonResponse;
     }
 
+    @RequestMapping(value = "missed.html")
+    public CommonResponse missed() {
+        CommonResponse commonResponse = new CommonResponse();
+        List<String> missed = archiveContentsGenerator.diff();
+        commonResponse.setData(missed);
+        return commonResponse;
+    }
+
 }
