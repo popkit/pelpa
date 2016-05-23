@@ -12,6 +12,10 @@ public class FetchJSON {
     private String lastCommitFormat;
     private String pkgFile;
 
+    public boolean isSuccess() {
+        return "success".equals(status);
+    }
+
     public String getStatus() {
         return status;
     }

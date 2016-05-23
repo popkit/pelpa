@@ -48,6 +48,7 @@ public class GistFetchHandler implements FetchHandler {
         try {
             LeapLogger.info("#httpProxyService.getJSON#" + jsonUrl);
             String result = httpProxyService.getJSON(jsonUrl);
+            LeapLogger.info("#httpProxyService.getJSON.result#" + result);
             if (StringUtils.isNotBlank(result)) {
                 return JSON.parseObject(result, FetchJSON.class);
             }
@@ -69,7 +70,7 @@ public class GistFetchHandler implements FetchHandler {
 
     public void execute(RecipeDo recipeDo, Map<String, Object> extra) {
         FetchJSON fetchFile = getFetchFile(recipeDo.getPkgName(), recipeDo.getUrl());
-        if (fetchFile != null) {
+        if (fetchFile != null && fetchFile.isSuccess()) {
             String gistFileUrl = getGistFileUrl(fetchFile.getPkgFile());
             String workingPath = PelpaUtils.getWorkingPath(recipeDo.getPkgName()) + gistFileUrl.substring(gistFileUrl.lastIndexOf("/"));
             boolean status = RecipesService.updateLastCommit(recipeDo.getPkgName(), fetchFile.getLastCommit());
