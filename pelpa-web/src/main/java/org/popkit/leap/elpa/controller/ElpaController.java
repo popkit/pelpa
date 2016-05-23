@@ -144,7 +144,7 @@ public class ElpaController {
     public CommonResponse updateArchiveJSON() {
         CommonResponse com = new CommonResponse();
         com.setData(LocalCache.getArchiveJSON());
-        pkgBuildService.writeArchiveJSON();
+        LocalCache.writeArchiveJSON();
         return com;
     }
 

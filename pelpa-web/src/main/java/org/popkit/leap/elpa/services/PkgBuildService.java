@@ -7,7 +7,6 @@ import org.popkit.leap.elpa.entity.*;
 import org.popkit.leap.elpa.services.handler.GithubFetchHandler;
 import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.popkit.leap.elpa.utils.TimeVersionUtils;
-import org.popkit.leap.monitor.RoundMonitor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -56,8 +55,8 @@ public class PkgBuildService {
 
         // update archive.json when each package build success
         //if (RoundMonitor.finishedPercentValue() > 0.8) {
-        LeapLogger.info("#archive# write archive.json!" + RoundMonitor.finishedPercentValue());
-        writeArchiveJSON();
+        //LeapLogger.info("#archive# write archive.json!" + RoundMonitor.finishedPercentValue());
+        //LocalCache.writeArchiveJSON();
         //}
         return SimpleResult.success("成功,pkgName=" + recipeDo.getPkgName());
     }
@@ -89,16 +88,6 @@ public class PkgBuildService {
             LeapLogger.warn("exception in getSingleFile", e);
         }
         return null;   // multi files
-    }
-
-    public void writeArchiveJSON() {
-        File file = new File(PelpaUtils.getHtmlPath() + PelpaContents.ARCHIVE_JSON_FILE_NAME);
-        try {
-            String json = LocalCache.getArchiveJSON();
-            FileUtils.writeStringToFile(file, json);
-        } catch (IOException e) {
-            LeapLogger.warn("error writeArchiveJson", e);
-        }
     }
 
     public void buildMultiFilesPackage(RecipeDo recipeDo, List<File> elispFile) {

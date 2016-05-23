@@ -2,10 +2,16 @@ package org.popkit.leap.elpa.services;
 
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.entity.ArchiveVo;
+import org.popkit.leap.elpa.entity.PelpaContents;
 import org.popkit.leap.elpa.entity.RecipeVo;
+import org.popkit.leap.elpa.utils.PelpaUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -43,6 +49,16 @@ public class LocalCache {
     public static void removeRecipe(String pkgName) {
         if (recipes.containsKey(pkgName)) {
             recipes.remove(pkgName);
+        }
+    }
+
+    public static void writeArchiveJSON() {
+        File file = new File(PelpaUtils.getHtmlPath() + PelpaContents.ARCHIVE_JSON_FILE_NAME);
+        try {
+            String json = LocalCache.getArchiveJSON();
+            FileUtils.writeStringToFile(file, json);
+        } catch (IOException e) {
+            LeapLogger.warn("error writeArchiveJson", e);
         }
     }
 

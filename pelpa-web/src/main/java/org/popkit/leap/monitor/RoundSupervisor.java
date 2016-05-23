@@ -6,6 +6,8 @@ import org.popkit.leap.elpa.constents.EnvEnum;
 import org.popkit.leap.elpa.entity.RoundRun;
 import org.popkit.leap.elpa.entity.RoundStatus;
 import org.popkit.leap.elpa.services.ArchiveContentsGenerator;
+import org.popkit.leap.elpa.services.LocalCache;
+import org.popkit.leap.elpa.services.RecipesService;
 import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.popkit.leap.monitor.entity.BuildStatus;
 import org.popkit.leap.monitor.entity.DiskStatus;
@@ -42,6 +44,9 @@ public class RoundSupervisor {
     @Autowired
     private ArchiveContentsGenerator archiveContentsGenerator;
 
+    @Autowired
+    private RecipesService recipesService;
+
     public static final long REST_TIME = 2*60*60*1000;    // ms
     private static volatile RoundRun run = new RoundRun();
 
@@ -69,6 +74,8 @@ public class RoundSupervisor {
                         }
                         run.setStatus(RoundStatus.FINISHED);
                         archiveContentsGenerator.updateAC();
+                        LocalCache.writeArchiveJSON();
+                        recipesService.writeRecipesJson();
                     }
 
                     if (run.getEndTime() != null && run.getStatus() == RoundStatus.FINISHED) {
