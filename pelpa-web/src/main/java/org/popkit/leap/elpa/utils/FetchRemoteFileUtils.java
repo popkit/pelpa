@@ -1,6 +1,13 @@
 package org.popkit.leap.elpa.utils;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.popkit.core.logger.LeapLogger;
 
 import java.io.*;
@@ -55,6 +62,63 @@ public class FetchRemoteFileUtils {
         }
     }
 
+    public static boolean downloadRemoteFile(String remoteFilePath, String localFilePath) {
+        File f = new File(localFilePath);
+        if(!createDirectoryBaseFileName(localFilePath)) {
+            return false;
+        } else {
+                f.deleteOnExit();
+        }
+
+        int socketTimeout = 5000;  // 请求超时
+        int connectTimeout = 10000; // 链接超时
+
+        // 设置请求参数
+        RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(socketTimeout).setConnectTimeout(connectTimeout).build();
+        HttpGet httpGet = new HttpGet(remoteFilePath);
+        httpGet.setConfig(requestConfig);
+
+        // httclient及数据设置
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        BufferedInputStream bis = null;
+        BufferedOutputStream bos = null;
+
+        try {
+            CloseableHttpResponse response = httpclient.execute(httpGet);
+            LeapLogger.info("#getJSON#" + response.getStatusLine().getStatusCode());
+            if (response.getStatusLine().getStatusCode() == 200) {
+                HttpEntity responseEntity = response.getEntity();
+                bis = new BufferedInputStream(responseEntity.getContent());
+                bos = new BufferedOutputStream(new FileOutputStream(f));
+                byte[] b1 = new byte[2048];
+                int e2;
+                while((e2 = bis.read(b1)) != -1) {
+                    bos.write(b1, 0, e2);
+                }
+
+                EntityUtils.consume(responseEntity);
+                return f.exists();
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            LeapLogger.warn("#getJSON# exception" + remoteFilePath);
+        } finally {
+            try {
+                if (bis != null){
+                    bis.close();
+                }
+                if (bos != null) {
+                    bos.close();
+                }
+                httpclient.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
     public static boolean downloadFile(String remoteFilePath, String localFilePath) {
         URL urlfile = null;
         HttpURLConnection httpUrl = null;
@@ -66,12 +130,13 @@ public class FetchRemoteFileUtils {
         } else {
             boolean b;
             try {
-                if(f.exists()) {
-                    f.delete();
-                }
+                f.deleteOnExit();
 
                 urlfile = new URL(remoteFilePath);
                 httpUrl = (HttpURLConnection)urlfile.openConnection();
+                httpUrl.setConnectTimeout(5000);
+
+
                 httpUrl.connect();
                 bis = new BufferedInputStream(httpUrl.getInputStream());
                 bos = new BufferedOutputStream(new FileOutputStream(f));
@@ -93,8 +158,12 @@ public class FetchRemoteFileUtils {
                 b = false;
             } finally {
                 try {
-                    bis.close();
-                    bos.close();
+                    if (bis != null) {
+                        bis.close();
+                    }
+                    if (bos != null) {
+                        bos.close();
+                    }
                 } catch (IOException var18) {
                     var18.printStackTrace();
                 }
