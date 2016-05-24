@@ -24,7 +24,7 @@ import java.util.Date;
 public class FetchRemoteFileUtils {
 
     public static void main(String[] args) {
-        //downloadRemoteFile("https://www.emacswiki.org/emacs/download/aok.el", "/Users/aborn/github/pelpa/working/aok/aok.el");
+        downloadFile("https://www.emacswiki.org/emacs/download/aok.el", "/Users/aborn/github/pelpa/working/aok/aok.el");
         try {
             lastModify("https://www.emacswiki.org/emacs/download/aok.el");
         } catch (Exception e) {
