@@ -10,9 +10,11 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.popkit.core.logger.LeapLogger;
 
+import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Date;
 
 /**
  * Created by Aborn Jiang
@@ -20,6 +22,27 @@ import java.net.URL;
  * 2016-05-20:22:39
  */
 public class FetchRemoteFileUtils {
+
+    public static void main(String[] args) {
+        //downloadRemoteFile("https://www.emacswiki.org/emacs/download/aok.el", "/Users/aborn/github/pelpa/working/aok/aok.el");
+        try {
+            lastModify("https://www.emacswiki.org/emacs/download/aok.el");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String lastModify(String remoteUrl) throws Exception {
+        URL url = new URL(remoteUrl);
+        HttpsURLConnection httpCon = (HttpsURLConnection) url.openConnection();
+
+        long date = httpCon.getLastModified();
+        if (date == 0)
+            System.out.println("No last-modified information.");
+        else
+            System.out.println("Last-Modified: " + new Date(date));
+        return "";
+    }
 
     public static boolean deleteAllFiles(String directory) {
         File file = new File(directory);
@@ -67,7 +90,9 @@ public class FetchRemoteFileUtils {
         if(!createDirectoryBaseFileName(localFilePath)) {
             return false;
         } else {
-                f.deleteOnExit();
+            if (f.exists()) {
+                f.delete();
+            }
         }
 
         int socketTimeout = 5000;  // 请求超时
@@ -130,7 +155,7 @@ public class FetchRemoteFileUtils {
         } else {
             boolean b;
             try {
-                f.deleteOnExit();
+                //f.deleteOnExit();
 
                 urlfile = new URL(remoteFilePath);
                 httpUrl = (HttpURLConnection)urlfile.openConnection();
