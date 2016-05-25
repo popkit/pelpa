@@ -10,11 +10,11 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.popkit.core.logger.LeapLogger;
 
-import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.Socket;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -25,103 +25,64 @@ import java.util.Date;
 public class FetchRemoteFileUtils {
 
     public static void main(String[] args) {
-//        downloadFile("https://www.emacswiki.org/emacs/download/aok.el", "/Users/aborn/github/pelpa/working/aok/aok.el");
-//        try {
-//            lastModify("https://www.emacswiki.org/emacs/download/aok.el");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
-        try {
-            Socket socket = new Socket("www.emacswiki.org", 443);
-            if (!socket.isClosed() && socket.isConnected()) {
-
-                int socketTimeout = 5000;  // 请求超时
-                int connectTimeout = 10000; // 链接超时
-
-                // 设置请求参数
-                RequestConfig requestConfig = RequestConfig.custom()
-                        .setSocketTimeout(socketTimeout)
-                        .setConnectTimeout(connectTimeout)
-                        .build()
-                        ;
-
-                HttpGet httpGet = new HttpGet("https://www.emacswiki.org/emacs/download/aok.el");
-                httpGet.setConfig(requestConfig);
-                httpGet.setHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
-                httpGet.setHeader("Accept-Encoding", "gzip, deflate, sdch");
-                httpGet.setHeader("Accept-Language", "zh-CN,zh;q=0.8,en;q=0.6,zh-TW;q=0.4");
-                httpGet.setHeader("Cache-Control", "no-cache");
-                httpGet.setHeader("Connection", "keep-alive");
-                httpGet.setHeader("Upgrade-Insecure-Requests", "1");
-                httpGet.setHeader("Cookie", "Wiki=username%251eaborn%251euihnscuskc%251e1");
-                httpGet.setHeader("Host", "149.210.147.41");
-                httpGet.setHeader("Pragma", "no-cache");
-                httpGet.setHeader("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.3");
-
-
-                // httclient及数据设置
-                CloseableHttpClient httpclient = HttpClients.createDefault();
-                BufferedInputStream bis = null;
-                BufferedOutputStream bos = null;
-
-                CloseableHttpResponse response = httpclient.execute(httpGet);
-                if (response.getStatusLine().getStatusCode() == 200) {
-                    System.out.println("good: 200");
-                } else {
-                    System.out.println("bad:" + response.getStatusLine().getStatusCode());
-                }
-
-                System.out.println("socket connected!");
-            } else {
-                System.out.println("socket not connected!");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        executeShellCommand();
     }
 
-    public static void executeShellCommand() {
+
+    public static String getRemoteWikiUrl(String pkgName) {
+        return "https://www.emacswiki.org/emacs/download/" + pkgName + ".el";
+    }
+
+    public static boolean downloadWikiFile(String pkgName) {
+        String localPath = "/Users/aborn/github/pelpa/working/aok/aok.el";// PelpaUtils.getWorkingPath(pkgName);
+        if (!createDirectoryBaseFileName(localPath)) {
+            return false;
+        }
+        String command = getCurlCommand(pkgName, localPath);
         try {
-            Process p = Runtime.getRuntime().exec("curl https://www.emacswiki.org/emacs/download/aok.el");
+            Process p = Runtime.getRuntime().exec(command);
             p.waitFor();
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            StringBuilder sb = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line + "\n");
-            }
-            System.out.println(sb);
+            return new File(localPath).exists();
         } catch (InterruptedException e) {
-
+            LeapLogger.warn("downloadWikiFile InterruptedException");
         } catch (IOException e) {
-
+            LeapLogger.warn("downloadWikiFile IOException");
         }
+        return false;
     }
-    public static String getLastModified(String url) {
-        String curlCommand = "curl -I https://www.emacswiki.org/emacs/download/aok.el";
-        String curlCommand2 = "curl --silent --head https://www.emacswiki.org/emacs/download/aok.el";
+
+    public static long getLastModified(String remoteUrl) {
+        //String curlCommand = "curl -I https://www.emacswiki.org/emacs/download/aok.el";
+        String curlCommand = "curl --silent --head " + remoteUrl;
+        try {
+            Process p = Runtime.getRuntime().exec(curlCommand);
+            p.waitFor();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String line;
+            String lastModifiedString = null;
+            while ((line = reader.readLine()) != null) {
+                if (line.contains("Last-Modified:")) {
+                    lastModifiedString = line.replaceAll("Last-Modified:", "").trim();
+                }
+            }
+            if (null != lastModifiedString) {
+                SimpleDateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz");
+                Date d = format.parse(lastModifiedString);
+                System.out.println(d);
+                return d.getTime();
+            }
+        } catch (ParseException pe) {
+            return 0;
+        } catch (InterruptedException e) {
+            return 0;
+        } catch (IOException ioe) {
+            return 0;
+        }
+        return 0;
+    }
+
+    public static String getCurlCommand(String pkgName, String localFullPathName) {
+        String curlCommand = "curl -o " + localFullPathName + " https://www.emacswiki.org/emacs/download/" + pkgName + ".el";
         return curlCommand;
-    }
-
-    public static String getCurlUrl(String pkgName) {
-        String curlCommand = "curl -o /Users/aborn/github/pelpa/working/aok/aok.el https://www.emacswiki.org/emacs/download/aok.el";
-        return "curl --remote-name https://www.emacswiki.org/emacs/download/" + pkgName + ".el";
-    }
-
-    public static String lastModify(String remoteUrl) throws Exception {
-        URL url = new URL(remoteUrl);
-        HttpsURLConnection httpCon = (HttpsURLConnection) url.openConnection();
-
-        long date = httpCon.getLastModified();
-        if (date == 0)
-            System.out.println("No last-modified information.");
-        else
-            System.out.println("Last-Modified: " + new Date(date));
-        return "";
     }
 
     public static boolean deleteAllFiles(String directory) {
@@ -157,7 +118,7 @@ public class FetchRemoteFileUtils {
     }
 
     public static boolean createDirectoryBaseFileName(String path) {
-        if(!StringUtils.isEmpty(path) && path.contains(File.separator)) {
+        if(StringUtils.isNoneBlank(path) && path.contains(File.separator)) {
             String filePath = path.substring(0, path.lastIndexOf(File.separator));
             return createDirectory(filePath);
         } else {

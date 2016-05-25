@@ -1,9 +1,12 @@
 package org.popkit.leap.elpa.services.handler;
 
+import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.entity.FetcherEnum;
 import org.popkit.leap.elpa.entity.RecipeDo;
 import org.popkit.leap.elpa.services.FetchHandler;
 import org.popkit.leap.elpa.services.HttpProxyService;
+import org.popkit.leap.elpa.services.RecipesService;
+import org.popkit.leap.elpa.utils.FetchRemoteFileUtils;
 import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,13 +33,20 @@ public class EmacsWikiFetchHandler implements FetchHandler {
         String wikiUrl = WIKI_ROOT + recipeDo.getPkgName() + ".el";
         String localWorking = PelpaUtils.getWorkingPath(recipeDo.getPkgName());
         System.out.println("wikiUrl=" + wikiUrl + "\nlocalWorking=" + localWorking);
-        /*
-        try {
-            if (!FetchRemoteFileUtils.downloadFile(wikiUrl, localWorking + "/" + recipeDo.getPkgName() + ".el")) {
-                LeapLogger.warn("error download pkg:" + recipeDo.getPkgName() + " from " + wikiUrl);
+
+        String pkgName = "aok";
+        String remoteUrl = FetchRemoteFileUtils.getRemoteWikiUrl(pkgName);
+        long lastModified = FetchRemoteFileUtils.getLastModified(remoteUrl);
+
+        if (lastModified > 0) {
+            if (FetchRemoteFileUtils.downloadWikiFile(pkgName)) {
+                boolean status = RecipesService.updateLastCommit(recipeDo.getPkgName(), lastModified);
+                LeapLogger.info("update " + recipeDo.getPkgName() + " lastcommit, status=" + status);
+            } else {
+                LeapLogger.warn("downloadWikiFile(" + remoteUrl + ") failed!");
             }
-        } catch (Exception e) {
-            LeapLogger.warn("exception error download pkg:" + recipeDo.getPkgName() + " from " + wikiUrl);
-        }*/
+        } else {
+            LeapLogger.warn("getLastModified(" + remoteUrl + ") failed!");
+        }
     }
 }
