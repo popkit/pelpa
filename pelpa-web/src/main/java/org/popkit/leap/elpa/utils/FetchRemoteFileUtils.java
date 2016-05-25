@@ -79,6 +79,37 @@ public class FetchRemoteFileUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        executeShellCommand();
+    }
+
+    public static void executeShellCommand() {
+        try {
+            Process p = Runtime.getRuntime().exec("curl https://www.emacswiki.org/emacs/download/aok.el");
+            p.waitFor();
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+            System.out.println(sb);
+        } catch (InterruptedException e) {
+
+        } catch (IOException e) {
+
+        }
+    }
+    public static String getLastModified(String url) {
+        String curlCommand = "curl -I https://www.emacswiki.org/emacs/download/aok.el";
+        String curlCommand2 = "curl --silent --head https://www.emacswiki.org/emacs/download/aok.el";
+        return curlCommand;
+    }
+
+    public static String getCurlUrl(String pkgName) {
+        String curlCommand = "curl -o /Users/aborn/github/pelpa/working/aok/aok.el https://www.emacswiki.org/emacs/download/aok.el";
+        return "curl --remote-name https://www.emacswiki.org/emacs/download/" + pkgName + ".el";
     }
 
     public static String lastModify(String remoteUrl) throws Exception {
