@@ -7,7 +7,6 @@ import org.popkit.leap.elpa.services.FetchHandler;
 import org.popkit.leap.elpa.services.HttpProxyService;
 import org.popkit.leap.elpa.services.RecipesService;
 import org.popkit.leap.elpa.utils.FetchRemoteFileUtils;
-import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,11 +29,9 @@ public class EmacsWikiFetchHandler implements FetchHandler {
     }
 
     public void execute(RecipeDo recipeDo, Map<String, Object> extra) {
-        String wikiUrl = WIKI_ROOT + recipeDo.getPkgName() + ".el";
-        String localWorking = PelpaUtils.getWorkingPath(recipeDo.getPkgName());
-        System.out.println("wikiUrl=" + wikiUrl + "\nlocalWorking=" + localWorking);
-
         String pkgName = recipeDo.getPkgName();
+
+        LeapLogger.info("EmacsWikiFetchHandler start:" + recipeDo.getPkgName());
         String remoteUrl = FetchRemoteFileUtils.getRemoteWikiUrl(pkgName);
         long lastModified = FetchRemoteFileUtils.getLastModified(remoteUrl);
 
@@ -48,5 +45,6 @@ public class EmacsWikiFetchHandler implements FetchHandler {
         } else {
             LeapLogger.warn("getLastModified(" + remoteUrl + ") failed!");
         }
+        LeapLogger.info("EmacsWikiFetchHandler finished:" + recipeDo.getPkgName());
     }
 }

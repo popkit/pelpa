@@ -2,6 +2,7 @@ package org.popkit.leap.elpa.utils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.entity.ArchiveVo;
 
 import java.util.ArrayList;
@@ -33,12 +34,16 @@ public class ArchiveParser {
 
             if (propsJson.containsKey("keywords")) {
                 JSONArray jsonArray = jsonObject.getJSONArray("keywords");
-                ListIterator<Object> iterator = jsonArray.listIterator();
-                List<String> result = new ArrayList<String>();
-                while (iterator.hasNext()) {
-                    result.add(iterator.next().toString());
+                if (jsonArray != null) {
+                    ListIterator<Object> iterator = jsonArray.listIterator();
+                    List<String> result = new ArrayList<String>();
+                    while (iterator.hasNext()) {
+                        result.add(iterator.next().toString());
+                    }
+                    archiveVo.setKeywords(result);
+                } else {
+                    archiveVo.setKeywords(new ArrayList<String>());
                 }
-                archiveVo.setKeywords(result);
             }
         }
 
