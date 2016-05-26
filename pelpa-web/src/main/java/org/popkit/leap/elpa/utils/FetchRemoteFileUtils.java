@@ -33,7 +33,7 @@ public class FetchRemoteFileUtils {
     }
 
     public static boolean downloadWikiFile(String pkgName) {
-        String localPath = PelpaUtils.getWorkingPath(pkgName);
+        String localPath = PelpaUtils.getWorkingPath(pkgName) + "/" + pkgName + ".el";
         if (!createDirectoryBaseFileName(localPath)) {
             return false;
         }
