@@ -33,7 +33,7 @@ public class FetchRemoteFileUtils {
     }
 
     public static boolean downloadWikiFile(String pkgName) {
-        String localPath = "/Users/aborn/github/pelpa/working/aok/aok.el";// PelpaUtils.getWorkingPath(pkgName);
+        String localPath = PelpaUtils.getWorkingPath(pkgName);
         if (!createDirectoryBaseFileName(localPath)) {
             return false;
         }
