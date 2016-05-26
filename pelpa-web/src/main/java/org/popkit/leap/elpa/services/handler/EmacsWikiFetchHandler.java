@@ -34,7 +34,7 @@ public class EmacsWikiFetchHandler implements FetchHandler {
         String localWorking = PelpaUtils.getWorkingPath(recipeDo.getPkgName());
         System.out.println("wikiUrl=" + wikiUrl + "\nlocalWorking=" + localWorking);
 
-        String pkgName = "aok";
+        String pkgName = recipeDo.getPkgName();
         String remoteUrl = FetchRemoteFileUtils.getRemoteWikiUrl(pkgName);
         long lastModified = FetchRemoteFileUtils.getLastModified(remoteUrl);
 
