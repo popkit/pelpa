@@ -196,8 +196,6 @@ public class FetchRemoteFileUtils {
         } else {
             boolean b;
             try {
-                //f.deleteOnExit();
-
                 urlfile = new URL(remoteFilePath);
                 httpUrl = (HttpURLConnection)urlfile.openConnection();
                 httpUrl.setConnectTimeout(5000);
