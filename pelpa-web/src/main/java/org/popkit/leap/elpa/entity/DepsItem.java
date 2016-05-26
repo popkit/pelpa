@@ -49,11 +49,11 @@ public class DepsItem {
     private static List<Integer> toVersionList(String ver) {
         List<Integer> result = new ArrayList<Integer>();
         for (String item : ver.split("\\.")) {
-            try {
+            //try {
                 result.add(Integer.parseInt(item));
-            } catch (Exception e) {
-                LeapLogger.warn("error in Integer.parseInt(" + item + ")", e);
-            }
+            //} catch (Exception e) {
+            //    LeapLogger.warn("error in Integer.parseInt(" + item + ")", e);
+            //}
         }
         return result;
     }
