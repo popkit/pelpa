@@ -82,6 +82,8 @@ public class PkgBuildService {
                             return file;
                         }
                     }
+                    File singleFile = new File(workingPath + File.separator + recipeFile);
+                    return singleFile.exists() ? singleFile : null;
                 }
             }
         } catch (Exception e) {
