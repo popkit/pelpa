@@ -1,5 +1,6 @@
 package org.popkit.leap.elpa.services;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.popkit.core.entity.SimpleResult;
 import org.popkit.core.logger.LeapLogger;
@@ -82,6 +83,8 @@ public class PkgBuildService {
                             return file;
                         }
                     }
+                    File singleFile = new File(workingPath + File.separator + recipeFile);
+                    return singleFile.exists() ? singleFile : null;
                 }
             }
         } catch (Exception e) {
@@ -91,6 +94,12 @@ public class PkgBuildService {
     }
 
     public void buildMultiFilesPackage(RecipeDo recipeDo, List<File> elispFile) {
+        if (CollectionUtils.isEmpty(elispFile)) {
+            LeapLogger.warn("#buildMultiFilesPackage error#" + recipeDo.getPkgName()
+                    + ", lisp files is empty!");
+            return;
+        }
+
         try {
             File pkgFile = null;
             for (File file : elispFile) {
