@@ -71,11 +71,11 @@ public class RoundSupervisor {
                     if (RoundMonitor.isFinishedThisRun()) {
                         if (run.getEndTime() == null) {
                             run.setEndTime(new Date());
+                            archiveContentsGenerator.updateAC();
+                            LocalCache.writeArchiveJSON();
+                            recipesService.writeRecipesJson();
                         }
                         run.setStatus(RoundStatus.FINISHED);
-                        archiveContentsGenerator.updateAC();
-                        LocalCache.writeArchiveJSON();
-                        recipesService.writeRecipesJson();
                     }
 
                     if (run.getEndTime() != null && run.getStatus() == RoundStatus.FINISHED) {
