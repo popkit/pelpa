@@ -38,7 +38,7 @@ public class RecipeDo {
 
     public List<String> getFileList() {
         if (StringUtils.isNotBlank(this.files)) {
-            return Arrays.asList(this.files.split(" "));
+            return Arrays.asList(this.files.split("\\s+"));
         } else {
             return new ArrayList<String>();
         }

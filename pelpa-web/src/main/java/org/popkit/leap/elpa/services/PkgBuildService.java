@@ -15,6 +15,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -50,7 +51,7 @@ public class PkgBuildService {
                 LeapLogger.info("#single#" + recipeDo.getPkgName() + "  file:" + singleFile.getAbsolutePath());
                 buildSingleFilePackage(recipeDo, singleFile);
             } else {
-                buildMultiFilesPackage(recipeDo, PelpaUtils.getElispFile(workingPath));
+                buildMultiFilesPackage(recipeDo);
             }
         }
 
@@ -79,25 +80,46 @@ public class PkgBuildService {
                         }
                     }
                     File singleFile = new File(workingPath + File.separator + recipeFile);
-                    return singleFile.exists() ? singleFile : null;
+                    if (singleFile.exists()) {
+                        return singleFile;
+                    } else {   // 说明是通配符
+
+                        return null;
+                    }
                 }
             }
         } catch (Exception e) {
             LeapLogger.warn("exception in getSingleFile", e);
         }
+
         return null;   // multi files
     }
 
-    public void buildMultiFilesPackage(RecipeDo recipeDo, List<File> elispFile) {
-        if (CollectionUtils.isEmpty(elispFile)) {
-            LeapLogger.warn("#buildMultiFilesPackage error#" + recipeDo.getPkgName()
-                    + ", lisp files is empty!");
-            return;
-        }
+    public void buildMultiFilesPackage(RecipeDo recipeDo) {
+        List<File> elispFileList = new ArrayList<File>();
 
+        String workingPath = PelpaUtils.getWorkingPath(recipeDo.getPkgName());
         try {
             File pkgFile = null;
-            for (File file : elispFile) {
+
+            // get all files which will be tar.
+            if (CollectionUtils.isNotEmpty(recipeDo.getFileList())) {
+                for (String fileName : recipeDo.getFileList()) {
+                    if (fileName.contains("*.el")) {
+                        String sub = fileName.substring(0, fileName.lastIndexOf("/"));
+                        elispFileList.addAll(PelpaUtils.getElispFile(workingPath + File.separator + sub));
+                    } else {
+                        File fileTmp = new File(workingPath + File.separator + fileName);
+                        if (fileTmp.exists()) {
+                            elispFileList.add(fileTmp);
+                        }
+                    }
+                }
+            } else {
+                elispFileList.addAll(PelpaUtils.getElispFile(workingPath));
+            }
+
+            for (File file : elispFileList) {
                 if ((recipeDo.getPkgName() + ".el").endsWith(file.getName())) {
                     pkgFile = file;
                 }
@@ -126,7 +148,7 @@ public class PkgBuildService {
                             archiveVo.getProps().getKeywords());
                 }
 
-                FileTarHandler.tar(recipeDo.getPkgName(), recipeDo);
+                FileTarHandler.tar(recipeDo.getPkgName(), recipeDo, elispFileList);
                 LocalCache.updateArchive(recipeDo.getPkgName(), archiveVo);
             }
         } catch (Exception e) {

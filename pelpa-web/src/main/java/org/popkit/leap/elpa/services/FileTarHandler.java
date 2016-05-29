@@ -1,8 +1,6 @@
 package org.popkit.leap.elpa.services;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.kamranzafar.jtar.TarEntry;
 import org.kamranzafar.jtar.TarOutputStream;
 import org.popkit.leap.elpa.entity.RecipeDo;
@@ -12,7 +10,6 @@ import org.popkit.leap.elpa.utils.TimeVersionUtils;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -49,7 +46,7 @@ public class FileTarHandler {
         out.close();
     }
 
-    public static void tar(String pkgName, RecipeDo recipeDo) throws FileNotFoundException, IOException {
+    public static void tar(String pkgName, RecipeDo recipeDo, List<File> elispFileList) throws FileNotFoundException, IOException {
         String htmlPath = PelpaUtils.getHtmlPath();
         String packagePath = htmlPath + "packages/";
         String pkgWorkingPath = PelpaUtils.getWorkingPath(pkgName);
@@ -61,7 +58,8 @@ public class FileTarHandler {
         // if final package tar file exists, do not need to build it!
         File desTarFile = new File(destTar);
         if (desTarFile.exists()) {
-            desTarFile.delete();   // return @TODO , 后期记得直接返回
+            //desTarFile.delete();   // return @TODO , 后期记得直接返回
+            return;
         }
 
         String tmpTarWorking = pkgWorkingPath + "/" + recipeDo.getPkgName() + "-"+ version + "";
@@ -76,42 +74,8 @@ public class FileTarHandler {
             fileList.add(pkgElispFile);
         }
 
-        for (File item : new File(pkgWorkingPath).listFiles()) {
-            if ((!item.getName().startsWith(".")) &&
-                    isSatisfy(recipeDo.getFiles(), item.getName())) {
-                fileList.add(item);
-            }
-        }
+        fileList.addAll(elispFileList);
         tar(fileList, tmpTarWorking, destTar);
-    }
-
-    private static boolean isSatisfy(String filesInRecipe, String currentFile) {
-        List<String> fileNameArr;
-        if (StringUtils.isNotBlank(filesInRecipe)) {
-            fileNameArr = Arrays.asList(filesInRecipe.split("\\s+"));
-            if (fileNameArr.contains(currentFile)) {
-                return true;
-            }
-        } else {   // default obtain all .el files
-            return currentFile.endsWith(".el");
-        }
-
-        try {
-            if (CollectionUtils.isNotEmpty(fileNameArr)) {
-                // TODO support common regex
-                for (String item : fileNameArr) {
-                    if ("*.el".equals(item) && currentFile.endsWith(".el")) {
-                        return true;
-                    } else if (currentFile.equals(item)) {
-                        return true;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            //
-        }
-
-        return false;
     }
 
     public static void main(String[] args) {
