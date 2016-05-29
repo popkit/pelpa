@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -29,7 +30,12 @@ public class ArchiveContentsGenerator {
     @Autowired
     private RecipesService recipesService;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException{
+        String acc = "\"aaa\"";
+        System.out.println("acc=" + acc);
+        String result = wrapQuote(replaceInnerQuote(acc));
+        FileUtils.writeStringToFile(new File("/Users/aborn/aac.txt"), result);
+        System.out.println("acc=" + result);
     }
 
     public String updateAC() {
@@ -68,7 +74,7 @@ public class ArchiveContentsGenerator {
                 if (recipeDo != null && archiveVo != null) {
                     String version = wrapBracket(StringUtils.join(archiveVo.getVer(), " "));
                     String deps = buildDeps(archiveVo.getDepsList());
-                    String shortInfo = archiveVo.getDesc();
+                    String shortInfo = replaceInnerQuote(archiveVo.getDesc());
                     String type = archiveVo.getType();
                     String props = buildProps(archiveVo.getProps());
                     String itemValueString = wrapSBracket(version
@@ -127,13 +133,21 @@ public class ArchiveContentsGenerator {
         return wrapBracket(StringUtils.join(versionList, " "));
     }
 
+    public static String replaceInnerQuote(String origin) {
+        if (origin.contains("\"")) {
+            return origin.replace("\"", "\\\"");
+        } else {
+            return origin;
+        }
+    }
+
     public static String wrapQuote(String origin) {
         return "\"" + origin + "\"";
     }
 
     public static String buildProps(PropsItem propsItem) {
         return wrapBracket(wrapUrl(propsItem.getUrl())
-        + " " + wrapKeywords(propsItem.getKeywords()));
+                + " " + wrapKeywords(propsItem.getKeywords()));
     }
 
     public static String wrapUrl(String url) {
@@ -171,7 +185,7 @@ public class ArchiveContentsGenerator {
     public static String wrapDepsItem(DepsItem depsItem) {
         return wrapBracket(
                 depsItem.getName() + " " +
-        wrapBracket(StringUtils.join(depsItem.getVersions(), " "))
+                        wrapBracket(StringUtils.join(depsItem.getVersions(), " "))
         );
     }
 }
