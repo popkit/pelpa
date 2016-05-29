@@ -34,8 +34,7 @@ public class GitFetchHandler implements FetchHandler {
 
     public boolean validate(RecipeDo recipeDo, Map<String, Object> extra) {
         if (recipeDo.getFetcherEnum() == FetcherEnum.GITHUB ||
-                recipeDo.getFetcherEnum() == FetcherEnum.GITLAB ||
-                recipeDo.getFetcherEnum() == FetcherEnum.BITBUCKET) {
+                recipeDo.getFetcherEnum() == FetcherEnum.GITLAB) {
             return true;
         }
 
