@@ -43,7 +43,6 @@ public class PkgFetchService {
         Map<String, Object> extra = new HashMap<String, Object>();
         extra.put("pkgPath", pkgPath);
 
-        // TODO support non-github source
         if (CollectionUtils.isNotEmpty(fetchHandlerList)) {
             for (FetchHandler fetchHandler : fetchHandlerList) {
                 if (fetchHandler.validate(recipeDo, extra)) {

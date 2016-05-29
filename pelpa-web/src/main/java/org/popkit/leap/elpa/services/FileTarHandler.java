@@ -26,9 +26,10 @@ public class FileTarHandler {
     private static final String TEST_DES_DIR = "/Users/aborn/github/popkit-elpa/html/packages/";
 
     public static void tar(List<File> fileList, String tmpTarWorking, String destTar) throws IOException {
-        // prepare files
         File tmpTarWorkingDir = new File(tmpTarWorking);
-        tmpTarWorkingDir.deleteOnExit();
+        if (tmpTarWorkingDir.exists()) {
+            FileUtils.deleteDirectory(tmpTarWorkingDir);
+        }
         tmpTarWorkingDir.mkdir();
 
         for (File item : fileList) {

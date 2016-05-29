@@ -10,6 +10,7 @@ public enum FetcherEnum {
     GITHUB("github"),
     GIT("git"),      // Like gist
     WIKI("wiki"),
+    GITLAB("gitlab"),
     UNKNOWN("null")
     ;
     private String fetcher;

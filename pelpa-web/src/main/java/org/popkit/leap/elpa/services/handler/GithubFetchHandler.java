@@ -29,9 +29,11 @@ import java.util.Map;
 @Service
 public class GithubFetchHandler implements FetchHandler {
     public static final String GITHUB_HTTPS_ROOT = "https://github.com/";
+    public static final String GITLAB_HTTPS_ROOT = "https://gitlab.com/";
 
     public boolean validate(RecipeDo recipeDo, Map<String, Object> extra) {
-        if (recipeDo.getFetcherEnum() == FetcherEnum.GITHUB) {
+        if (recipeDo.getFetcherEnum() == FetcherEnum.GITHUB ||
+                recipeDo.getFetcherEnum() == FetcherEnum.GITLAB) {
             return true;
         }
 
@@ -74,7 +76,7 @@ public class GithubFetchHandler implements FetchHandler {
     private void create(RecipeDo recipeDo, String localPathDir) {
         // prepare a new folder for the cloned repository
         LeapLogger.info("github create:" + localPathDir);
-        String remote_url = GITHUB_HTTPS_ROOT + recipeDo.getRepo() + ".git";
+        String remote_url = getRemoteGitUrl(recipeDo);
 
         try {
             File localPath = File.createTempFile(localPathDir, "");
@@ -97,6 +99,16 @@ public class GithubFetchHandler implements FetchHandler {
             LeapLogger.warn("error create" + localPathDir, e);
         } finally {
             //
+        }
+    }
+
+    private String getRemoteGitUrl(RecipeDo recipeDo) {
+        if (recipeDo.getFetcherEnum() == FetcherEnum.GITHUB) {
+            return GITHUB_HTTPS_ROOT + recipeDo.getRepo() + ".git";
+        } else if (recipeDo.getFetcherEnum() == FetcherEnum.GITLAB) {
+            return GITLAB_HTTPS_ROOT + recipeDo.getRepo() + ".git";
+        } else {
+            return null;
         }
     }
 

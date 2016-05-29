@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * 将下载下来的package构建成标准格式
+ * 将下载下来的package构建成最后需要的package
  * Created by Aborn Jiang
  * Mail aborn.jiang@gmail.com
  * 2016-05-14:11:10
@@ -54,11 +54,6 @@ public class PkgBuildService {
             }
         }
 
-        // update archive.json when each package build success
-        //if (RoundMonitor.finishedPercentValue() > 0.8) {
-        //LeapLogger.info("#archive# write archive.json!" + RoundMonitor.finishedPercentValue());
-        //LocalCache.writeArchiveJSON();
-        //}
         return SimpleResult.success("成功,pkgName=" + recipeDo.getPkgName());
     }
 
@@ -124,9 +119,12 @@ public class PkgBuildService {
                     archiveVo.setPropsUrl(GithubFetchHandler.GITHUB_HTTPS_ROOT + recipeDo.getRepo());
                 }
 
-                PelpaUtils.generatePkgElispFileContent(recipeDo.getPkgName(),
-                        TimeVersionUtils.toVersionString(lastcommit), archiveVo.getDesc(),
-                        archiveVo.getProps().getKeywords());
+                File pkgElispFile = new File(PelpaUtils.getPkgElispFileName(recipeDo.getPkgName()));
+                if (!pkgElispFile.exists()) {
+                    PelpaUtils.generatePkgElispFileContent(recipeDo.getPkgName(),
+                            TimeVersionUtils.toVersionString(lastcommit), archiveVo.getDesc(),
+                            archiveVo.getProps().getKeywords());
+                }
 
                 FileTarHandler.tar(recipeDo.getPkgName(), recipeDo);
                 LocalCache.updateArchive(recipeDo.getPkgName(), archiveVo);
