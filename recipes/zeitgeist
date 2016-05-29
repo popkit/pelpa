@@ -1,0 +1,3 @@
+(zeitgeist :fetcher git
+	   :url "git://anongit.freedesktop.org/zeitgeist/zeitgeist-datasources"
+	   :files ("emacs/*.el"))
