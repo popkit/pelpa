@@ -1,11 +1,12 @@
 package org.popkit.leap.elpa.services;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.kamranzafar.jtar.TarEntry;
 import org.kamranzafar.jtar.TarOutputStream;
 import org.popkit.leap.elpa.entity.RecipeDo;
-import org.popkit.leap.elpa.services.handler.GithubFetchHandler;
+import org.popkit.leap.elpa.services.handler.GitFetchHandler;
 import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.popkit.leap.elpa.utils.TimeVersionUtils;
 
@@ -52,17 +53,22 @@ public class FileTarHandler {
         String htmlPath = PelpaUtils.getHtmlPath();
         String packagePath = htmlPath + "packages/";
         String pkgWorkingPath = PelpaUtils.getWorkingPath(pkgName);
-        long lastcommit = GithubFetchHandler.getLastCommiterTime(recipeDo.getPkgName());
+        long lastcommit = GitFetchHandler.getLastCommiterTime(recipeDo.getPkgName());
         //lastcommit = lastcommit == 0 ? elispfile.lastModified() : lastcommit;
 
         String version = TimeVersionUtils.toVersionString(lastcommit);
         String destTar = packagePath + recipeDo.getPkgName() + "-"+ version + ".tar";
         // if final package tar file exists, do not need to build it!
-        if (new File(destTar).exists()) {
-            return;
+        File desTarFile = new File(destTar);
+        if (desTarFile.exists()) {
+            desTarFile.delete();   // return @TODO , 后期记得直接返回
         }
 
         String tmpTarWorking = pkgWorkingPath + "/" + recipeDo.getPkgName() + "-"+ version + "";
+        File tmpTarWorkingFile = new File(tmpTarWorking);
+        if (tmpTarWorkingFile.exists() && tmpTarWorkingFile.isDirectory()) {
+            FileUtils.deleteDirectory(tmpTarWorkingFile);
+        }
 
         List<File> fileList = new ArrayList<File>();
         File pkgElispFile = new File(PelpaUtils.getPkgElispFileName(recipeDo.getPkgName()));
@@ -80,22 +86,25 @@ public class FileTarHandler {
     }
 
     private static boolean isSatisfy(String filesInRecipe, String currentFile) {
-        if (StringUtils.isBlank(filesInRecipe)) {
-            return true;
-        }
-
-        List<String> fileNameArr = Arrays.asList(filesInRecipe.split("\\s+"));
-        if (fileNameArr.contains(currentFile)) {
-            return true;
+        List<String> fileNameArr;
+        if (StringUtils.isNotBlank(filesInRecipe)) {
+            fileNameArr = Arrays.asList(filesInRecipe.split("\\s+"));
+            if (fileNameArr.contains(currentFile)) {
+                return true;
+            }
+        } else {   // default obtain all .el files
+            return currentFile.endsWith(".el");
         }
 
         try {
-            // TODO support common regex
-            for (String item : fileNameArr) {
-                if ("*.el".equals(item) && currentFile.endsWith(".el")) {
-                    return true;
-                } else if (currentFile.equals(item)) {
-                    return true;
+            if (CollectionUtils.isNotEmpty(fileNameArr)) {
+                // TODO support common regex
+                for (String item : fileNameArr) {
+                    if ("*.el".equals(item) && currentFile.endsWith(".el")) {
+                        return true;
+                    } else if (currentFile.equals(item)) {
+                        return true;
+                    }
                 }
             }
         } catch (Exception e) {

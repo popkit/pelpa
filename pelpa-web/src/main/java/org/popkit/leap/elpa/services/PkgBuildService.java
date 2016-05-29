@@ -5,7 +5,7 @@ import org.apache.commons.io.FileUtils;
 import org.popkit.core.entity.SimpleResult;
 import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.entity.*;
-import org.popkit.leap.elpa.services.handler.GithubFetchHandler;
+import org.popkit.leap.elpa.services.handler.GitFetchHandler;
 import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.popkit.leap.elpa.utils.TimeVersionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,7 +108,7 @@ public class PkgBuildService {
                 ArchiveVo archiveVo = new ArchiveVo();
                 archiveVo.setDesc(pkgInfo.getShortInfo());
 
-                long lastcommit = GithubFetchHandler.getLastCommiterTime(recipeDo.getPkgName());
+                long lastcommit = GitFetchHandler.getLastCommiterTime(recipeDo.getPkgName());
                 lastcommit = lastcommit == 0 ? pkgFile.lastModified() : lastcommit;
                 archiveVo.setVer(TimeVersionUtils.toArr(lastcommit));
                 archiveVo.setType(TYPE_TAR);
@@ -116,7 +116,7 @@ public class PkgBuildService {
                 archiveVo.setDeps(pkgInfo.getDeps());
 
                 if (FetcherEnum.getFetcher(recipeDo.getFetcher()) == FetcherEnum.GITHUB) {
-                    archiveVo.setPropsUrl(GithubFetchHandler.GITHUB_HTTPS_ROOT + recipeDo.getRepo());
+                    archiveVo.setPropsUrl(GitFetchHandler.GITHUB_HTTPS_ROOT + recipeDo.getRepo());
                 }
 
                 File pkgElispFile = new File(PelpaUtils.getPkgElispFileName(recipeDo.getPkgName()));
@@ -141,7 +141,7 @@ public class PkgBuildService {
         if (recipeDo.getLastCommit() > 0) {
             lastcommit = recipeDo.getLastCommit();
         } else {
-            GithubFetchHandler.getLastCommiterTime(recipeDo.getPkgName());
+            GitFetchHandler.getLastCommiterTime(recipeDo.getPkgName());
             lastcommit = lastcommit == 0 ? elispfile.lastModified() : lastcommit;
         }
 
@@ -169,7 +169,7 @@ public class PkgBuildService {
         archiveVo.setKeywords(pkgInfo.getKeywords());
         archiveVo.setDeps(pkgInfo.getDeps());
         if (FetcherEnum.getFetcher(recipeDo.getFetcher()) == FetcherEnum.GITHUB) {
-            archiveVo.setPropsUrl(GithubFetchHandler.GITHUB_HTTPS_ROOT + recipeDo.getRepo());
+            archiveVo.setPropsUrl(GitFetchHandler.GITHUB_HTTPS_ROOT + recipeDo.getRepo());
         }
 
         LocalCache.updateArchive(recipeDo.getPkgName(), archiveVo);

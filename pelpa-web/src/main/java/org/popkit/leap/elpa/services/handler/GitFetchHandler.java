@@ -27,13 +27,15 @@ import java.util.Map;
  * 2016-05-14:10:09
  */
 @Service
-public class GithubFetchHandler implements FetchHandler {
+public class GitFetchHandler implements FetchHandler {
     public static final String GITHUB_HTTPS_ROOT = "https://github.com/";
     public static final String GITLAB_HTTPS_ROOT = "https://gitlab.com/";
+    public static final String BITBUCKET_HTTPS_ROOT = "https://bitbucket.org/";
 
     public boolean validate(RecipeDo recipeDo, Map<String, Object> extra) {
         if (recipeDo.getFetcherEnum() == FetcherEnum.GITHUB ||
-                recipeDo.getFetcherEnum() == FetcherEnum.GITLAB) {
+                recipeDo.getFetcherEnum() == FetcherEnum.GITLAB ||
+                recipeDo.getFetcherEnum() == FetcherEnum.BITBUCKET) {
             return true;
         }
 
@@ -107,6 +109,8 @@ public class GithubFetchHandler implements FetchHandler {
             return GITHUB_HTTPS_ROOT + recipeDo.getRepo() + ".git";
         } else if (recipeDo.getFetcherEnum() == FetcherEnum.GITLAB) {
             return GITLAB_HTTPS_ROOT + recipeDo.getRepo() + ".git";
+        } else if (recipeDo.getFetcherEnum() == FetcherEnum.BITBUCKET) {
+            return BITBUCKET_HTTPS_ROOT + recipeDo.getRepo();
         } else {
             return null;
         }
