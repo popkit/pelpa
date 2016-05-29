@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #################################################
-# * */2 * * * /home/popkit/pelpa/scripts/sync-melpa.sh >>/home/popkit/log/sync.txt 2>&1
+# 0 */2 * * * /home/popkit/pelpa/scripts/sync-melpa.sh >>/home/popkit/log/sync.txt 2>&1
 #################################################
 echo "------------------------------------------"
 cd "$(dirname "$0")"
