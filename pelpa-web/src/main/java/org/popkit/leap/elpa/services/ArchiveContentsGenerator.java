@@ -134,7 +134,9 @@ public class ArchiveContentsGenerator {
     }
 
     public static String replaceInnerQuote(String origin) {
-        if (origin.contains("\"")) {
+        if (StringUtils.isBlank(origin)) {
+            return "";
+        } else if (origin.contains("\"")) {
             return origin.replace("\"", "\\\"");
         } else {
             return origin;
