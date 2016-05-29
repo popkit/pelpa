@@ -154,8 +154,12 @@ public class PkgBuildService {
         PackageInfo pkgInfo = getPkgInfo(elispfile, recipeDo.getPkgName());
         String readMeFile = packagePath + recipeDo.getPkgName() + "-readme.txt";
         try {
-            FileUtils.writeStringToFile(new File(readMeFile), pkgInfo.getReadmeInfo());
-            FileUtils.copyFile(elispfile, new File(packagePath + recipeDo.getPkgName() + "-"+ version + ".el"));
+            File finalPkgFile = new File(packagePath + recipeDo.getPkgName() + "-"+ version + ".el");
+            // if this version package already exists, do not copy it!
+            if (!finalPkgFile.exists()) {
+                FileUtils.writeStringToFile(new File(readMeFile), pkgInfo.getReadmeInfo());
+                FileUtils.copyFile(elispfile, finalPkgFile);
+            }
         } catch (Exception e) {
             LeapLogger.warn("error in copy file:", e);
         }

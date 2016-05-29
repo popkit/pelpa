@@ -56,6 +56,11 @@ public class FileTarHandler {
 
         String version = TimeVersionUtils.toVersionString(lastcommit);
         String destTar = packagePath + recipeDo.getPkgName() + "-"+ version + ".tar";
+        // if final package tar file exists, do not need to build it!
+        if (new File(destTar).exists()) {
+            return;
+        }
+
         String tmpTarWorking = pkgWorkingPath + "/" + recipeDo.getPkgName() + "-"+ version + "";
 
         List<File> fileList = new ArrayList<File>();
