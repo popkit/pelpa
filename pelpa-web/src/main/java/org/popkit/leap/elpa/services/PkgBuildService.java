@@ -154,7 +154,7 @@ public class PkgBuildService {
                             archiveVo.getProps().getKeywords());
                 }
 
-                FileTarHandler.tar(recipeDo.getPkgName(), recipeDo, elispFileList);
+                FileTarHandler.tar(recipeDo.getPkgName(), recipeDo, elispFileList, lastcommit);
                 LocalCache.updateArchive(recipeDo.getPkgName(), archiveVo);
             }
         } catch (Exception e) {

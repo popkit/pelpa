@@ -4,7 +4,6 @@ import org.apache.commons.io.FileUtils;
 import org.kamranzafar.jtar.TarEntry;
 import org.kamranzafar.jtar.TarOutputStream;
 import org.popkit.leap.elpa.entity.RecipeDo;
-import org.popkit.leap.elpa.services.handler.GitFetchHandler;
 import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.popkit.leap.elpa.utils.TimeVersionUtils;
 
@@ -46,12 +45,12 @@ public class FileTarHandler {
         out.close();
     }
 
-    public static void tar(String pkgName, RecipeDo recipeDo, List<File> elispFileList) throws FileNotFoundException, IOException {
+    public static void tar(String pkgName, RecipeDo recipeDo, List<File> elispFileList, long lastcommit)
+            throws FileNotFoundException, IOException {
+
         String htmlPath = PelpaUtils.getHtmlPath();
         String packagePath = htmlPath + "packages/";
         String pkgWorkingPath = PelpaUtils.getWorkingPath(pkgName);
-        long lastcommit = GitFetchHandler.getLastCommiterTime(recipeDo.getPkgName());
-        //lastcommit = lastcommit == 0 ? elispfile.lastModified() : lastcommit;
 
         String version = TimeVersionUtils.toVersionString(lastcommit);
         String destTar = packagePath + recipeDo.getPkgName() + "-"+ version + ".tar";
