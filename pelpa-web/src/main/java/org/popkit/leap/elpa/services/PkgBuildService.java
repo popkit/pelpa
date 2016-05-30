@@ -130,7 +130,13 @@ public class PkgBuildService {
                 ArchiveVo archiveVo = new ArchiveVo();
                 archiveVo.setDesc(pkgInfo.getShortInfo());
 
-                long lastcommit = GitFetchHandler.getLastCommiterTime(recipeDo.getPkgName());
+                long lastcommit;
+                if (recipeDo.getLastCommit() > 0) {
+                    lastcommit = recipeDo.getLastCommit();
+                } else {
+                    lastcommit = GitFetchHandler.getLastCommiterTime(recipeDo.getPkgName());
+                }
+
                 lastcommit = lastcommit == 0 ? pkgFile.lastModified() : lastcommit;
                 archiveVo.setVer(TimeVersionUtils.toArr(lastcommit));
                 archiveVo.setType(TYPE_TAR);
