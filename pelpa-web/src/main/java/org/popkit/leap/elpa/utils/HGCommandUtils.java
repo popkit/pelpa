@@ -43,6 +43,8 @@ public class HGCommandUtils {
         String command;
         if (existsHgRepo(wokingPath)) {
             command = hgPullCmd;
+        } else {
+            command = hgCloneCmd;
             if (new File(wokingPath).exists()) {
                 try {
                     FileUtils.deleteDirectory(new File(wokingPath));
@@ -50,8 +52,6 @@ public class HGCommandUtils {
                     //
                 }
             }
-        } else {
-            command = hgCloneCmd;
         }
 
         try {
