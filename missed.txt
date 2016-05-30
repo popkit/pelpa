@@ -11,6 +11,9 @@ https://www.emacswiki.org/emacs/download/aok.el
 bitbucket
 evil
 
+git
+anything
+
 "zenity-color-picker",
 "zeitgeist",
 "yatex",

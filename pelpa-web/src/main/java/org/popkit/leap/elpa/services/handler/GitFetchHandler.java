@@ -37,6 +37,11 @@ public class GitFetchHandler implements FetchHandler {
             return true;
         }
 
+        if (recipeDo.getFetcherEnum() == FetcherEnum.GIT
+                && (!recipeDo.getUrl().contains("https://gist.github.com"))) {   // non gist.github repo
+            return true;
+        }
+
         return false;
     }
 
@@ -107,6 +112,8 @@ public class GitFetchHandler implements FetchHandler {
             return GITHUB_HTTPS_ROOT + recipeDo.getRepo() + ".git";
         } else if (recipeDo.getFetcherEnum() == FetcherEnum.GITLAB) {
             return GITLAB_HTTPS_ROOT + recipeDo.getRepo() + ".git";
+        } else if (recipeDo.getFetcherEnum() == FetcherEnum.GIT) {
+            return recipeDo.getUrl();
         } else  {
             return null;
         }

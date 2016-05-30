@@ -61,7 +61,7 @@ public class GistFetchHandler implements FetchHandler {
     public boolean validate(RecipeDo recipeDo, Map<String, Object> extra) {
 
         if (recipeDo.getFetcherEnum() == FetcherEnum.GIT
-                && recipeDo.getUrl().contains("gist")) {
+                && recipeDo.getUrl().contains("https://gist.github.com")) {   // gist.github repo
             return true;
         }
 
