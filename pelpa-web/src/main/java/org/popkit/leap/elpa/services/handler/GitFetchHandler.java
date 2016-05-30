@@ -1,5 +1,6 @@
 package org.popkit.leap.elpa.services.handler;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.PullCommand;
 import org.eclipse.jgit.api.PullResult;
@@ -82,6 +83,10 @@ public class GitFetchHandler implements FetchHandler {
         // prepare a new folder for the cloned repository
         LeapLogger.info("github create:" + localPathDir);
         String remote_url = getRemoteGitUrl(recipeDo);
+        if (StringUtils.isBlank(remote_url)) {
+            LeapLogger.info("remote url is blank, pkgName:" + recipeDo.getPkgName());
+            return;
+        }
 
         try {
             File localPath = File.createTempFile(localPathDir, "");
