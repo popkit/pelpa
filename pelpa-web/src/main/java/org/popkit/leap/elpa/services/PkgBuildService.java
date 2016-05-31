@@ -212,11 +212,14 @@ public class PkgBuildService {
             String sCurrentLine;
             boolean start = false; boolean end = false;
             int i = 0;
+            boolean shortInfoFinished = false;
             while ((sCurrentLine = br.readLine()) != null) {
-                if (i < 3 && sCurrentLine.contains(pkgName)) {
+                if (i < 3 && sCurrentLine.contains(pkgName) && (!shortInfoFinished)) {
                     packageInfo.setShortInfo(sCurrentLine.replaceAll(";", "")
                             .replaceAll(pkgName, "").replaceAll(".el", "").replaceAll("-", ""));
+                    shortInfoFinished = true;
                 }
+                
                 if (sCurrentLine.contains(";;; Commentary:")) {
                     start = true;
                 }
