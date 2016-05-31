@@ -216,10 +216,11 @@ public class PkgBuildService {
             while ((sCurrentLine = br.readLine()) != null) {
                 if (i < 3 && sCurrentLine.contains(pkgName) && (!shortInfoFinished)) {
                     packageInfo.setShortInfo(sCurrentLine.replaceAll(";", "")
-                            .replaceAll(pkgName, "").replaceAll(".el", "").replaceAll("-", ""));
+                            .replaceAll(pkgName, "").replaceAll(".el", "").replaceAll("-", "")
+                            .trim());
                     shortInfoFinished = true;
                 }
-                
+
                 if (sCurrentLine.contains(";;; Commentary:")) {
                     start = true;
                 }
