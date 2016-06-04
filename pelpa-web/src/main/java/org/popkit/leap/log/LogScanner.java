@@ -1,8 +1,6 @@
 package org.popkit.leap.log;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.io.FileUtils;
@@ -21,7 +19,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,7 +36,7 @@ import java.util.regex.Pattern;
 public class LogScanner {
     public static final String STATISTICS_MONTH_FILE = "month.json";
     private static final DateTimeFormatter DEFAULT_FORMAT = DateTimeFormat.forPattern("MM-dd HH:mm");
-    private static final DateTimeFormatter DAY_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd");
+    public static final DateTimeFormatter DAY_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd");
 
     public static String getLogFileName() {
         return PelpaUtils.getLogFileName();
@@ -85,42 +86,7 @@ public class LogScanner {
         return jsonObject.toJSONString();
     }
 
-    public void generateLatestStaticsJSON() {
-        DateTime now = new DateTime();
-        DateTime startTime = now.minusDays(30).withTimeAtStartOfDay();
-        DateTime endTime = now.plusDays(1).withTimeAtStartOfDay();
-        DateTime tmp = startTime;
-        List<DateTime> timeList = new ArrayList<DateTime>();
-        while (tmp.isBefore(endTime)) {
-            timeList.add(tmp);
-            tmp = tmp.plusDays(1);
-        }
 
-        Map<String, Integer> statisticsMap = new HashMap<String, Integer>();
-        for (DateTime item : timeList) {
-            statisticsMap.put(item.toString(DAY_FORMAT), 0);
-        }
-        List<EachLogItem> logItemList = readLogFromStartTime(startTime);
-        if (CollectionUtils.isEmpty(logItemList)) {
-            return;
-        }
-
-        // generate ...
-        for (EachLogItem logItem : logItemList) {
-            String  dayKey = new DateTime(logItem.getDate()).toString(DAY_FORMAT);
-            if (statisticsMap.containsKey(dayKey)) {
-                statisticsMap.put(dayKey, statisticsMap.get(dayKey) + 1);
-            }
-        }
-
-        // write to json file
-        try {
-            FileUtils.writeStringToFile(new File(PelpaUtils.getStaticsPath() + STATISTICS_MONTH_FILE),
-                    JSON.toJSONString(statisticsMap));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     public List<EachLogItem> readLogFromStartTime(DateTime startTime) {
         List<EachLogItem> result = new ArrayList<EachLogItem>();
