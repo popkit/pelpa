@@ -57,8 +57,8 @@ public class FileTarHandler {
         // if final package tar file exists, do not need to build it!
         File desTarFile = new File(destTar);
         if (desTarFile.exists()) {
-            desTarFile.delete();   // return @TODO , 后期记得直接返回
-            //return;
+            //desTarFile.delete();   // return @TODO , 后期记得直接返回
+            return;
         }
 
         String tmpTarWorking = pkgWorkingPath + "/" + recipeDo.getPkgName() + "-"+ version + "";

@@ -1,10 +1,15 @@
 package org.popkit.leap.log;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.springframework.stereotype.Service;
@@ -16,8 +21,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,6 +33,9 @@ import java.util.regex.Pattern;
  */
 @Service
 public class LogScanner {
+    public static final String STATISTICS_MONTH_FILE = "month.json";
+    private static final DateTimeFormatter DEFAULT_FORMAT = DateTimeFormat.forPattern("MM-dd HH:mm");
+    private static final DateTimeFormatter DAY_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd");
 
     public static String getLogFileName() {
         return PelpaUtils.getLogFileName();
@@ -67,7 +74,7 @@ public class LogScanner {
     }
 
     public static String toJSONString() {
-        Map<String, EachLogItem> logItemMap = readLogScanFile();
+        Map<String, EachLogItem> logItemMap = readLogScanFile(null);
         JSONObject jsonObject = new JSONObject();
         if (MapUtils.isNotEmpty(logItemMap)) {
             for (String item : logItemMap.keySet()) {
@@ -78,24 +85,103 @@ public class LogScanner {
         return jsonObject.toJSONString();
     }
 
-    public static Map<String, EachLogItem> readLogScanFile() {
+    public void generateLatestStaticsJSON() {
+        DateTime now = new DateTime();
+        DateTime startTime = now.minusDays(30).withTimeAtStartOfDay();
+        DateTime endTime = now.plusDays(1).withTimeAtStartOfDay();
+        DateTime tmp = startTime;
+        List<DateTime> timeList = new ArrayList<DateTime>();
+        while (tmp.isBefore(endTime)) {
+            timeList.add(tmp);
+            tmp = tmp.plusDays(1);
+        }
+
+        Map<String, Integer> statisticsMap = new HashMap<String, Integer>();
+        for (DateTime item : timeList) {
+            statisticsMap.put(item.toString(DAY_FORMAT), 0);
+        }
+        List<EachLogItem> logItemList = readLogFromStartTime(startTime);
+        if (CollectionUtils.isEmpty(logItemList)) {
+            return;
+        }
+
+        // generate ...
+        for (EachLogItem logItem : logItemList) {
+            String  dayKey = new DateTime(logItem.getDate()).toString(DAY_FORMAT);
+            if (statisticsMap.containsKey(dayKey)) {
+                statisticsMap.put(dayKey, statisticsMap.get(dayKey) + 1);
+            }
+        }
+
+        // write to json file
+        try {
+            FileUtils.writeStringToFile(new File(PelpaUtils.getStaticsPath() + STATISTICS_MONTH_FILE),
+                    JSON.toJSONString(statisticsMap));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<EachLogItem> readLogFromStartTime(DateTime startTime) {
+        List<EachLogItem> result = new ArrayList<EachLogItem>();
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(getLogFileName()));
+            String sCurrentLine;
+            boolean needContinue = true;
+            while ((sCurrentLine = br.readLine()) != null && needContinue) {
+                if (StringUtils.isBlank(sCurrentLine)) {
+                    continue;
+                }
+
+                Date date = extraTime(sCurrentLine);
+                if (startTime != null && startTime.isAfter(date.getTime())) {
+                    needContinue = false;
+                }
+
+                String pkgName = extraPkgName(sCurrentLine);
+                if (date != null && pkgName != null) {
+                    result.add(new EachLogItem(pkgName, date));
+                }
+            }
+        } catch (IOException e) {
+            LeapLogger.error("error", e);
+            e.printStackTrace();
+        } finally {
+            try {
+                if (br != null) br.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return result;
+    }
+
+    public static Map<String, EachLogItem> readLogScanFile(DateTime startTime) {
         Map<String, EachLogItem> result = new HashedMap();
 
         BufferedReader br = null;
         try {
             br = new BufferedReader(new FileReader(getLogFileName()));
             String sCurrentLine;
-            while ((sCurrentLine = br.readLine()) != null) {
-                if (StringUtils.isNotBlank(sCurrentLine)) {
-                    Date date = extraTime(sCurrentLine);
-                    String pkgName = extraPkgName(sCurrentLine);
-                    if (date != null && pkgName != null) {
-                        if (result.containsKey(pkgName)) {
-                            result.get(pkgName).countIt();
-                        } else {
-                            EachLogItem eachLogItem = new EachLogItem(pkgName, date);
-                            result.put(pkgName, eachLogItem);
-                        }
+            boolean needContinue = true;
+            while ((sCurrentLine = br.readLine()) != null && needContinue) {
+                if (StringUtils.isBlank(sCurrentLine)) {
+                    continue;
+                }
+
+                Date date = extraTime(sCurrentLine);
+                if (startTime != null && startTime.isAfter(date.getTime())) {
+                    needContinue = false;
+                }
+
+                String pkgName = extraPkgName(sCurrentLine);
+                if (date != null && pkgName != null) {
+                    if (result.containsKey(pkgName)) {
+                        result.get(pkgName).countIt();
+                    } else {
+                        EachLogItem eachLogItem = new EachLogItem(pkgName, date);
+                        result.put(pkgName, eachLogItem);
                     }
                 }
             }
@@ -151,7 +237,7 @@ public class LogScanner {
         System.out.println("c=" + extraPkgName(testC));
         System.out.println("" + extraTime(testLine));
 
-        Map<String, EachLogItem> logItemMap = readLogScanFile();
+        Map<String, EachLogItem> logItemMap = readLogScanFile(null);
         for (String pkgName : logItemMap.keySet()) {
             System.out.println("pkg:" + pkgName + ", " + logItemMap.get(pkgName).getCount());
         }

@@ -30,6 +30,10 @@ public class PelpaUtils {
     private PelpaUtils() {
     }
 
+    public static String getStaticsPath() {
+        return LeapConfigLoader.get("elpa_statics_path");
+    }
+
     public static String getLogFileName() {
         return LeapConfigLoader.get(LOG_FILE_KEY);
     }

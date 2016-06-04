@@ -7,11 +7,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.popkit.core.entity.CommonResponse;
 import org.popkit.core.entity.SimpleResult;
 import org.popkit.leap.elpa.entity.ActorStatus;
-import org.popkit.leap.elpa.entity.ArchiveVo;
 import org.popkit.leap.elpa.entity.RecipeDo;
 import org.popkit.leap.elpa.services.*;
 import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.popkit.leap.elpa.utils.RecipeParser;
+import org.popkit.leap.log.LogScanner;
 import org.popkit.leap.monitor.EachActor;
 import org.popkit.leap.monitor.RoundMonitor;
 import org.popkit.leap.monitor.RoundSupervisor;
@@ -48,6 +48,9 @@ public class ElpaController {
 
     @Autowired
     private RoundSupervisor roundSupervisor;
+
+    @Autowired
+    private LogScanner logScanner;
 
     @RequestMapping(value = "index.html")
     public String index(HttpServletRequest request) {
@@ -111,12 +114,14 @@ public class ElpaController {
         //pkgFetchService.downloadPackage("nclip");
         //pkgBuildService.buildPackage("nclip");
         //com.setData(recipesService.randomRecipe());
-        com.setData(recipesService.getRecipeDo("tango-2-theme"));
-        Map<String, ArchiveVo> map = LocalCache.getArchive();
+        //com.setData(recipesService.getRecipeDo("tango-2-theme"));
+        //Map<String, ArchiveVo> map = LocalCache.getArchive();
 
         //pkgBuildService.writeArchiveJSON();
         //recipesService.writeRecipesJson();
         //pkgBuildService.writeArchiveJSON();
+
+        logScanner.generateLatestStaticsJSON();
         return com;
     }
 
