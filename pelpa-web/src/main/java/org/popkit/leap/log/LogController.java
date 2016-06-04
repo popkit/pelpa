@@ -66,7 +66,12 @@ public class LogController extends BaseController {
                 Collections.sort(keyList);
 
                 for (String key : keyList) {
-                    labels.add(key);
+                    if ("today".equals(item)) {
+                        labels.add(key.substring(10));
+                    } else {
+                        labels.add(key);
+                    }
+
                     data.add(statisticsMap.get(key));
                 }
             } catch (IOException e) {
@@ -75,7 +80,11 @@ public class LogController extends BaseController {
             }
 
             EachLine eachLine = new EachLine(labels, data);
-            eachLine.setLabel(startTime.toString(LogScanner.DAY_FORMAT) + "~" + endTime.minusDays(1).toString(LogScanner.DAY_FORMAT));
+            if ("month".equals(item)) {
+                eachLine.setLabel(startTime.toString(LogScanner.DAY_FORMAT) + "~" + endTime.minusDays(1).toString(LogScanner.DAY_FORMAT));
+            } else {
+                eachLine.setLabel(new DateTime().toString(LogScanner.DAY_FORMAT));
+            }
             jsonResult.put(item, eachLine);
         }
 

@@ -22,6 +22,7 @@ function build(labels, label, data) {
                 pointHoverBorderWidth: 2,
                 pointRadius: 1,
                 pointHitRadius: 10,
+                pointStyle: 'star',
                 data: data
             }
         ]
