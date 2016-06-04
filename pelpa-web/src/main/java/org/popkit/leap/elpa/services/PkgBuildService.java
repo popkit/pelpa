@@ -148,7 +148,9 @@ public class PkgBuildService {
                 }
 
                 File pkgElispFile = new File(PelpaUtils.getPkgElispFileName(recipeDo.getPkgName()));
-                if (!pkgElispFile.exists()) {
+                long lastModify = pkgElispFile.lastModified();
+                // *-pkg.el not exists or current version is updated
+                if ((!pkgElispFile.exists()) || lastcommit > lastModify) {
                     PelpaUtils.generatePkgElispFileContent(recipeDo.getPkgName(),
                             TimeVersionUtils.toVersionString(lastcommit), archiveVo.getDesc(),
                             archiveVo.getProps().getKeywords());
