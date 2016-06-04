@@ -1,7 +1,7 @@
 draw();
 function draw() {
-    var ctx = document.getElementById("myChart");
-    //var data = ;
+    var ctxMonth = document.getElementById("myChartMonth");
+    var ctxToday = document.getElementById("myChartToday");
     $.post("/elpa/log/ajaxmonthss.json", {
     }, function (dataRes) {
         var data = {
@@ -31,9 +31,14 @@ function draw() {
             ]
         };
 
-        var myLineChart = new Chart(ctx, {
+        var myLineChartMonth = new Chart(ctxMonth, {
             type: 'line',
-            data: data
+            data: data.month
+        });
+
+        var myLineChartToday = new Chart(ctxToday, {
+            type: 'line',
+            data: data.today
         });
     });
 }

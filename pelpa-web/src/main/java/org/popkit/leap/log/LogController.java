@@ -1,6 +1,7 @@
 package org.popkit.leap.log;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.joda.time.DateTime;
@@ -13,6 +14,7 @@ import org.popkit.leap.log.entity.EachLine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
@@ -31,13 +33,15 @@ import java.util.concurrent.TimeUnit;
 @Controller
 @RequestMapping("elpa/log")
 public class LogController extends BaseController {
+    public static final String STATISTICS_DAY_FILE = "day.json";
     public static final ScheduledExecutorService scheduledExecutor = Executors.newScheduledThreadPool(1);
 
     @Autowired
     private LogScanner logScanner;
 
     @RequestMapping("ajaxmonthss.json")
-    public void ajaxmonthss(HttpServletResponse response) {
+    public void ajaxmonthss(HttpServletResponse response,
+                            @RequestParam(value = "type", defaultValue = "month") String type) {
         DateTime now = new DateTime();
         DateTime startTime = now.minusDays(30).withTimeAtStartOfDay();
         DateTime endTime = now.withTimeAtStartOfDay();
@@ -45,28 +49,34 @@ public class LogController extends BaseController {
         List<String> labels = new ArrayList<String>();
         List<Integer> data = new ArrayList<Integer>();
 
-        File logStatisticsFile = new File(PelpaUtils.getStaticsPath() + LogScanner.STATISTICS_MONTH_FILE);
+        JSONObject jsonResult = new JSONObject();
+        for (String item : new String[]{"month", "today"}){
+            String fileName = "month".equals(item) ? LogScanner.STATISTICS_MONTH_FILE : STATISTICS_DAY_FILE;
+            File logStatisticsFile = new File(PelpaUtils.getStaticsPath() + fileName);
 
-        try {
-            Map<String, Integer> statisticsMap = JSON.parseObject(FileUtils.readFileToString(logStatisticsFile), Map.class);
-            List<String> keyList = new ArrayList<String>();
+            try {
+                Map<String, Integer> statisticsMap = JSON.parseObject(FileUtils.readFileToString(logStatisticsFile), Map.class);
+                List<String> keyList = new ArrayList<String>();
 
-            for (String key : statisticsMap.keySet()) {
-                keyList.add(key);
+                for (String key : statisticsMap.keySet()) {
+                    keyList.add(key);
+                }
+                Collections.sort(keyList);
+
+                for (String key : keyList) {
+                    labels.add(key);
+                    data.add(statisticsMap.get(key));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            Collections.sort(keyList);
 
-            for (String key : keyList) {
-                labels.add(key);
-                data.add(statisticsMap.get(key));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+            EachLine eachLine = new EachLine(labels, data);
+            eachLine.setLabel(startTime.toString(LogScanner.DAY_FORMAT) + "~" + endTime.minusDays(1).toString(LogScanner.DAY_FORMAT));
+            jsonResult.put(item, eachLine);
         }
 
-        EachLine eachLine = new EachLine(labels, data);
-        eachLine.setLabel(startTime.toString(LogScanner.DAY_FORMAT) + "~" + endTime.minusDays(1).toString(LogScanner.DAY_FORMAT));
-        ResponseUtils.renderJson(response, eachLine.toString());
+        ResponseUtils.renderJson(response, jsonResult.toString());
     }
 
     @PostConstruct
@@ -75,22 +85,63 @@ public class LogController extends BaseController {
         DateTime tomorrowFirstTime = now.plusDays(1).withTimeAtStartOfDay().plusMinutes(3);
         Minutes delayMinutes = Minutes.minutesBetween(now, tomorrowFirstTime);
 
+        generateTodayStaticsJSON();
         scheduledExecutor.scheduleWithFixedDelay(new Runnable() {
             public void run() {
-                //LeapLogger.info("exectud!!" + new DateTime().toString(DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss")));
+                generateTodayStaticsJSON();
             }
-        }, 0, 5, TimeUnit.MINUTES);   // execute each 5 minutes.
+        }, delayMinutes.getMinutes(), 5, TimeUnit.MINUTES);   // execute each 5 minutes.
 
         // init executed it and periodic each day executed
-        generateLatestStaticsJSON();
+        generateLatestMonthStaticsJSON();
         scheduledExecutor.scheduleWithFixedDelay(new Runnable() {
             public void run() {
-                generateLatestStaticsJSON();
+                generateLatestMonthStaticsJSON();
             }
         }, delayMinutes.getMinutes(), 24*60, TimeUnit.MINUTES);   // execute each day
     }
 
-    public void generateLatestStaticsJSON() {
+    // today statistics
+    public void generateTodayStaticsJSON() {
+        LeapLogger.info("#generateTodayStaticsJSON# executed!");
+        DateTime now = new DateTime();
+        DateTime startTime = now.withTimeAtStartOfDay();
+        DateTime endTime = now.plusDays(1).withTimeAtStartOfDay();
+        DateTime tmp = startTime;
+        List<DateTime> timeList = new ArrayList<DateTime>();
+        while (tmp.isBefore(endTime)) {
+            timeList.add(tmp);
+            tmp = tmp.plusHours(1);
+        }
+
+        Map<String, Integer> statisticsMap = new HashMap<String, Integer>();
+        for (DateTime item : timeList) {
+            statisticsMap.put(item.toString(LogScanner.HOUR_FORMAT), 0);
+        }
+        List<EachLogItem> logItemList = logScanner.readLogFromStartTime(startTime);
+        if (CollectionUtils.isEmpty(logItemList)) {
+            return;
+        }
+
+        // generate ...
+        for (EachLogItem logItem : logItemList) {
+            String  dayKey = new DateTime(logItem.getDate()).toString(LogScanner.HOUR_FORMAT);
+            if (statisticsMap.containsKey(dayKey)) {
+                statisticsMap.put(dayKey, statisticsMap.get(dayKey) + 1);
+            }
+        }
+
+        // write to json file
+        try {
+            File logStatisticsFile = new File(PelpaUtils.getStaticsPath() + STATISTICS_DAY_FILE);
+            FileUtils.writeStringToFile(logStatisticsFile,
+                    JSON.toJSONString(statisticsMap));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void generateLatestMonthStaticsJSON() {
         LeapLogger.info("#generateLatestStaticsJSON# executed!");
         DateTime now = new DateTime();
         DateTime startTime = now.minusDays(30).withTimeAtStartOfDay();

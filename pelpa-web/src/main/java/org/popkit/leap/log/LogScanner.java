@@ -35,8 +35,8 @@ import java.util.regex.Pattern;
 @Service
 public class LogScanner {
     public static final String STATISTICS_MONTH_FILE = "month.json";
-    private static final DateTimeFormatter DEFAULT_FORMAT = DateTimeFormat.forPattern("MM-dd HH:mm");
     public static final DateTimeFormatter DAY_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd");
+    public static final DateTimeFormatter HOUR_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd hh");
 
     public static String getLogFileName() {
         return PelpaUtils.getLogFileName();
