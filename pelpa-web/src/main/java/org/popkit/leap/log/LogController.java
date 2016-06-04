@@ -15,10 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Aborn Jiang
@@ -40,6 +37,25 @@ public class LogController extends BaseController {
 
         List<String> labels = new ArrayList<String>();
         List<Integer> data = new ArrayList<Integer>();
+
+        File logStatisticsFile = new File(PelpaUtils.getStaticsPath() + LogScanner.STATISTICS_MONTH_FILE);
+
+        try {
+            Map<String, Integer> statisticsMap = JSON.parseObject(FileUtils.readFileToString(logStatisticsFile), Map.class);
+            List<String> keyList = new ArrayList<String>();
+
+            for (String key : statisticsMap.keySet()) {
+                keyList.add(key);
+            }
+            Collections.sort(keyList);
+
+            for (String key : keyList) {
+                labels.add(key);
+                data.add(statisticsMap.get(key));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         EachLine eachLine = new EachLine(labels, data);
         eachLine.setLabel(startTime.toString(LogScanner.DAY_FORMAT) + "~" + endTime.toString(LogScanner.DAY_FORMAT));
@@ -76,7 +92,8 @@ public class LogController extends BaseController {
 
         // write to json file
         try {
-            FileUtils.writeStringToFile(new File(PelpaUtils.getStaticsPath() + LogScanner.STATISTICS_MONTH_FILE),
+            File logStatisticsFile = new File(PelpaUtils.getStaticsPath() + LogScanner.STATISTICS_MONTH_FILE);
+            FileUtils.writeStringToFile(logStatisticsFile,
                     JSON.toJSONString(statisticsMap));
         } catch (IOException e) {
             e.printStackTrace();

@@ -14,8 +14,10 @@
 <#include "/layout/navbar.ftl"/>
 
 <div class="ui container ak-main-container">
-
+    <canvas id="myChart" width="400" height="400"></canvas>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.0/Chart.min.js"></script>
+<script src="/assets/js/data.js"></script>
 </body>
 </html>
