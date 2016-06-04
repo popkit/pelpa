@@ -34,7 +34,8 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping("elpa/log")
 public class LogController extends BaseController {
     public static final String STATISTICS_DAY_FILE = "day.json";
-    public static final ScheduledExecutorService scheduledExecutor = Executors.newScheduledThreadPool(1);
+    public static final ScheduledExecutorService todayScheduled = Executors.newScheduledThreadPool(1);
+    public static final ScheduledExecutorService monthScheduled = Executors.newScheduledThreadPool(1);
 
     @Autowired
     private LogScanner logScanner;
@@ -42,15 +43,16 @@ public class LogController extends BaseController {
     @RequestMapping("ajaxmonthss.json")
     public void ajaxmonthss(HttpServletResponse response,
                             @RequestParam(value = "type", defaultValue = "month") String type) {
+
         DateTime now = new DateTime();
         DateTime startTime = now.minusDays(30).withTimeAtStartOfDay();
         DateTime endTime = now.withTimeAtStartOfDay();
-
-        List<String> labels = new ArrayList<String>();
-        List<Integer> data = new ArrayList<Integer>();
-
         JSONObject jsonResult = new JSONObject();
-        for (String item : new String[]{"month", "today"}){
+
+        for (String item : new String[]{"month", "today"}) {
+
+            List<String> labels = new ArrayList<String>();
+            List<Integer> data = new ArrayList<Integer>();
             String fileName = "month".equals(item) ? LogScanner.STATISTICS_MONTH_FILE : STATISTICS_DAY_FILE;
             File logStatisticsFile = new File(PelpaUtils.getStaticsPath() + fileName);
 
@@ -69,6 +71,7 @@ public class LogController extends BaseController {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+                continue;
             }
 
             EachLine eachLine = new EachLine(labels, data);
@@ -86,7 +89,7 @@ public class LogController extends BaseController {
         Minutes delayMinutes = Minutes.minutesBetween(now, tomorrowFirstTime);
 
         generateTodayStaticsJSON();
-        scheduledExecutor.scheduleWithFixedDelay(new Runnable() {
+        todayScheduled.scheduleWithFixedDelay(new Runnable() {
             public void run() {
                 generateTodayStaticsJSON();
             }
@@ -94,7 +97,7 @@ public class LogController extends BaseController {
 
         // init executed it and periodic each day executed
         generateLatestMonthStaticsJSON();
-        scheduledExecutor.scheduleWithFixedDelay(new Runnable() {
+        monthScheduled.scheduleWithFixedDelay(new Runnable() {
             public void run() {
                 generateLatestMonthStaticsJSON();
             }

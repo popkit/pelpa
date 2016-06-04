@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
 public class LogScanner {
     public static final String STATISTICS_MONTH_FILE = "month.json";
     public static final DateTimeFormatter DAY_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd");
-    public static final DateTimeFormatter HOUR_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd hh");
+    public static final DateTimeFormatter HOUR_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH");
 
     public static String getLogFileName() {
         return PelpaUtils.getLogFileName();
@@ -75,7 +75,7 @@ public class LogScanner {
     }
 
     public static String toJSONString() {
-        Map<String, EachLogItem> logItemMap = readLogScanFile(null);
+        Map<String, EachLogItem> logItemMap = readLogScanFile();
         JSONObject jsonObject = new JSONObject();
         if (MapUtils.isNotEmpty(logItemMap)) {
             for (String item : logItemMap.keySet()) {
@@ -101,9 +101,11 @@ public class LogScanner {
                 }
 
                 Date date = extraTime(sCurrentLine);
-                if (startTime != null && startTime.isAfter(date.getTime())) {
-                    needContinue = false;
-                }
+                // 时间是从老到旧,这是一个问题,难道要返过来读!从最后一行到第一行!
+                // TODO 优化点
+                // if (startTime != null && startTime.isAfter(date.getTime())) {
+                // needContinue = false;
+                //}
 
                 String pkgName = extraPkgName(sCurrentLine);
                 if (date != null && pkgName != null) {
@@ -123,7 +125,7 @@ public class LogScanner {
         return result;
     }
 
-    public static Map<String, EachLogItem> readLogScanFile(DateTime startTime) {
+    public static Map<String, EachLogItem> readLogScanFile() {
         Map<String, EachLogItem> result = new HashedMap();
 
         BufferedReader br = null;
@@ -137,10 +139,6 @@ public class LogScanner {
                 }
 
                 Date date = extraTime(sCurrentLine);
-                if (startTime != null && startTime.isAfter(date.getTime())) {
-                    needContinue = false;
-                }
-
                 String pkgName = extraPkgName(sCurrentLine);
                 if (date != null && pkgName != null) {
                     if (result.containsKey(pkgName)) {
@@ -203,7 +201,7 @@ public class LogScanner {
         System.out.println("c=" + extraPkgName(testC));
         System.out.println("" + extraTime(testLine));
 
-        Map<String, EachLogItem> logItemMap = readLogScanFile(null);
+        Map<String, EachLogItem> logItemMap = readLogScanFile();
         for (String pkgName : logItemMap.keySet()) {
             System.out.println("pkg:" + pkgName + ", " + logItemMap.get(pkgName).getCount());
         }

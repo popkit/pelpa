@@ -21,7 +21,7 @@ public class RoundRun {
     public String tohumanable() {
         StringBuilder stringBuilder = new StringBuilder("");
         stringBuilder.append("roundId=" + roundId);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm.SS");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm.SS");
         if (startTime != null) {
             stringBuilder.append("开始于:").append(simpleDateFormat.format(startTime));
         }

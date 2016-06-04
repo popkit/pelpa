@@ -14,8 +14,13 @@
 <#include "/layout/navbar.ftl"/>
 
 <div class="ui container ak-main-container">
-    <canvas id="myChartToday" width="400" height="400"></canvas>
-    <canvas id="myChartMonth" width="400" height="400"></canvas>
+    <div class="hidden" id="myChartTodayDiv">
+        <canvas id="myChartToday" width="400" height="400"></canvas>
+    </div>
+
+    <div class="hidden" id="myChartMonthDiv">
+        <canvas id="myChartMonth" width="400" height="400"></canvas>
+    </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.0/Chart.min.js"></script>
