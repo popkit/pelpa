@@ -48,7 +48,7 @@ public class RoundSupervisor {
     private RecipesService recipesService;
 
     public static final long REST_TIME = 2*60*60*1000;    // ms
-    private static volatile RoundRun run = new RoundRun();
+    private static final RoundRun run = new RoundRun();
 
     @PostConstruct
     public void init() {
@@ -113,7 +113,7 @@ public class RoundSupervisor {
         }
     }
 
-    public static RoundRun getCurrentRun() {
+    public RoundRun getCurrentRun() {
         return run;
     }
 

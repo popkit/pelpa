@@ -46,6 +46,9 @@ public class ElpaController {
     @Autowired
     private ArchiveContentsGenerator archiveContentsGenerator;
 
+    @Autowired
+    private RoundSupervisor roundSupervisor;
+
     @RequestMapping(value = "index.html")
     public String index(HttpServletRequest request) {
         Map<String, EachActor> actorMap = RoundMonitor.getActors();
@@ -96,7 +99,7 @@ public class ElpaController {
         request.setAttribute("finished", finished);
         request.setAttribute("onging", onging);
 
-        request.setAttribute("currentRun", RoundSupervisor.getCurrentRun().tohumanable());
+        request.setAttribute("currentRun", roundSupervisor.getCurrentRun().tohumanable());
         return "elpa/index";
     }
 
