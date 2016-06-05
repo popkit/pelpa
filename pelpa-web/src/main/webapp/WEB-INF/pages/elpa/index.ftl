@@ -15,6 +15,10 @@
     <link rel="stylesheet" href="/assets/css/pelpa.css" type="text/css" />
     <link rel="stylesheet" href="/assets/css/jquery.dataTables.min.css" type="text/css" />
     <link rel="stylesheet" href="/assets/css/dataTables.semanticui.min.css" type="text/css" />
+
+    <script src="/assets/js/jquery.js"></script>
+    <script src="/assets/js/jquery.dataTables.min.js"></script>
+    <script src="/assets/js/dataTables.semanticui.min.js"></script>
 </head>
 <body>
 
@@ -83,9 +87,6 @@
         </table>
     </section>
 </div>
-<script src="/assets/js/jquery.js"></script>
-<script src="/assets/js/jquery.dataTables.min.js"></script>
-<script src="/assets/js/dataTables.semanticui.min.js"></script>
 
 <script type="text/javascript">
     $(document).ready(function() {
