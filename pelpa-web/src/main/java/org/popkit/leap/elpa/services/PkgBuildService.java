@@ -104,6 +104,7 @@ public class PkgBuildService {
                 }
             }
 
+            // TODO 当没有 PACKAGE-NAME.el时,可采用PACKAGE-NAME-pkg.el提取信息,如tao-theme
             if (pkgFile != null) {
                 PackageInfo pkgInfo = getPkgInfo(pkgFile, recipeDo.getPkgName());
                 ArchiveVo archiveVo = new ArchiveVo();

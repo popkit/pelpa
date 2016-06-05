@@ -171,7 +171,7 @@ public class BuildController {
         CommonResponse commonResponse = new CommonResponse();
         if (StringUtils.isNotBlank(pkgName)) {
             RecipeDo recipeDo = RecipeParser.parsePkgRecipe(pkgName);
-            //pkgFetchService.downloadPackage(pkgName);
+            pkgFetchService.downloadPackage(pkgName);
             SimpleResult simpleResult = pkgBuildService.buildPackage(pkgName);
             commonResponse.setData(simpleResult);
         }
