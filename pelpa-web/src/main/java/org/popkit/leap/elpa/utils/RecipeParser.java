@@ -41,26 +41,25 @@ public class RecipeParser {
         String[] suArr = sub.split("\\s+");
         RecipeDo recipeDo = new RecipeDo();
         recipeDo.setPkgName(suArr[0].trim());
-        String[] keyValuePair = sub.substring(sub.indexOf(suArr[0]) + suArr[0].length()).trim().split("\\s+");
 
-        for (int i=0; i<keyValuePair.length; i++) {
-            try {
-                String current = keyValuePair[i].trim();
-                if (StringUtils.isNotBlank(current) && current.startsWith(":")
-                        && (i+1) < keyValuePair.length) {
-                    String key = current.substring(1);
-                    String value = keyValuePair[i+1].trim();
-                    if ("files".equalsIgnoreCase(key)) {
-                        recipeDo.update(key, fileValue(value));
-                    } else if ("repo".endsWith(key) || "url".equals(key)) {
-                        recipeDo.update(key, trimIt(value));
-                    } else {
-                        recipeDo.update(key, value);
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+        String[] keyValueStringPair =  sub.substring(sub.indexOf(suArr[0]) + suArr[0].length()).trim().split(":");
+        for (String keyValueString : keyValueStringPair) {
+            if (StringUtils.isBlank(keyValueString)) {
                 continue;
+            }
+
+            String[] keyValuePair = keyValueString.split("\\s+");
+            if (keyValuePair.length <= 1) {
+                continue;
+            }
+            String key = keyValuePair[0].trim();
+            String value = keyValueString.substring(keyValueString.indexOf(keyValuePair[0]) + keyValuePair[0].length());
+            if ("repo".equals(key) || "url".equals(key)) {
+                recipeDo.update(key, trimIt(value));
+            } else if ("files".endsWith(key)) {
+                recipeDo.update(key, fileValue(value));
+            } else {
+                recipeDo.update(key, value.trim());
             }
         }
         return recipeDo;
