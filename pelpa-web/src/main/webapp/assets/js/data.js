@@ -1,4 +1,3 @@
-draw();
 function build(labels, label, data) {
     return {
         labels: labels,
@@ -33,7 +32,6 @@ function buildFromObj(obj) {
     return build(obj.labels, obj.label, obj.data);
 }
 
-
 function draw() {
     var ctxMonth = document.getElementById("myChartMonth");
     var ctxToday = document.getElementById("myChartToday");
@@ -60,3 +58,5 @@ function draw() {
         }
     });
 }
+
+draw();
