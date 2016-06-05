@@ -32,13 +32,8 @@ public class PackageItemVo {
     }
 
     public void setDesc(String desc) {
-        if (desc.contains("'") || desc.contains("\"")
-                || desc.contains("`")) {
-            this.desc = desc.replace("'", "").replace("\"", "").replace("`", "");
-        } else {
-            this.desc = desc;
-        }
-
+        this.desc = desc.replace("'", "").replace("\"", "")
+                .replace("`", "").replace("<", "").replace(">", "");
     }
 
     public String getVersion() {

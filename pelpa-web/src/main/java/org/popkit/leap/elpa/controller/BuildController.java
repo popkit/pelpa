@@ -107,7 +107,7 @@ public class BuildController {
     }
 
     @RequestMapping(value = "d8")
-    public CommonResponse d8() {
+    public CommonResponse d8(String pkgName) {
         CommonResponse com = new CommonResponse();
 
         //pkgFetchService.d8();
@@ -120,6 +120,9 @@ public class BuildController {
         //pkgBuildService.writeArchiveJSON();
         //recipesService.writeRecipesJson();
         //pkgBuildService.writeArchiveJSON();
+
+        RecipeDo recipeDo = recipesService.getRecipeDo(pkgName);
+        com.setData(recipeDo);
 
         return com;
     }

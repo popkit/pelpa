@@ -79,7 +79,7 @@
                     <td class="version"><a href="packages/0blayout-20160515.1913.el">${item.version} <span class="glyphicon glyphicon-download"></span></a></td>
                     <td class="recipe"><a href="https://github.com/popkit/pelpa/blob/master/recipes/${item.pkgName}"><span class="glyphicon glyphicon-cutlery"></span> </a></td>
                     <td class="source"><a href="${item.recipeUrl}">${item.fetcher}</a></td>
-                    <td>${item.dls}</td></tr>
+                    <td>${item.dls}</td>
                 </tr>
                 </#list>
             </#if>
