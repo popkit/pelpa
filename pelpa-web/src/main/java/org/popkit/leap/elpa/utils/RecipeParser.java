@@ -42,7 +42,8 @@ public class RecipeParser {
         RecipeDo recipeDo = new RecipeDo();
         recipeDo.setPkgName(suArr[0].trim());
 
-        String[] keyValueStringPair =  sub.substring(sub.indexOf(suArr[0]) + suArr[0].length()).trim().split(":");
+        String keyValueStringPairString = sub.substring(sub.indexOf(suArr[0]) + suArr[0].length()).trim();
+        String[] keyValueStringPair =  keyValueStringPairString.split(":");
         for (String keyValueString : keyValueStringPair) {
             if (StringUtils.isBlank(keyValueString)) {
                 continue;
@@ -57,7 +58,8 @@ public class RecipeParser {
             if ("repo".equals(key) || "url".equals(key)) {
                 recipeDo.update(key, trimIt(value));
             } else if ("files".endsWith(key)) {
-                recipeDo.update(key, fileValue(value));
+                String fileString = extraFileListString(keyValueStringPairString);
+                recipeDo.update(key, fileString);
             } else {
                 recipeDo.update(key, value.trim());
             }
@@ -65,11 +67,38 @@ public class RecipeParser {
         return recipeDo;
     }
 
-    private static String trimIt(String orgin) {
-        return orgin.replaceAll("\"", "").trim();
+    private static String extraFileListString(String keyValueStringPairString) {
+        int index = keyValueStringPairString.indexOf(":files");
+        boolean gotfirstLeft = false;
+        int leftIndex = -1;
+        int rightIndex = -1;
+        int match = 0;
+        for (int i=index; i<keyValueStringPairString.length(); i++) {
+            if (keyValueStringPairString.charAt(i) == '(') {
+                if (!gotfirstLeft) {
+                    gotfirstLeft = true;
+                    leftIndex = i;
+                } else {
+                    match ++;
+                }
+            } else if (keyValueStringPairString.charAt(i) == ')') {
+                if (match == 0) {
+                    rightIndex = i;
+                    break;
+                } else {
+                    match --;
+                }
+            }
+        }
+
+        if (leftIndex >= 0  && rightIndex >= 0 && rightIndex > leftIndex) {
+            String result = keyValueStringPairString.substring(leftIndex + 1, rightIndex);
+            return result.replaceAll("\"","");
+        }
+        return "";
     }
 
-    private static String fileValue(String origin) {
-        return origin.replaceAll("\"","").replaceAll("\\(", "").replaceAll("\\)", "").trim();
+    private static String trimIt(String orgin) {
+        return orgin.replaceAll("\"", "").trim();
     }
 }
