@@ -5,7 +5,7 @@
     <meta http-equiv="Access-Control-Allow-Origin" content="*"/>
     <meta http-equiv="X-UA-Compatible " content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <link rel='shortcut icon' type='image/x-icon' href='/assets/image/favicon.ico' />
+    <link rel='shortcut icon' type='image/x-icon' href='/assets/images/favicon.ico' />
     <title>pelpa</title>
 
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
@@ -13,6 +13,8 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/googlecode.min.css">
 
     <link rel="stylesheet" href="/assets/css/pelpa.css" type="text/css" />
+    <link rel="stylesheet" href="/assets/css/jquery.dataTables.min.css" type="text/css" />
+    <link rel="stylesheet" href="/assets/css/dataTables.semanticui.min.css" type="text/css" />
 </head>
 <body>
 
@@ -41,7 +43,7 @@
         </div>
         <div class="col-md-4">
             <div class="alert alert-warning"><strong>当前构建开始于:</strong><span>3 minutes ago</span><span>, 上次耗时 unknown</span></div>
-            <div><img src="/assets/image/donate.png" height="220px" width="220px"></div>
+            <div><img src="/assets/images/donate.png" height="220px" width="220px"></div>
         </div>
     </div>
 
@@ -53,31 +55,51 @@
             <input type="search" placeholder="Enter filter terms" autofocus="" class="form-control">
             <span class="help-block">3087 matching package(s)</span>
         </p>
-        <table id="package-list" class="table table-bordered table-responsive table-hover">
+        <table id="package-list" class="ui green table striped selectable">
             <thead>
             <tr>
-                <th class="sortable">Package<span class="glyphicon glyphicon-chevron-down"></span></th>
-                <th class="sortable">Description<span class="glyphicon glyphicon-minus"></span></th>
-                <th class="sortable">Version<span class="glyphicon glyphicon-minus"></span></th>
+                <th>Package</th>
+                <th>Description</th>
+                <th>Version</th>
                 <th>Recipe</th>
-                <th class="sortable">Source<span class="glyphicon glyphicon-minus"></span></th>
-                <th class="sortable">DLs<span class="glyphicon glyphicon-minus"></span></th>
+                <th>Source</th>
+                <th>DLs</th>
             </tr>
             </thead>
             <tbody>
             <tr>
+
                 <td><a href="/#/0blayout">0blayout</a></td>
                 <td><a href="/#/0blayout">Layout grouping with ease</a></td>
                 <td class="version"><a href="packages/0blayout-20160515.1913.el">20160515.1913 <span class="glyphicon glyphicon-download"></span></a></td>
-                <td class="recipe"><a href="https://github.com/milkypostman/melpa/blob/master/recipes/0blayout"><span class="glyphicon glyphicon-cutlery"></span></a></td>
+                <td class="recipe"><a href="https://github.com/milkypostman/melpa/blob/master/recipes/0blayout"><span class="glyphicon glyphicon-cutlery"></span>Githug</a></td>
                 <td class="source"><a href="https://github.com/etu/0blayout-mode">github</a></td>
                 <td>6</td></tr>
+            </tr>
+
             <tr>
+
+                <td><a href="/#/0blayout">0blayout</a></td>
+                <td><a href="/#/0blayout">Layout grouping with ease</a></td>
+                <td class="version"><a href="packages/0blayout-20160515.1913.el">20160515.1913 <span class="glyphicon glyphicon-download"></span></a></td>
+                <td class="recipe"><a href="https://github.com/milkypostman/melpa/blob/master/recipes/0blayout"><span class="glyphicon glyphicon-cutlery"></span>Githug</a></td>
+                <td class="source"><a href="https://github.com/etu/0blayout-mode">looo</a></td>
+                <td>6</td></tr>
+            </tr>
 
             </tbody>
         </table>
     </section>
 </div>
+<script src="/assets/js/jquery.js"></script>
+<script src="/assets/js/jquery.dataTables.min.js"></script>
+<script src="/assets/js/dataTables.semanticui.min.js"></script>
 
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#package-list').dataTable();
+    });
+
+</script>
 </body>
 </html>

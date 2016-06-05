@@ -5,7 +5,7 @@
     <meta http-equiv="Access-Control-Allow-Origin" content="*"/>
     <meta http-equiv="X-UA-Compatible " content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <link rel='shortcut icon' type='image/x-icon' href='/assets/image/favicon.ico' />
+    <link rel='shortcut icon' type='image/x-icon' href='/assets/images/favicon.ico' />
     <title>pelpa</title>
 <#include "/common/semantic.ftl">
 </head>
