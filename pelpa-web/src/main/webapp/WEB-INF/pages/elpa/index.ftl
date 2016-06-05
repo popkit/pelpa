@@ -67,26 +67,19 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
+            <#if (pkgs?? && pkgs?size >0) >
+                <#list  pkgs as item>
+                <tr>
 
-                <td><a href="/#/0blayout">0blayout</a></td>
-                <td><a href="/#/0blayout">Layout grouping with ease</a></td>
-                <td class="version"><a href="packages/0blayout-20160515.1913.el">20160515.1913 <span class="glyphicon glyphicon-download"></span></a></td>
-                <td class="recipe"><a href="https://github.com/milkypostman/melpa/blob/master/recipes/0blayout"><span class="glyphicon glyphicon-cutlery"></span>Githug</a></td>
-                <td class="source"><a href="https://github.com/etu/0blayout-mode">github</a></td>
-                <td>6</td></tr>
-            </tr>
-
-            <tr>
-
-                <td><a href="/#/0blayout">0blayout</a></td>
-                <td><a href="/#/0blayout">Layout grouping with ease</a></td>
-                <td class="version"><a href="packages/0blayout-20160515.1913.el">20160515.1913 <span class="glyphicon glyphicon-download"></span></a></td>
-                <td class="recipe"><a href="https://github.com/milkypostman/melpa/blob/master/recipes/0blayout"><span class="glyphicon glyphicon-cutlery"></span>Githug</a></td>
-                <td class="source"><a href="https://github.com/etu/0blayout-mode">looo</a></td>
-                <td>6</td></tr>
-            </tr>
-
+                    <td><a href="/#/${item.pkgName}">${item.pkgName}</a></td>
+                    <td><a href="/#/${item.pkgName}">${item.desc}</a></td>
+                    <td class="version"><a href="packages/0blayout-20160515.1913.el">${item.version} <span class="glyphicon glyphicon-download"></span></a></td>
+                    <td class="recipe"><a href="https://github.com/popkit/pelpa/blob/master/recipes/${item.pkgName}"><span class="glyphicon glyphicon-cutlery"></span> </a></td>
+                    <td class="source"><a href="${item.recipeUrl}">${item.fetcher}</a></td>
+                    <td>${item.dls}</td></tr>
+                </tr>
+                </#list>
+            </#if>
             </tbody>
         </table>
     </section>
