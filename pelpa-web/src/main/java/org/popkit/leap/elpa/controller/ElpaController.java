@@ -69,7 +69,11 @@ public class ElpaController extends BaseController {
                     PackageItemVo packageItemVo = new PackageItemVo();
                     packageItemVo.setPkgName(recipeDo.getPkgName());
                     packageItemVo.setDls(recipeDo.getDls());
-                    packageItemVo.setDesc(archiveVo.getDesc());
+                    if (StringUtils.isBlank(archiveVo.getDesc())) {
+                        packageItemVo.setDesc(" ");
+                    } else {
+                        packageItemVo.setDesc(archiveVo.getDesc());
+                    }
                     packageItemVo.setFetcher(recipeDo.getFetcher());
                     packageItemVo.setVersion(StringUtils.join(archiveVo.getVer(), "."));
                     packageItemVo.setRecipeUrl(" ");
