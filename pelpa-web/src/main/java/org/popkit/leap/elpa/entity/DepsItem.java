@@ -1,5 +1,7 @@
 package org.popkit.leap.elpa.entity;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.popkit.core.logger.LeapLogger;
 
 import java.util.ArrayList;
@@ -66,6 +68,13 @@ public class DepsItem {
         return versions;
     }
 
+    public String getVersionString() {
+        if (CollectionUtils.isEmpty(versions)) {
+            return "";
+        }
+
+        return StringUtils.join(versions, ".");
+    }
     public void setVersions(List<Integer> versions) {
         this.versions = versions;
     }

@@ -142,10 +142,11 @@ public class PkgBuildService {
                 archiveVo.setType(TYPE_TAR);
                 archiveVo.setKeywords(pkgInfo.getKeywords());
                 archiveVo.setDeps(pkgInfo.getDeps());
-
+                String repoUrl = recipeDo.getUrl();
                 if (FetcherEnum.getFetcher(recipeDo.getFetcher()) == FetcherEnum.GITHUB) {
-                    archiveVo.setPropsUrl(GitFetchHandler.GITHUB_HTTPS_ROOT + recipeDo.getRepo());
+                    repoUrl = GitFetchHandler.GITHUB_HTTPS_ROOT + recipeDo.getRepo();
                 }
+                archiveVo.setPropsUrl(repoUrl);
 
                 File pkgElispFile = new File(PelpaUtils.getPkgElispFileName(recipeDo.getPkgName()));
                 long lastModify = pkgElispFile.lastModified();
@@ -153,7 +154,8 @@ public class PkgBuildService {
                 if ((!pkgElispFile.exists()) || lastcommit > lastModify) {
                     PelpaUtils.generatePkgElispFileContent(recipeDo.getPkgName(),
                             TimeVersionUtils.toVersionString(lastcommit), archiveVo.getDesc(),
-                            archiveVo.getProps().getKeywords());
+                            archiveVo.getProps().getKeywords(),
+                            pkgInfo.getDeps(), repoUrl);
                 }
 
                 FileTarHandler.tar(recipeDo.getPkgName(), recipeDo, elispFileList, lastcommit);

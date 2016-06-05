@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.popkit.core.config.LeapConfigLoader;
 import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.constents.EnvEnum;
+import org.popkit.leap.elpa.entity.DepsItem;
 import org.popkit.leap.elpa.entity.RecipeDo;
 
 import java.io.BufferedReader;
@@ -58,11 +59,14 @@ public class PelpaUtils {
      * @return
      */
     public static void generatePkgElispFileContent(String pkgName, String version,
-                                                   String shortInfo, List<String> keywords) {
+                                                   String shortInfo, List<String> keywords,
+                                                   List<DepsItem> deps, String url) {
         StringBuilder stringBuilder = new StringBuilder("");
         stringBuilder.append("(define-package ").append(wrap(pkgName)).append(" ")
-                .append(wrap(version)).append(" ").append(wrap(shortInfo)).append(" 'nil ")
-                .append(keywords(keywords));
+                .append(wrap(version)).append(" ").append(wrap(shortInfo))
+                .append(" ").append(deps(deps))
+                .append(" ").append(url(url))
+                .append(" ").append(keywords(keywords));
 
         stringBuilder.append(")");
         File file = new File(getPkgElispFileName(pkgName));
@@ -71,6 +75,35 @@ public class PelpaUtils {
         } catch (IOException e) {
             //
         }
+    }
+
+    private static String deps(List<DepsItem> depsItems) {
+        if (CollectionUtils.isNotEmpty(depsItems)) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(" '(");
+            for (DepsItem item : depsItems) {
+                if (CollectionUtils.isEmpty(depsItems)) {
+                    continue;
+                }
+                sb.append("(");
+                sb.append(item.getName()).append(" ").append(wrap(item.getVersionString()));
+                sb.append(") ");
+            }
+            sb.append(")");
+            return sb.toString();
+        }
+
+        return " 'nil ";
+    }
+
+    private static String url(String url) {
+        if (StringUtils.isNotBlank(url)) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(":url").append(" ").append(wrap(url.trim()));
+            return sb.toString();
+        }
+
+        return " ";
     }
 
     private static String keywords(List<String> keywords) {
