@@ -6,6 +6,7 @@ import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.entity.*;
 import org.popkit.leap.elpa.services.handler.GitFetchHandler;
 import org.popkit.leap.elpa.utils.PelpaUtils;
+import org.popkit.leap.elpa.utils.RecipeParser;
 import org.popkit.leap.elpa.utils.TimeVersionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -96,17 +98,26 @@ public class PkgBuildService {
     public void buildMultiFilesPackage(RecipeDo recipeDo) {
         List<File> elispFileList = PelpaUtils.getFileListBasedRecipe(recipeDo);
         try {
-            File pkgFile = null;
+            File pkgFile = null;    // PACKAGE-NAME.el
+            File pkgPkgFile = null; // PACKAGE-NAME-pkg.el
 
             for (File file : elispFileList) {
                 if ((recipeDo.getPkgName() + ".el").endsWith(file.getName())) {
                     pkgFile = file;
+                    break;
+                }
+                if (file.getName().equals(recipeDo.getPkgName() + "-pkg.el")) {
+                    pkgPkgFile = file;
                 }
             }
 
             // TODO 当没有 PACKAGE-NAME.el时,可采用PACKAGE-NAME-pkg.el提取信息,如tao-theme
-            if (pkgFile != null) {
-                PackageInfo pkgInfo = getPkgInfo(pkgFile, recipeDo.getPkgName());
+            if (pkgFile != null || pkgPkgFile != null) {
+                PackageInfo pkgInfo = pkgFile != null ?
+                        getPkgInfo(pkgFile, recipeDo.getPkgName())
+                        : getPkgInfoBasePkgFile(pkgPkgFile, recipeDo.getPkgName());
+                if (pkgInfo == null) { return; }
+
                 ArchiveVo archiveVo = new ArchiveVo();
                 archiveVo.setDesc(pkgInfo.getShortInfo());
 
@@ -185,6 +196,47 @@ public class PkgBuildService {
         }
 
         LocalCache.updateArchive(recipeDo.getPkgName(), archiveVo);
+    }
+
+    public PackageInfo getPkgInfoBasePkgFile(File pkgFile, String pkgName) {
+        try {
+            String fileContent = FileUtils.readFileToString(pkgFile);
+            String content = RecipeParser.extraPairContent(fileContent).trim();
+            List<Integer> indexList = new ArrayList<Integer>();
+            int isInQuteCount = 0;    // 0 is Ok
+            int index = 0;
+            for (char c : content.toCharArray()) {
+                if (Character.isWhitespace(c) && isInQuteCount == 0) {
+                    if (index == 0) {
+                        indexList.add(index);
+                        continue;
+                    }
+                    if (!Character.isWhitespace(content.charAt(index - 1))) {
+                        indexList.add(index);
+                    }
+                }
+
+                if ('"' == c) {
+                    if (isInQuteCount % 2 == 0) {
+                        isInQuteCount ++;
+                    } else {
+                        isInQuteCount --;
+                    }
+                }
+                index ++;
+            }
+
+            List<String> result = new ArrayList<String>();
+            for (int i=0; i < indexList.size() - 1; i++) {
+                result.add(content.substring(indexList.get(i), indexList.get(i+1)));
+            }
+
+            return null;
+        } catch (Exception e) {
+
+        }
+
+        return null;
     }
 
     public PackageInfo getPkgInfo(File elispfile, String pkgName) {

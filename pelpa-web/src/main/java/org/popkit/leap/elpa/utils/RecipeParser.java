@@ -12,6 +12,7 @@ import java.io.File;
  * 2016-05-16:12:02
  */
 public class RecipeParser {
+    private RecipeParser(){}
 
     public static RecipeDo parsePkgRecipe(String pkgName) {
         String recipe = PelpaUtils.getRecipeFilePath() + pkgName;
@@ -69,19 +70,25 @@ public class RecipeParser {
 
     private static String extraFileListString(String keyValueStringPairString) {
         int index = keyValueStringPairString.indexOf(":files");
+        return index > 0 ?
+                extraPairContent(keyValueStringPairString.substring(index)).replaceAll("\"", "")
+                : StringUtils.EMPTY;
+    }
+
+    public static String extraPairContent(String origin) {
         boolean gotfirstLeft = false;
         int leftIndex = -1;
         int rightIndex = -1;
         int match = 0;
-        for (int i=index; i<keyValueStringPairString.length(); i++) {
-            if (keyValueStringPairString.charAt(i) == '(') {
+        for (int i=0; i<origin.length(); i++) {
+            if (origin.charAt(i) == '(') {
                 if (!gotfirstLeft) {
                     gotfirstLeft = true;
                     leftIndex = i;
                 } else {
                     match ++;
                 }
-            } else if (keyValueStringPairString.charAt(i) == ')') {
+            } else if (origin.charAt(i) == ')') {
                 if (match == 0) {
                     rightIndex = i;
                     break;
@@ -92,11 +99,12 @@ public class RecipeParser {
         }
 
         if (leftIndex >= 0  && rightIndex >= 0 && rightIndex > leftIndex) {
-            String result = keyValueStringPairString.substring(leftIndex + 1, rightIndex);
-            return result.replaceAll("\"","");
+            return origin.substring(leftIndex + 1, rightIndex);
         }
-        return "";
+
+        return StringUtils.EMPTY;
     }
+
 
     private static String trimIt(String orgin) {
         return orgin.replaceAll("\"", "").trim();
