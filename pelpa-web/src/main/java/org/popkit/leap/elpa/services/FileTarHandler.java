@@ -22,7 +22,8 @@ public class FileTarHandler {
     private static final String TEST_WORKING = "/Users/aborn/github/pelpa/working/";
     private static final String TEST_DES_DIR = "/Users/aborn/github/popkit-elpa/html/packages/";
 
-    public static void tar(List<File> fileList, String tmpTarWorking, String destTar) throws IOException {
+    public static void tar(String pkgName, List<File> fileList, String tmpTarWorking, String destTar) throws IOException {
+        String wokingDir = PelpaUtils.getWorkingPath(pkgName);
         File tmpTarWorkingDir = new File(tmpTarWorking);
         if (tmpTarWorkingDir.exists()) {
             FileUtils.deleteDirectory(tmpTarWorkingDir);
@@ -30,10 +31,23 @@ public class FileTarHandler {
         tmpTarWorkingDir.mkdir();
 
         for (File item : fileList) {
+            String fileFullPath = item.getAbsolutePath();
+            String targetRelative = fileFullPath.substring(wokingDir.length()+1);
+            File targetDir = tmpTarWorkingDir;
+
+            // 默认 *.el文件放在最上层
+            if (targetRelative.contains("/") && (!item.getName().endsWith(".el"))) {
+                String targetRelativePath = targetRelative.substring(0, targetRelative.lastIndexOf("/"));
+                targetDir = new File(tmpTarWorkingDir + "/" + targetRelativePath);
+                if (!targetDir.exists()) {
+                    targetDir.mkdirs();
+                }
+            }
+
             if (item.isFile()) {
-                FileUtils.copyFileToDirectory(item, tmpTarWorkingDir);
+                FileUtils.copyFileToDirectory(item, targetDir);
             } else {
-                FileUtils.copyDirectoryToDirectory(item, tmpTarWorkingDir);
+                FileUtils.copyDirectoryToDirectory(item, targetDir);
             }
         }
 
@@ -74,7 +88,7 @@ public class FileTarHandler {
         }
 
         fileList.addAll(elispFileList);
-        tar(fileList, tmpTarWorking, destTar);
+        tar(pkgName, fileList, tmpTarWorking, destTar);
     }
 
     public static void main(String[] args) {

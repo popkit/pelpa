@@ -38,7 +38,12 @@ public class RecipeDo {
 
     public List<String> getFileList() {
         if (StringUtils.isNotBlank(this.files)) {
-            return Arrays.asList(this.files.split("\\s+"));
+            if (this.files.contains("(") || this.files.contains(")")) {
+                // TODO: 6/5/16  like geiser
+                return Arrays.asList(this.files.replaceAll("\\(", "").replaceAll("\\)", "").split("\\s+"));
+            } else {
+                return Arrays.asList(this.files.split("\\s+"));
+            }
         } else {
             return new ArrayList<String>();
         }

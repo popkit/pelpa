@@ -1,6 +1,5 @@
 package org.popkit.leap.elpa.services;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.popkit.core.entity.SimpleResult;
 import org.popkit.core.logger.LeapLogger;
@@ -15,7 +14,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -96,28 +94,9 @@ public class PkgBuildService {
     }
 
     public void buildMultiFilesPackage(RecipeDo recipeDo) {
-        List<File> elispFileList = new ArrayList<File>();
-
-        String workingPath = PelpaUtils.getWorkingPath(recipeDo.getPkgName());
+        List<File> elispFileList = PelpaUtils.getFileListBasedRecipe(recipeDo);
         try {
             File pkgFile = null;
-
-            // get all files which will be tar.
-            if (CollectionUtils.isNotEmpty(recipeDo.getFileList())) {
-                for (String fileName : recipeDo.getFileList()) {
-                    if (fileName.contains("*.el")) {
-                        String sub = fileName.substring(0, fileName.lastIndexOf("/"));
-                        elispFileList.addAll(PelpaUtils.getElispFile(workingPath + File.separator + sub));
-                    } else {
-                        File fileTmp = new File(workingPath + File.separator + fileName);
-                        if (fileTmp.exists()) {
-                            elispFileList.add(fileTmp);
-                        }
-                    }
-                }
-            } else {
-                elispFileList.addAll(PelpaUtils.getElispFile(workingPath));
-            }
 
             for (File file : elispFileList) {
                 if ((recipeDo.getPkgName() + ".el").endsWith(file.getName())) {

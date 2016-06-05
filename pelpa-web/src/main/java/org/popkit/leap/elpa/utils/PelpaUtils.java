@@ -195,4 +195,66 @@ public class PelpaUtils {
 
         return recipeList;
     }
+
+    public static List<File> getFileListBasedRecipe(RecipeDo recipeDo) {
+        List<File> elispFileList = new ArrayList<File>();
+        String workingPath = PelpaUtils.getWorkingPath(recipeDo.getPkgName());
+
+        // get all files which will be tar.
+        if (CollectionUtils.isNotEmpty(recipeDo.getFileList())) {
+            for (String fileName : recipeDo.getFileList()) {
+                if (StringUtils.isBlank(fileName)) {
+                    continue;
+                }
+
+                if (fileName.endsWith("*.el")) {
+                    String sub = "";
+                    if (fileName.contains("/")) {
+                        sub = fileName.substring(0, fileName.lastIndexOf("/"));
+                    }
+                    elispFileList.addAll(PelpaUtils.getElispFile(workingPath + File.separator + sub));
+                } else {
+                    if (fileName.endsWith("*")) {   // 某目录下所有文件
+                        String sub = "";
+                        if (fileName.contains("/")) {
+                            sub = fileName.substring(0, fileName.lastIndexOf("/"));
+                        }
+                        File pathFile = new File(workingPath + File.separator + sub);
+                        if (pathFile.exists() && pathFile.isDirectory()) {
+                            for (File file : pathFile.listFiles()) {
+                                if (!file.getName().startsWith(recipeDo.getPkgName() + "-")) {
+                                    elispFileList.add(file);
+                                }
+                            }
+                        }
+                    } else {
+                        if (fileName.contains("*.")) { // 特定文件类型,如 *.js *.tmp
+                            String sub = fileName.substring(0, fileName.lastIndexOf("*."));
+                            String[] tmp = fileName.split("\\*\\.");
+                            if (tmp.length > 0) {
+                                String suffix = tmp[1];
+                                File pathFile = new File(workingPath + File.separator + sub);
+                                if (pathFile.exists() && pathFile.isDirectory()) {
+                                    for (File file : pathFile.listFiles()) {
+                                        if (file.getName().endsWith(suffix)) {
+                                            elispFileList.add(file);
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            File fileTmp = new File(workingPath + File.separator + fileName);
+                            if (fileTmp.exists()) {
+                                elispFileList.add(fileTmp);
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            elispFileList.addAll(PelpaUtils.getElispFile(workingPath));
+        }
+
+        return elispFileList;
+    }
 }
