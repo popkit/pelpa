@@ -32,8 +32,9 @@ public class PackageItemVo {
     }
 
     public void setDesc(String desc) {
-        if (desc.contains("'") | desc.contains("\"")) {
-            this.desc = desc.replace("'", "").replace("\"", "");
+        if (desc.contains("'") || desc.contains("\"")
+                || desc.contains("`")) {
+            this.desc = desc.replace("'", "").replace("\"", "").replace("`", "");
         } else {
             this.desc = desc;
         }

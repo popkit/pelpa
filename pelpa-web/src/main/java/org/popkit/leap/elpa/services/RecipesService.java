@@ -46,7 +46,7 @@ public class RecipesService {
         }
     }
 
-    public void updateDls(String pkgName, int dls) {
+    public static void updateDls(String pkgName, int dls) {
         if (RECIPE_DO_LIST.contains(pkgName)) {
             RECIPE_DO_LIST.get(pkgName).setDls(dls);
         }
