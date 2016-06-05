@@ -142,7 +142,7 @@ public class RoundSupervisor {
         }
     }
 
-    private DiskStatus getDiskStatus() {
+    public static DiskStatus getDiskStatus() {
         File[] roots = File.listRoots();
         /* For each filesystem root, print some info */
         for (File root : roots) {

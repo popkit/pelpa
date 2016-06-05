@@ -8,6 +8,7 @@ import org.popkit.leap.elpa.entity.PackageItemVo;
 import org.popkit.leap.elpa.entity.RecipeDo;
 import org.popkit.leap.elpa.services.LocalCache;
 import org.popkit.leap.elpa.services.RecipesService;
+import org.popkit.leap.monitor.RoundSupervisor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,7 +33,18 @@ public class ElpaController extends BaseController {
 
     @RequestMapping(value = "index.html")
     public String index(HttpServletRequest request) {
-        request.setAttribute("pkgs", getPackages());
+        List<PackageItemVo> pkgs = getPackages();
+        request.setAttribute("pkgs", pkgs);
+        int totalDls = 0;
+        if (CollectionUtils.isNotEmpty(pkgs)) {
+            for (PackageItemVo vo : pkgs) {
+                totalDls = totalDls + vo.getDls();
+            }
+        }
+
+        request.setAttribute("diskStatus", RoundSupervisor.getDiskStatus());
+        request.setAttribute("totalDls", totalDls);
+        request.setAttribute("totalPkg", pkgs.size());
         return "elpa/index";
     }
 
@@ -50,14 +62,13 @@ public class ElpaController extends BaseController {
                 }
             });
 
-            StringBuilder sbList = new StringBuilder("");
             for (String pkgName : recipesNames) {
                 RecipeDo recipeDo = recipesService.getRecipeDo(pkgName);
                 ArchiveVo archiveVo = LocalCache.getArchive(pkgName);
                 if (recipeDo != null && archiveVo != null) {
                     PackageItemVo packageItemVo = new PackageItemVo();
                     packageItemVo.setPkgName(recipeDo.getPkgName());
-                    packageItemVo.setDls(0);
+                    packageItemVo.setDls(recipeDo.getDls());
                     packageItemVo.setDesc(archiveVo.getDesc());
                     packageItemVo.setFetcher(recipeDo.getFetcher());
                     packageItemVo.setVersion(StringUtils.join(archiveVo.getVer(), "."));

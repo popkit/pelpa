@@ -19,6 +19,8 @@ public class RecipeDo {
     private String fetcher;
     private String repo;
 
+    private int dls;
+
     @Record(key = "version-regexp")
     private String versionRegexp;   // version-regexp
 
@@ -121,5 +123,13 @@ public class RecipeDo {
 
     public void setLastCommit(long lastCommit) {
         this.lastCommit = lastCommit;
+    }
+
+    public int getDls() {
+        return dls;
+    }
+
+    public void setDls(int dls) {
+        this.dls = dls;
     }
 }

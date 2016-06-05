@@ -9,7 +9,9 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.popkit.core.logger.LeapLogger;
+import org.popkit.leap.elpa.services.RecipesService;
 import org.popkit.leap.elpa.utils.PelpaUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -34,6 +36,9 @@ import java.util.regex.Pattern;
  */
 @Service
 public class LogScanner {
+    @Autowired
+    private RecipesService recipesService;
+
     public static final String STATISTICS_MONTH_FILE = "month.json";
     public static final DateTimeFormatter DAY_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd");
     public static final DateTimeFormatter HOUR_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH");
@@ -74,12 +79,13 @@ public class LogScanner {
         ).start();
     }
 
-    public static String toJSONString() {
+    public String toJSONString() {
         Map<String, EachLogItem> logItemMap = readLogScanFile();
         JSONObject jsonObject = new JSONObject();
         if (MapUtils.isNotEmpty(logItemMap)) {
             for (String item : logItemMap.keySet()) {
                 jsonObject.put(item, logItemMap.get(item).getCount());
+                recipesService.updateDls(item, logItemMap.get(item).getCount());
             }
         }
 

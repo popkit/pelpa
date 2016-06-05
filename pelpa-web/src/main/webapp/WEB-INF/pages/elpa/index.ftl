@@ -48,8 +48,8 @@
     </div>
 
     <section id="packages">
-        <h2 style="margin-top: 25px">当前库中含有3,087 个包
-            <small>8,509 个下载量 磁盘使用：30.80% 磁盘剩余容量：27.2 GiB</small>
+        <h2 style="margin-top: 25px">当前库中含有${totalPkg} 个包
+            <small>${totalDls} 个下载量 磁盘使用：${diskStatus.used} 磁盘剩余容量：${diskStatus.avail}</small>
         </h2>
         <p>
             <input type="search" placeholder="Enter filter terms" autofocus="" class="form-control">
@@ -70,7 +70,6 @@
             <#if (pkgs?? && pkgs?size >0) >
                 <#list  pkgs as item>
                 <tr>
-
                     <td><a href="/#/${item.pkgName}">${item.pkgName}</a></td>
                     <td><a href="/#/${item.pkgName}">${item.desc}</a></td>
                     <td class="version"><a href="packages/0blayout-20160515.1913.el">${item.version} <span class="glyphicon glyphicon-download"></span></a></td>
