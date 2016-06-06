@@ -64,11 +64,12 @@ public class RoundSupervisor {
 
                     if (run == null || run.getStartTime() == null
                             || (RoundStatus.FINISHED == run.getStatus()
+                            && run.getEndTime() != null
                             && run.getEndTime().getTime() + REST_TIME < new Date().getTime())) {
                         nextRun();    // 新一轮构建开始
                     }
 
-                    if (RoundMonitor.isFinishedThisRun()) {
+                    if (monitor.isFinishedThisRun()) {
                         if (run.getEndTime() == null) {
                             run.setEndTime(new Date());
                             archiveContentsGenerator.updateAC();
@@ -90,6 +91,7 @@ public class RoundSupervisor {
 
                     updateDiskStatus();
                     updateBuildStatus();
+                    LeapLogger.info(run.tohumanable());
                 }
             }
         }).start();

@@ -38,14 +38,14 @@ public class RoundMonitor {
         if (CollectionUtils.isNotEmpty(recipeDoList)) {
             for (RecipeDo recipeDo : recipeDoList) {
                 EachActor eachActor = new EachActor(recipeDo.getPkgName(), roundid);
-                actors.putIfAbsent(recipeDo.getPkgName(), eachActor);
+                actors.put(recipeDo.getPkgName(), eachActor);
             }
         } else {
             LeapLogger.warn("本次初始化RecipeList为空, roundId=" + roundid);
         }
     }
 
-    public static Map<String, EachActor> getActors() {
+    public Map<String, EachActor> getActors() {
         return actors;
     }
 
@@ -83,7 +83,7 @@ public class RoundMonitor {
         return null;
     }
 
-    public static boolean isFinishedThisRun() {
+    public boolean isFinishedThisRun() {
         for (String pkg : actors.keySet()) {
             if (!actors.get(pkg).isFinished()) {
                 return false;

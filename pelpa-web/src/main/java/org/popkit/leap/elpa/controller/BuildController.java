@@ -52,9 +52,12 @@ public class BuildController {
     @Autowired
     private LogScanner logScanner;
 
+    @Autowired
+    private RoundMonitor roundMonitor;
+
     @RequestMapping(value = "index.html")
     public String index(HttpServletRequest request) {
-        Map<String, EachActor> actorMap = RoundMonitor.getActors();
+        Map<String, EachActor> actorMap = roundMonitor.getActors();
         List<EachActor> unstarted = new ArrayList<EachActor>();
         List<EachActor> finished = new ArrayList<EachActor>();
         List<EachActor> onging = new ArrayList<EachActor>();
@@ -171,7 +174,7 @@ public class BuildController {
         CommonResponse commonResponse = new CommonResponse();
         if (StringUtils.isNotBlank(pkgName)) {
             RecipeDo recipeDo = RecipeParser.parsePkgRecipe(pkgName);
-            //pkgFetchService.downloadPackage(pkgName);
+            pkgFetchService.downloadPackage(pkgName);
             SimpleResult simpleResult = pkgBuildService.buildPackage(pkgName);
             commonResponse.setData(simpleResult);
         }
