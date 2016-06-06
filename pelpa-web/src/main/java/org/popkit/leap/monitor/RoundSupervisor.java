@@ -98,6 +98,12 @@ public class RoundSupervisor {
     }
 
     private void nextRun() {
+        if (run.getStartTime() != null && run.getEndTime() != null) {
+            run.setLastRoundTimeUsed(run.getEndTime().getTime() - run.getStartTime().getTime());
+        } else {
+            run.setLastRoundTimeUsed(0);
+        }
+
         run.setStartTime(new Date());
         run.setEndTime(null);
         run.setStatus(RoundStatus.RUNNING);

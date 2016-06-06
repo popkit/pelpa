@@ -29,6 +29,10 @@ public class BuildStatus {
             next = (run.getEndTime().getTime() + RoundSupervisor.REST_TIME) / 1000;
             completed = run.getEndTime().getTime() / 1000;
         }
+
+        if (run.getEndTime() == null) {
+            duration = run.getLastRoundTimeUsed() / 1000;
+        }
     }
 
     public String toJSONString() {

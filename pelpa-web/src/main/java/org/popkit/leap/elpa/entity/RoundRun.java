@@ -18,6 +18,8 @@ public class RoundRun {
 
     private RoundStatus status;
 
+    private long lastRoundTimeUsed;
+
     public String tohumanable() {
         StringBuilder stringBuilder = new StringBuilder("");
         stringBuilder.append("roundId=" + roundId);
@@ -34,8 +36,8 @@ public class RoundRun {
             stringBuilder.append(", 当前状态:").append(status);
         }
 
-        if (startTime != null && endTime != null) {
-            stringBuilder.append(", 耗时:").append(ToolUtils.toHumanable(endTime.getTime() - startTime.getTime()));
+        if (lastRoundTimeUsed > 0) {
+            stringBuilder.append(", 耗时:").append(ToolUtils.toHumanable(lastRoundTimeUsed));
         }
 
         return stringBuilder.toString();
@@ -71,5 +73,13 @@ public class RoundRun {
 
     public void setStatus(RoundStatus status) {
         this.status = status;
+    }
+
+    public long getLastRoundTimeUsed() {
+        return lastRoundTimeUsed;
+    }
+
+    public void setLastRoundTimeUsed(long lastRoundTimeUsed) {
+        this.lastRoundTimeUsed = lastRoundTimeUsed;
     }
 }
