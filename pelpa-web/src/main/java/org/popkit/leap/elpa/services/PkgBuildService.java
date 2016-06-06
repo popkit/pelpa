@@ -197,8 +197,23 @@ public class PkgBuildService {
             int isInQuteCount = 0;    // 0 is Ok
             int index = -1;
             indexList.add(0);
+            int rightBracket = -1;
+            boolean isInBracket = false;
             for (char c : content.toCharArray()) {
                 index ++;
+                if ('(' == c && (!isInBracket)) {
+                    isInBracket = true;
+                    rightBracket = RecipeParser.findAnotherBracket(index, content);
+                }
+
+                if (index == rightBracket) {
+                    isInBracket = false;
+                }
+
+                if (index <= rightBracket) {
+                    continue;
+                }
+
                 if (Character.isWhitespace(c) && isInQuteCount == 0) {
                     if (index == 0) {
                         indexList.add(index);
@@ -229,6 +244,7 @@ public class PkgBuildService {
             PackageInfo packageInfo = new PackageInfo();
             if (result.size() >= 3) {
                 packageInfo.setShortInfo(PelpaUtils.unwrap(result.get(3)));
+                packageInfo.setReadmeInfo(PelpaUtils.unwrap(result.get(3)));
             }
 
             if (result.size() > 4) {
@@ -236,13 +252,12 @@ public class PkgBuildService {
                 packageInfo.setDeps(convetDeps(currentline));
             }
 
-
             for (int i=0; i<(result.size() - 1); i++) {
                 if (":keywords".equals(result.get(i))
                         && result.get(i+1).contains("'")
                         && result.get(i+1).contains("(")
                         && result.get(i+1).contains(")")) {
-                    packageInfo.setKeywords(Arrays.asList(result.get(i+1).replace("(", "").replace(")", "").replace("'", "").split("\\s+")));
+                    packageInfo.setKeywords(Arrays.asList(result.get(i+1).replace("(", "").replace(")", "").replace("'", "").replace("\"", "").split("\\s+")));
                 }
             }
 

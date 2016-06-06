@@ -109,4 +109,22 @@ public class RecipeParser {
     private static String trimIt(String orgin) {
         return orgin.replaceAll("\"", "").trim();
     }
+
+    public static int findAnotherBracket(int leftBracketPos, String content) {
+        int flagInt = 0;
+        for (int i=leftBracketPos + 1; i<content.length(); i++) {
+            if ('(' == content.charAt(i)) {
+                flagInt ++;
+            }
+
+            if (')' == content.charAt(i) && flagInt == 0) {
+                return i;
+            }
+
+            if (')' == content.charAt(i) && flagInt > 0) {
+                flagInt --;
+            }
+        }
+        return -1;
+    }
 }

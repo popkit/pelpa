@@ -98,7 +98,7 @@ public class FileTarHandler {
 
         List<File> fileList = new ArrayList<File>();
         for (File item : elispFileList) {
-            if (!item.getAbsolutePath().equals(destPkgDescFile.getAbsolutePath())) {
+            if (!item.getName().equals(destPkgDescFile.getName())) {
                 fileList.add(item);
             }
         }
