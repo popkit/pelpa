@@ -57,7 +57,7 @@ public class RecipeParser {
             String key = keyValuePair[0].trim();
             String value = keyValueString.substring(keyValueString.indexOf(keyValuePair[0]) + keyValuePair[0].length());
             if ("repo".equals(key) || "url".equals(key)) {
-                recipeDo.update(key, trimIt(value));
+                recipeDo.update(key, PelpaUtils.unwrap(value));
             } else if ("files".endsWith(key)) {
                 String fileString = extraFileListString(keyValueStringPairString);
                 recipeDo.update(key, fileString);
@@ -103,11 +103,6 @@ public class RecipeParser {
         }
 
         return StringUtils.EMPTY;
-    }
-
-
-    private static String trimIt(String orgin) {
-        return orgin.replaceAll("\"", "").trim();
     }
 
     public static int findAnotherBracket(int leftBracketPos, String content) {
