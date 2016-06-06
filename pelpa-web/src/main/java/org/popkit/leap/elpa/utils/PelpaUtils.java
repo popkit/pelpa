@@ -119,11 +119,19 @@ public class PelpaUtils {
         return "";
     }
 
-    private static String wrap(String string) {
+    public static String wrap(String string) {
         if (string == null) {
             string = "";
         }
         return "\"" + string + "\"";
+    }
+
+    public static String unwrap(String origin) {
+        if (origin == null) {
+            return StringUtils.EMPTY;
+        }
+
+        return origin.replace("\"", "").trim();
     }
 
     public static String getHtmlPath() {

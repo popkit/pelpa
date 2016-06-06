@@ -204,8 +204,10 @@ public class PkgBuildService {
             String content = RecipeParser.extraPairContent(fileContent).trim();
             List<Integer> indexList = new ArrayList<Integer>();
             int isInQuteCount = 0;    // 0 is Ok
-            int index = 0;
+            int index = -1;
+            indexList.add(0);
             for (char c : content.toCharArray()) {
+                index ++;
                 if (Character.isWhitespace(c) && isInQuteCount == 0) {
                     if (index == 0) {
                         indexList.add(index);
@@ -213,6 +215,8 @@ public class PkgBuildService {
                     }
                     if (!Character.isWhitespace(content.charAt(index - 1))) {
                         indexList.add(index);
+                    } else {
+                        continue;
                     }
                 }
 
@@ -223,17 +227,37 @@ public class PkgBuildService {
                         isInQuteCount --;
                     }
                 }
-                index ++;
             }
 
+            indexList.add(content.length());
             List<String> result = new ArrayList<String>();
             for (int i=0; i < indexList.size() - 1; i++) {
-                result.add(content.substring(indexList.get(i), indexList.get(i+1)));
+                result.add(content.substring(indexList.get(i), indexList.get(i+1)).trim());
             }
 
-            return null;
-        } catch (Exception e) {
+            PackageInfo packageInfo = new PackageInfo();
+            if (result.size() >= 3) {
+                packageInfo.setShortInfo(PelpaUtils.unwrap(result.get(3)));
+            }
 
+            if (result.size() >= 4) {
+                String currentline = result.get(4).replace("'", ":");
+                packageInfo.setDeps(convetDeps(currentline));
+            }
+
+
+            for (int i=0; i<(result.size() - 1); i++) {
+                if (":keywords".equals(result.get(i))
+                        && result.get(i+1).contains("'")
+                        && result.get(i+1).contains("(")
+                        && result.get(i+1).contains(")")) {
+                    packageInfo.setKeywords(Arrays.asList(result.get(i+1).replace("(", "").replace(")", "").replace("'", "").split("\\s+")));
+                }
+            }
+
+            return packageInfo;
+        } catch (Exception e) {
+            LeapLogger.warn("", e);
         }
 
         return null;
