@@ -139,17 +139,8 @@ public class PkgBuildService {
                 }
                 archiveVo.setPropsUrl(repoUrl);
 
-                File pkgElispFile = new File(PelpaUtils.getPkgElispFileName(recipeDo.getPkgName()));
-                long lastModify = pkgElispFile.lastModified();
-                // *-pkg.el not exists or current version is updated
-                if ((!pkgElispFile.exists()) || lastcommit > lastModify) {
-                    PelpaUtils.generatePkgElispFileContent(recipeDo.getPkgName(),
-                            TimeVersionUtils.toVersionString(lastcommit), archiveVo.getDesc(),
-                            archiveVo.getProps().getKeywords(),
-                            pkgInfo.getDeps(), repoUrl);
-                }
-
-                FileTarHandler.tar(recipeDo.getPkgName(), recipeDo, elispFileList, lastcommit);
+                FileTarHandler.tar(recipeDo.getPkgName(), recipeDo, elispFileList,
+                        lastcommit, archiveVo, repoUrl, pkgInfo);
                 LocalCache.updateArchive(recipeDo.getPkgName(), archiveVo);
             }
         } catch (Exception e) {
@@ -240,7 +231,7 @@ public class PkgBuildService {
                 packageInfo.setShortInfo(PelpaUtils.unwrap(result.get(3)));
             }
 
-            if (result.size() >= 4) {
+            if (result.size() > 4) {
                 String currentline = result.get(4).replace("'", ":");
                 packageInfo.setDeps(convetDeps(currentline));
             }

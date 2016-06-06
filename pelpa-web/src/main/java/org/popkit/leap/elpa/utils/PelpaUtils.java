@@ -60,7 +60,8 @@ public class PelpaUtils {
      */
     public static void generatePkgElispFileContent(String pkgName, String version,
                                                    String shortInfo, List<String> keywords,
-                                                   List<DepsItem> deps, String url) {
+                                                   List<DepsItem> deps, String url,
+                                                   File destPkgDescFile) {
         StringBuilder stringBuilder = new StringBuilder("");
         stringBuilder.append("(define-package ").append(wrap(pkgName)).append(" ")
                 .append(wrap(version)).append(" ").append(wrap(shortInfo))
@@ -69,9 +70,8 @@ public class PelpaUtils {
                 .append(" ").append(keywords(keywords));
 
         stringBuilder.append(")");
-        File file = new File(getPkgElispFileName(pkgName));
         try {
-            FileUtils.writeStringToFile(file, stringBuilder.toString());
+            FileUtils.writeStringToFile(destPkgDescFile, stringBuilder.toString());
         } catch (IOException e) {
             //
         }

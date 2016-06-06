@@ -3,6 +3,9 @@ package org.popkit.leap.elpa.services;
 import org.apache.commons.io.FileUtils;
 import org.kamranzafar.jtar.TarEntry;
 import org.kamranzafar.jtar.TarOutputStream;
+import org.popkit.core.logger.LeapLogger;
+import org.popkit.leap.elpa.entity.ArchiveVo;
+import org.popkit.leap.elpa.entity.PackageInfo;
 import org.popkit.leap.elpa.entity.RecipeDo;
 import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.popkit.leap.elpa.utils.TimeVersionUtils;
@@ -25,41 +28,42 @@ public class FileTarHandler {
     public static void tar(String pkgName, List<File> fileList, String tmpTarWorking, String destTar) throws IOException {
         String wokingDir = PelpaUtils.getWorkingPath(pkgName);
         File tmpTarWorkingDir = new File(tmpTarWorking);
-        if (tmpTarWorkingDir.exists()) {
-            FileUtils.deleteDirectory(tmpTarWorkingDir);
-        }
-        tmpTarWorkingDir.mkdir();
 
-        for (File item : fileList) {
-            String fileFullPath = item.getAbsolutePath();
-            String targetRelative = fileFullPath.substring(wokingDir.length()+1);
-            File targetDir = tmpTarWorkingDir;
+        try {
+            for (File item : fileList) {
+                String fileFullPath = item.getAbsolutePath();
+                String targetRelative = fileFullPath.substring(wokingDir.length() + 1);
+                File targetDir = tmpTarWorkingDir;
 
-            // 默认 *.el文件放在最上层
-            if (targetRelative.contains("/") && (!item.getName().endsWith(".el"))) {
-                String targetRelativePath = targetRelative.substring(0, targetRelative.lastIndexOf("/"));
-                targetDir = new File(tmpTarWorkingDir + "/" + targetRelativePath);
-                if (!targetDir.exists()) {
-                    targetDir.mkdirs();
+                // 默认 *.el文件放在最上层
+                if (targetRelative.contains("/") && (!item.getName().endsWith(".el"))) {
+                    String targetRelativePath = targetRelative.substring(0, targetRelative.lastIndexOf("/"));
+                    targetDir = new File(tmpTarWorkingDir + "/" + targetRelativePath);
+                    if (!targetDir.exists()) {
+                        targetDir.mkdirs();
+                    }
+                }
+
+                if (item.isFile()) {
+                    FileUtils.copyFileToDirectory(item, targetDir);
+                } else {
+                    FileUtils.copyDirectoryToDirectory(item, targetDir);
                 }
             }
 
-            if (item.isFile()) {
-                FileUtils.copyFileToDirectory(item, targetDir);
-            } else {
-                FileUtils.copyDirectoryToDirectory(item, targetDir);
-            }
+            // begin do tar action
+            FileOutputStream dest = new FileOutputStream(destTar);
+            // Create a TarOutputStream
+            TarOutputStream out = new TarOutputStream(new BufferedOutputStream(dest));
+            tarFolder(null, tmpTarWorking, out);
+            out.close();
+        } catch (Exception e) {
+            LeapLogger.warn("", e);
         }
-
-        // begin do tar action
-        FileOutputStream dest = new FileOutputStream(destTar);
-        // Create a TarOutputStream
-        TarOutputStream out = new TarOutputStream( new BufferedOutputStream( dest ) );
-        tarFolder(null, tmpTarWorking, out);
-        out.close();
     }
 
-    public static void tar(String pkgName, RecipeDo recipeDo, List<File> elispFileList, long lastcommit)
+    public static void tar(String pkgName, RecipeDo recipeDo, List<File> elispFileList,
+                           long lastcommit, ArchiveVo archiveVo, String repoUrl, PackageInfo pkgInfo)
             throws FileNotFoundException, IOException {
 
         String htmlPath = PelpaUtils.getHtmlPath();
@@ -80,14 +84,25 @@ public class FileTarHandler {
         if (tmpTarWorkingFile.exists() && tmpTarWorkingFile.isDirectory()) {
             FileUtils.deleteDirectory(tmpTarWorkingFile);
         }
+        tmpTarWorkingFile.mkdir();
 
-        List<File> fileList = new ArrayList<File>();
-        File pkgElispFile = new File(PelpaUtils.getPkgElispFileName(recipeDo.getPkgName()));
-        if (pkgElispFile.exists()) {
-            fileList.add(pkgElispFile);
+        File destPkgDescFile = new File(tmpTarWorking + File.separator + recipeDo.getPkgName() + "-pkg.el");
+        PelpaUtils.generatePkgElispFileContent(recipeDo.getPkgName(),
+                TimeVersionUtils.toVersionString(lastcommit), archiveVo.getDesc(),
+                archiveVo.getProps().getKeywords(),
+                pkgInfo.getDeps(), repoUrl, destPkgDescFile);
+
+        if (!destPkgDescFile.exists()) {
+            return;
         }
 
-        fileList.addAll(elispFileList);
+        List<File> fileList = new ArrayList<File>();
+        for (File item : elispFileList) {
+            if (!item.getAbsolutePath().equals(destPkgDescFile.getAbsolutePath())) {
+                fileList.add(item);
+            }
+        }
+
         tar(pkgName, fileList, tmpTarWorking, destTar);
     }
 
