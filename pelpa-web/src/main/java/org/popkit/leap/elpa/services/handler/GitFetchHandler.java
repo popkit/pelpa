@@ -11,6 +11,7 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.joda.time.DateTime;
 import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.entity.FetcherEnum;
 import org.popkit.leap.elpa.entity.RecipeDo;
@@ -142,5 +143,7 @@ public class GitFetchHandler implements FetchHandler {
     }
 
     public static void main(String[] args) throws IOException, InvalidRefNameException, GitAPIException {
+        int hour = new DateTime().getHourOfDay();
+        System.out.print("hour=" + hour);
     }
 }

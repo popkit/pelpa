@@ -1,6 +1,7 @@
 package org.popkit.leap.elpa.services;
 
 import org.apache.commons.io.FileUtils;
+import org.joda.time.DateTime;
 import org.kamranzafar.jtar.TarEntry;
 import org.kamranzafar.jtar.TarOutputStream;
 import org.popkit.core.logger.LeapLogger;
@@ -75,8 +76,13 @@ public class FileTarHandler {
         // if final package tar file exists, do not need to build it!
         File desTarFile = new File(destTar);
         if (desTarFile.exists()) {
-            desTarFile.delete();   // return @TODO , 后期记得直接返回
-            //return;
+            int hour = new DateTime().getHourOfDay();
+            // 在每天的闲时,即[2, 6], 采用删除老的策略
+            if (hour > 1 && hour < 7) {
+                desTarFile.delete();
+            } else {
+                return;
+            }
         }
 
         String tmpTarWorking = pkgWorkingPath + "/" + recipeDo.getPkgName() + "-"+ version + "";
