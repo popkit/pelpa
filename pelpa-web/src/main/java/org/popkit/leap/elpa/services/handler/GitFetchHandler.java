@@ -114,9 +114,9 @@ public class GitFetchHandler implements FetchHandler {
 
     private String getRemoteGitUrl(RecipeDo recipeDo) {
         if (recipeDo.getFetcherEnum() == FetcherEnum.GITHUB) {
-            return GITHUB_HTTPS_ROOT + recipeDo.getRepo() + ".git";
+            return GITHUB_HTTPS_ROOT + PelpaUtils.unwrap(recipeDo.getRepo()) + ".git";
         } else if (recipeDo.getFetcherEnum() == FetcherEnum.GITLAB) {
-            return GITLAB_HTTPS_ROOT + recipeDo.getRepo() + ".git";
+            return GITLAB_HTTPS_ROOT + PelpaUtils.unwrap(recipeDo.getRepo()) + ".git";
         } else if (recipeDo.getFetcherEnum() == FetcherEnum.GIT) {
             return recipeDo.getUrl();
         } else  {
