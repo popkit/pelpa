@@ -38,24 +38,29 @@ public class PkgBuildService {
     }
 
     public SimpleResult buildPackage(RecipeDo recipeDo) {
-        if (recipeDo == null) {
-            return SimpleResult.fail("传入的recipeDo为null!");
-        }
-
-        String workingPath = PelpaUtils.getWorkingPath(recipeDo.getPkgName());
-        File workingPathFile = new File(workingPath);
-
-        if (workingPathFile.exists() && workingPathFile.isDirectory()) {
-            File singleFile = getSingleFile(recipeDo, workingPath);
-            if (singleFile != null) {
-                LeapLogger.info("#single#" + recipeDo.getPkgName() + "  file:" + singleFile.getAbsolutePath());
-                buildSingleFilePackage(recipeDo, singleFile);
-            } else {
-                buildMultiFilesPackage(recipeDo);
+        try {
+            if (recipeDo == null) {
+                return SimpleResult.fail("传入的recipeDo为null!");
             }
-        }
 
-        return SimpleResult.success("成功,pkgName=" + recipeDo.getPkgName());
+            String workingPath = PelpaUtils.getWorkingPath(recipeDo.getPkgName());
+            File workingPathFile = new File(workingPath);
+
+            if (workingPathFile.exists() && workingPathFile.isDirectory()) {
+                File singleFile = getSingleFile(recipeDo, workingPath);
+                if (singleFile != null) {
+                    LeapLogger.info("#single#" + recipeDo.getPkgName() + "  file:" + singleFile.getAbsolutePath());
+                    buildSingleFilePackage(recipeDo, singleFile);
+                } else {
+                    buildMultiFilesPackage(recipeDo);
+                }
+            }
+
+            return SimpleResult.success("成功,pkgName=" + recipeDo.getPkgName());
+        } catch (Exception e) {
+            LeapLogger.warn("buildPackage@@@" + recipeDo.getPkgName(), e);
+            return SimpleResult.success("");
+        }
     }
 
     public File getSingleFile(RecipeDo recipeDo, String workingPath) {

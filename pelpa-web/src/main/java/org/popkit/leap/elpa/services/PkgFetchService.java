@@ -1,6 +1,7 @@
 package org.popkit.leap.elpa.services;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.entity.RecipeDo;
 import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +31,13 @@ public class PkgFetchService {
     }
 
     public boolean downloadPackage(String pkgName) {
-        RecipeDo recipeDo = recipesService.getRecipeDo(pkgName);
-        return downloadPackage(recipeDo);
+        try {
+            RecipeDo recipeDo = recipesService.getRecipeDo(pkgName);
+            return downloadPackage(recipeDo);
+        } catch (Exception e) {
+            LeapLogger.warn("downloadPackage@@@" + pkgName, e);
+            return true;
+        }
     }
 
     public boolean downloadPackage(RecipeDo recipeDo) {
