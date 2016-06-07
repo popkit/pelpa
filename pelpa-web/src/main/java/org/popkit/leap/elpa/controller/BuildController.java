@@ -14,9 +14,7 @@ import org.popkit.leap.elpa.services.*;
 import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.popkit.leap.elpa.utils.RecipeParser;
 import org.popkit.leap.log.LogScanner;
-import org.popkit.leap.monitor.EachActor;
-import org.popkit.leap.monitor.RoundMonitor;
-import org.popkit.leap.monitor.RoundSupervisor;
+import org.popkit.leap.monitor.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,6 +55,12 @@ public class BuildController {
 
     @Autowired
     private RoundMonitor roundMonitor;
+
+    @Autowired
+    private FetcherExcutorPool fetcherExcutorPool;
+
+    @Autowired
+    private BuildingExcutorPool buildingExcutorPool;
 
     @RequestMapping(value = "index.html")
     public String index(HttpServletRequest request) {

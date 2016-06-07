@@ -20,7 +20,11 @@ public class BuildingExcutorPool {
     @Autowired
     private PkgBuildService pkgBuildService;
 
-    private static final ExecutorService exector = Executors.newFixedThreadPool(1);
+    private final ExecutorService exector = Executors.newFixedThreadPool(1);
+
+    public ExecutorService getExector() {
+        return exector;
+    }
 
     public void excute() {
         new Thread(new Runnable() {
