@@ -13,6 +13,6 @@ public class IndexController extends BaseController {
 
     @RequestMapping(value = "index.html")
     public String index() {
-        return "redirect:/elpa/index.html";
+        return "redirect:/elpa/build/index.html";
     }
 }

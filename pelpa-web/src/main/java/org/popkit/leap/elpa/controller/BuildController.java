@@ -117,8 +117,7 @@ public class BuildController {
     public void ajaxBuildStatus(HttpServletResponse response) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("percentDesc", roundMonitor.finishedPercent());
-        //jsonObject.put("percent", (roundMonitor.finishedPercentValue() * 100));
-        jsonObject.put("percent", 100);
+        jsonObject.put("percent", (roundMonitor.finishedPercentValue() * 100));
         ResponseUtils.renderJson(response, jsonObject.toJSONString());
     }
 

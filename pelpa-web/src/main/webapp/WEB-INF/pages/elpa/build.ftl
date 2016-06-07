@@ -134,18 +134,15 @@
     $('#buildProgress').progress();
 
     function timer() {
-        console.log("do action");
         $.ajax({
             url : '/elpa/build/ajaxBuildStatus.json',
             type: "GET",
             data: {},
             dataType: 'json',
             success: function (data) {
-                console.log("success get");
                 $('#buildProgress').attr('data-percent', data.percent);
-                $('#buildProgress').val(data.percent);
                 $('#buildProgressDesc').html(data.percentDesc);
-                $('#buildProgress').progress();
+                $('#buildProgress').progress({percent:data.percent});
             },
             error: function (jXHR, textStatus, errorThrown) {
                 //alert(errorThrown);
