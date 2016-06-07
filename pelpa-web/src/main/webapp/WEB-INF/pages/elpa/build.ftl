@@ -15,7 +15,7 @@
 
 <div class="ui container ak-main-container">
 
-    <div class="ui orange message">
+    <div class="ui orange message" id="currentRunDiv">
     ${currentRun}
     </div>
 
@@ -141,8 +141,9 @@
             dataType: 'json',
             success: function (data) {
                 $('#buildProgress').attr('data-percent', data.percent);
-                $('#buildProgressDesc').html(data.percentDesc);
                 $('#buildProgress').progress({percent:data.percent});
+                $('#buildProgressDesc').html(data.percentDesc);
+                $('#currentRunDiv').html(data.currentRun);
             },
             error: function (jXHR, textStatus, errorThrown) {
                 //alert(errorThrown);

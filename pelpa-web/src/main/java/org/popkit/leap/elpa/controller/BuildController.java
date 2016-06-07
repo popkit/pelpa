@@ -122,6 +122,7 @@ public class BuildController {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("percentDesc", roundMonitor.finishedPercent() + " ##" + roundMonitor.toString());
         jsonObject.put("percent", (roundMonitor.finishedPercentValue() * 100));
+        jsonObject.put("currentRun", roundSupervisor.getCurrentRun().tohumanable());
         ResponseUtils.renderJson(response, jsonObject.toJSONString());
     }
 
