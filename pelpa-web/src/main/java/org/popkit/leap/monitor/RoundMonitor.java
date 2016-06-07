@@ -92,7 +92,7 @@ public class RoundMonitor {
         return true;
     }
 
-    public static String finishedPercent() {
+    public String finishedPercent() {
         int finished = 0;
         int roundId = 0;
         int total = 0;
@@ -107,7 +107,7 @@ public class RoundMonitor {
                 "/" + total+ ")=" + ((double) finished) / total;
     }
 
-    public static double finishedPercentValue() {
+    public double finishedPercentValue() {
         int finished = 0;
         int total = 0;
         for (String pkg : actors.keySet()) {

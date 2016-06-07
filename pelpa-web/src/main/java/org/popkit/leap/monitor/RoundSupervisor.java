@@ -86,7 +86,7 @@ public class RoundSupervisor {
                                     + "已经完成, 正在进行休息中! 离下次开始还有:" + next + "s!");
                         }
                     } else {
-                        LeapLogger.info("roundId:" + run.getStatus() + ",完成度:" + RoundMonitor.finishedPercent());
+                        LeapLogger.info("roundId:" + run.getStatus() + ",完成度:" + monitor.finishedPercent());
                     }
 
                     updateDiskStatus();

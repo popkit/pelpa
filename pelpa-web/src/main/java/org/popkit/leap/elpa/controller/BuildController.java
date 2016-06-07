@@ -1,11 +1,13 @@
 package org.popkit.leap.elpa.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.popkit.core.entity.CommonResponse;
 import org.popkit.core.entity.SimpleResult;
+import org.popkit.core.utils.ResponseUtils;
 import org.popkit.leap.elpa.entity.ActorStatus;
 import org.popkit.leap.elpa.entity.RecipeDo;
 import org.popkit.leap.elpa.services.*;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -95,7 +98,8 @@ public class BuildController {
             }
         }
 
-        request.setAttribute("percent", RoundMonitor.finishedPercent());
+        request.setAttribute("percentDesc", roundMonitor.finishedPercent());
+        request.setAttribute("percent", (roundMonitor.finishedPercentValue() * 100));
 
         request.setAttribute("pkgReady", "共有" + pkgReady.size() + "个:" + StringUtils.join(pkgReady, ","));
         request.setAttribute("pkgOnging", "共有" + pkgOnging.size() + "个:" + StringUtils.join(pkgOnging, ","));
@@ -107,6 +111,15 @@ public class BuildController {
 
         request.setAttribute("currentRun", roundSupervisor.getCurrentRun().tohumanable());
         return "elpa/build";
+    }
+
+    @RequestMapping(value = "ajaxBuildStatus.json")
+    public void ajaxBuildStatus(HttpServletResponse response) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("percentDesc", roundMonitor.finishedPercent());
+        //jsonObject.put("percent", (roundMonitor.finishedPercentValue() * 100));
+        jsonObject.put("percent", 100);
+        ResponseUtils.renderJson(response, jsonObject.toJSONString());
     }
 
     @RequestMapping(value = "d8")

@@ -16,11 +16,16 @@
 <div class="ui container ak-main-container">
 
     <div class="ui orange message">
-        ${currentRun}
+    ${currentRun}
     </div>
 
     <div class="ui green message">
-            <div>${percent}</div>
+        <div class="ui green progress" data-percent="${percent}" id="buildProgress">
+            <div class="bar">
+                <div class="progress"></div>
+            </div>
+            <div class="label" id="buildProgressDesc">${percentDesc}</div>
+        </div>
     </div>
 
     <div class="ui styled fluid accordion">
@@ -126,6 +131,33 @@
 
 <script type="text/javascript">
     $('.ui.accordion').accordion();
+    $('#buildProgress').progress();
+
+    function timer() {
+        console.log("do action");
+        $.ajax({
+            url : '/elpa/build/ajaxBuildStatus.json',
+            type: "GET",
+            data: {},
+            dataType: 'json',
+            success: function (data) {
+                console.log("success get");
+                $('#buildProgress').attr('data-percent', data.percent);
+                $('#buildProgress').val(data.percent);
+                $('#buildProgressDesc').html(data.percentDesc);
+                $('#buildProgress').progress();
+            },
+            error: function (jXHR, textStatus, errorThrown) {
+                //alert(errorThrown);
+                console.log("error");
+            }
+        });
+        setTimeout("timer()",5000);
+    }
+
+    $(function(){
+        timer()
+    })
 </script>
 
 </body>
