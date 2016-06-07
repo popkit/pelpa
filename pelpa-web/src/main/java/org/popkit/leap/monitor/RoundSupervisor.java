@@ -83,7 +83,8 @@ public class RoundSupervisor {
                         if (run.getEndTime().getTime() + REST_TIME > new Date().getTime()) {
                             long next = ((run.getEndTime().getTime() + REST_TIME) - new Date().getTime())/1000;
                             LeapLogger.info("roundId:" + run.getRoundId()
-                                    + "已经完成, 正在进行休息中! 离下次开始还有:" + next + "s!");
+                                    + "已经完成, 正在进行休息中! 离下次开始还有:" + next + "s!"
+                                    + " ##" + monitor.toString());
                         }
                     } else {
                         LeapLogger.info("roundId:" + run.getStatus() + ",完成度:" + monitor.finishedPercent() + " ##" + monitor.toString());
@@ -92,6 +93,7 @@ public class RoundSupervisor {
                     updateDiskStatus();
                     updateBuildStatus();
                     LeapLogger.info(run.tohumanable());
+                    LeapLogger.info(" ##" + monitor.toString() + " ###" + run.toString());
                 }
             }
         }).start();

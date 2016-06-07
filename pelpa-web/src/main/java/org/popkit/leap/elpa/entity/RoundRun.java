@@ -20,6 +20,17 @@ public class RoundRun {
 
     private long lastRoundTimeUsed;
 
+    @Override
+    public String toString() {
+        return "RoundRun{" +
+                "roundId=" + roundId +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", status=" + status +
+                ", lastRoundTimeUsed=" + lastRoundTimeUsed +
+                '}' + "@" + Integer.toHexString(hashCode());
+    }
+
     public String tohumanable() {
         StringBuilder stringBuilder = new StringBuilder("");
         stringBuilder.append("roundId=" + roundId);
