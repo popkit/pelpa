@@ -116,7 +116,7 @@ public class BuildController {
     @RequestMapping(value = "ajaxBuildStatus.json")
     public void ajaxBuildStatus(HttpServletResponse response) {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("percentDesc", roundMonitor.finishedPercent());
+        jsonObject.put("percentDesc", roundMonitor.finishedPercent() + " ##" + roundMonitor.toString());
         jsonObject.put("percent", (roundMonitor.finishedPercentValue() * 100));
         ResponseUtils.renderJson(response, jsonObject.toJSONString());
     }
