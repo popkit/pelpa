@@ -70,6 +70,7 @@ public class FileTarHandler {
         String htmlPath = PelpaUtils.getHtmlPath();
         String packagePath = htmlPath + "packages/";
         String pkgWorkingPath = PelpaUtils.getWorkingPath(pkgName);
+        File originPkgFile = new File(pkgWorkingPath + File.separator + pkgName + "-pkg.el");
 
         String version = TimeVersionUtils.toVersionString(lastcommit);
         String destTar = packagePath + recipeDo.getPkgName() + "-"+ version + ".tar";
@@ -96,7 +97,7 @@ public class FileTarHandler {
         PelpaUtils.generatePkgElispFileContent(recipeDo.getPkgName(),
                 TimeVersionUtils.toVersionString(lastcommit), archiveVo.getDesc(),
                 archiveVo.getProps().getKeywords(),
-                pkgInfo.getDeps(), repoUrl, destPkgDescFile);
+                pkgInfo.getDeps(), repoUrl, destPkgDescFile, originPkgFile);
 
         if (!destPkgDescFile.exists()) {
             return;

@@ -61,17 +61,35 @@ public class PelpaUtils {
     public static void generatePkgElispFileContent(String pkgName, String version,
                                                    String shortInfo, List<String> keywords,
                                                    List<DepsItem> deps, String url,
-                                                   File destPkgDescFile) {
-        StringBuilder stringBuilder = new StringBuilder("");
-        stringBuilder.append("(define-package ").append(wrap(pkgName)).append(" ")
-                .append(wrap(version)).append(" ").append(wrap(shortInfo))
-                .append(" ").append(deps(deps))
-                .append(" ").append(url(url))
-                .append(" ").append(keywords(keywords));
+                                                   File destPkgDescFile, File originPkgFile) {
+        String resultContent = null;
+        if (originPkgFile != null && originPkgFile.exists() && originPkgFile.isFile()) {
+            try {
+                String originContent = FileUtils.readFileToString(originPkgFile);
+                String[] originContentArr = originContent.split("\\s+");
+                if (originContentArr.length > 2 && pkgName.equals(PelpaUtils.unwrap(originContentArr[1]))) {
+                    String versionOrigin = originContentArr[2];
+                    resultContent = originContent.replace(versionOrigin, PelpaUtils.wrap(version));
+                }
+            } catch (Exception e) {
+                //
+            }
+        } else {
+            StringBuilder stringBuilder = new StringBuilder("");
+            stringBuilder.append("(define-package ").append(wrap(pkgName)).append(" ")
+                    .append(wrap(version)).append(" ").append(wrap(shortInfo))
+                    .append(" ").append(deps(deps))
+                    .append(" ").append(url(url))
+                    .append(" ").append(keywords(keywords));
 
-        stringBuilder.append(")");
+            stringBuilder.append(")");
+            resultContent.toString();
+        }
+
         try {
-            FileUtils.writeStringToFile(destPkgDescFile, stringBuilder.toString());
+            if (StringUtils.isNotBlank(resultContent)) {
+                FileUtils.writeStringToFile(destPkgDescFile, resultContent);
+            }
         } catch (IOException e) {
             //
         }
