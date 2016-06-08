@@ -94,7 +94,7 @@ public class FileTarHandler {
         tmpTarWorkingFile.mkdir();
 
         File destPkgDescFile = new File(tmpTarWorking + File.separator + recipeDo.getPkgName() + "-pkg.el");
-        PelpaUtils.generatePkgElispFileContent(recipeDo.getPkgName(),
+        boolean pkgStatus = PelpaUtils.generatePkgElispFileContent(recipeDo.getPkgName(),
                 TimeVersionUtils.toVersionString(lastcommit), archiveVo.getDesc(),
                 archiveVo.getProps().getKeywords(),
                 pkgInfo.getDeps(), repoUrl, destPkgDescFile, originPkgFile);
@@ -110,7 +110,9 @@ public class FileTarHandler {
             }
         }
 
-        tar(pkgName, fileList, tmpTarWorking, destTar);
+        if (pkgStatus) {
+            tar(pkgName, fileList, tmpTarWorking, destTar);
+        }
     }
 
     public static void main(String[] args) {

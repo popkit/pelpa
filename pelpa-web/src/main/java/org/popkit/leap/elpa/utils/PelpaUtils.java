@@ -58,7 +58,7 @@ public class PelpaUtils {
      * @param pkgName
      * @return
      */
-    public static void generatePkgElispFileContent(String pkgName, String version,
+    public static boolean generatePkgElispFileContent(String pkgName, String version,
                                                    String shortInfo, List<String> keywords,
                                                    List<DepsItem> deps, String url,
                                                    File destPkgDescFile, File originPkgFile) {
@@ -89,10 +89,14 @@ public class PelpaUtils {
         try {
             if (StringUtils.isNotBlank(resultContent)) {
                 FileUtils.writeStringToFile(destPkgDescFile, resultContent);
+            } else {
+                return false;
             }
         } catch (IOException e) {
-            //
+            return false;
         }
+
+        return true;
     }
 
     private static String deps(List<DepsItem> depsItems) {
