@@ -17,6 +17,3 @@ anything
 # package name 里有""
 realgud-old-debuggers
 
-# yasnippet
-问题：缺少snippets文件夹
-git clone --recursive https://github.com/capitaomorte/yasnippet
