@@ -4,6 +4,7 @@ import org.apache.commons.io.FileUtils;
 import org.joda.time.DateTime;
 import org.kamranzafar.jtar.TarEntry;
 import org.kamranzafar.jtar.TarOutputStream;
+import org.popkit.core.config.LeapConfigLoader;
 import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.entity.ArchiveVo;
 import org.popkit.leap.elpa.entity.PackageInfo;
@@ -79,7 +80,7 @@ public class FileTarHandler {
         if (desTarFile.exists()) {
             int hour = new DateTime().getHourOfDay();
             // 在每天的闲时,即[2, 6], 采用删除老的策略
-            if (hour > 1 && hour < 7) {
+            if ((hour > 1 && hour < 7) || "true".equals(LeapConfigLoader.get("elpa_delete_old_pkg"))) {
                 desTarFile.delete();
             } else {
                 return;
