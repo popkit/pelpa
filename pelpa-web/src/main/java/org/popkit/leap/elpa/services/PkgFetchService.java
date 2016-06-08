@@ -25,11 +25,6 @@ public class PkgFetchService {
     @Autowired
     private List<FetchHandler> fetchHandlerList;
 
-    public void d8() {
-        RecipeDo recipeDo = recipesService.randomRecipe();
-        downloadPackage(recipeDo);
-    }
-
     public boolean downloadPackage(String pkgName) {
         try {
             RecipeDo recipeDo = recipesService.getRecipeDo(pkgName);
