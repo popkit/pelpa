@@ -20,6 +20,33 @@ public class RoundRun {
 
     private long lastRoundTimeUsed;
 
+    public RoundRun() {
+        this.roundId = 1;
+        this.startTime = new Date();
+        this.endTime = null;
+        this.status = RoundStatus.READY;
+    }
+
+    public boolean isFinished() {
+        return RoundStatus.FINISHED == status;
+    }
+
+    public boolean isReady() {
+        return RoundStatus.READY == status;
+    }
+
+    public boolean isRunning() {
+        return RoundStatus.RUNNING == status;
+    }
+
+    public boolean isRest() {
+        return RoundStatus.REST == status;
+    }
+
+    public void increase() {
+        this.roundId ++;
+    }
+
     @Override
     public String toString() {
         return "RoundRun{" +
@@ -92,5 +119,11 @@ public class RoundRun {
 
     public void setLastRoundTimeUsed(long lastRoundTimeUsed) {
         this.lastRoundTimeUsed = lastRoundTimeUsed;
+    }
+
+    public void updateLastRoundTimeUsed() {
+        if (this.endTime != null && this.startTime != null) {
+            this.lastRoundTimeUsed = this.endTime.getTime() - this.startTime.getTime();
+        }
     }
 }

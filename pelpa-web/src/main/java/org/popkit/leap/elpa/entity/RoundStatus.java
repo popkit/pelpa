@@ -6,7 +6,8 @@ package org.popkit.leap.elpa.entity;
  * 2016-05-14:21:21
  */
 public enum RoundStatus {
-    SLEEP,
+    READY,
     RUNNING,
+    REST,
     FINISHED,
 }

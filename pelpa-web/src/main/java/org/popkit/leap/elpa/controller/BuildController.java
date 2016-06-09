@@ -39,9 +39,6 @@ public class BuildController {
     private PkgFetchService pkgFetchService;
 
     @Autowired
-    private RecipesService recipesService;
-
-    @Autowired
     private PkgBuildService pkgBuildService;
 
     @Autowired
@@ -54,7 +51,7 @@ public class BuildController {
     private LogScanner logScanner;
 
     @Autowired
-    private RoundMonitor roundMonitor;
+    private RoundStatusMonitor roundStatusMonitor;
 
     @Autowired
     private FetcherExcutorPool fetcherExcutorPool;
@@ -64,7 +61,7 @@ public class BuildController {
 
     @RequestMapping(value = "index.html")
     public String index(HttpServletRequest request) {
-        Map<String, EachActor> actorMap = roundMonitor.getActors();
+        Map<String, EachActor> actorMap = roundStatusMonitor.getActors();
         List<EachActor> unstarted = new ArrayList<EachActor>();
         List<EachActor> finished = new ArrayList<EachActor>();
         List<EachActor> onging = new ArrayList<EachActor>();
@@ -102,8 +99,8 @@ public class BuildController {
             }
         }
 
-        request.setAttribute("percentDesc", roundMonitor.finishedPercent());
-        request.setAttribute("percent", (roundMonitor.finishedPercentValue() * 100));
+        request.setAttribute("percentDesc", roundStatusMonitor.finishedPercent());
+        request.setAttribute("percent", (roundStatusMonitor.finishedPercentValue() * 100));
 
         request.setAttribute("pkgReady", "共有" + pkgReady.size() + "个:" + StringUtils.join(pkgReady, ","));
         request.setAttribute("pkgOnging", "共有" + pkgOnging.size() + "个:" + StringUtils.join(pkgOnging, ","));
@@ -113,16 +110,16 @@ public class BuildController {
         request.setAttribute("finished", finished);
         request.setAttribute("onging", onging);
 
-        request.setAttribute("currentRun", roundSupervisor.getCurrentRun().tohumanable());
+        request.setAttribute("currentRun", RoundStatusMonitor.getCurrent().tohumanable());
         return "elpa/build";
     }
 
     @RequestMapping(value = "ajaxBuildStatus.json")
     public void ajaxBuildStatus(HttpServletResponse response) {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("percentDesc", roundMonitor.finishedPercent() + " ##" + roundMonitor.toString());
-        jsonObject.put("percent", (roundMonitor.finishedPercentValue() * 100));
-        jsonObject.put("currentRun", roundSupervisor.getCurrentRun().tohumanable());
+        jsonObject.put("percentDesc", roundStatusMonitor.finishedPercent() + " ##" + roundStatusMonitor.toString());
+        jsonObject.put("percent", (roundStatusMonitor.finishedPercentValue() * 100));
+        jsonObject.put("currentRun", RoundStatusMonitor.getCurrent().tohumanable());
         ResponseUtils.renderJson(response, jsonObject.toJSONString());
     }
 
@@ -141,7 +138,7 @@ public class BuildController {
         //recipesService.writeRecipesJson();
         //pkgBuildService.writeArchiveJSON();
 
-        RecipeDo recipeDo = recipesService.getRecipeDo(pkgName);
+        RecipeDo recipeDo = LocalCache.getRecipeDo(pkgName);
         com.setData(recipeDo);
 
         return com;
@@ -165,8 +162,8 @@ public class BuildController {
     @RequestMapping(value = "updateRecipeJSON")
     public CommonResponse updateRecipeJSON() {
         CommonResponse com = new CommonResponse();
-        com.setData(recipesService.getAllRecipeList());
-        recipesService.writeRecipesJson();
+        com.setData(LocalCache.getAllRecipeList());
+        LocalCache.writeRecipesJson();
         return com;
     }
 

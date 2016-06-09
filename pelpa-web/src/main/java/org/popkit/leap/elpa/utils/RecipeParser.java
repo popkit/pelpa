@@ -3,6 +3,8 @@ package org.popkit.leap.elpa.utils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.popkit.leap.elpa.entity.RecipeDo;
+import org.popkit.leap.elpa.entity.RoundRun;
+import org.popkit.leap.elpa.entity.RoundStatus;
 
 import java.io.File;
 
@@ -121,5 +123,12 @@ public class RecipeParser {
             }
         }
         return -1;
+    }
+
+    public static void main(String[] args) {
+        RoundRun roundRun = new RoundRun();
+        System.out.println("ini:" + roundRun.hashCode());
+        roundRun.setStatus(RoundStatus.FINISHED);
+        System.out.println("after:" + roundRun.hashCode());
     }
 }

@@ -31,7 +31,8 @@ public class FetcherExcutorPool {
         new Thread(new Runnable() {
             public void run() {
                 while (true) {
-                    String pkgName = RoundMonitor.nexFetcherPkg();
+
+                    String pkgName = RoundStatusMonitor.nexFetcherPkg();
                     if (pkgName == null) {
                         try {
                             TimeUnit.SECONDS.sleep(2);
@@ -39,7 +40,7 @@ public class FetcherExcutorPool {
                             // TODO
                         }
                     } else {
-                        RoundMonitor.updateFetcherStatus(pkgName, ActorStatus.WORKING);
+                        RoundStatusMonitor.updateFetcherStatus(pkgName, ActorStatus.WORKING);
                         exector.execute(new FetcherTask(pkgName, pkgFetchService));
                     }
                 }

@@ -30,7 +30,7 @@ public class BuildingExcutorPool {
         new Thread(new Runnable() {
             public void run() {
                 while (true) {
-                    String pkgName = RoundMonitor.nextBuildingPkg();
+                    String pkgName = RoundStatusMonitor.nextBuildingPkg();
                     if (pkgName == null) {
                         try {
                             TimeUnit.SECONDS.sleep(5);
@@ -38,7 +38,7 @@ public class BuildingExcutorPool {
                             // TODO
                         }
                     } else {
-                        RoundMonitor.updateBuildingStatus(pkgName, ActorStatus.WORKING);
+                        RoundStatusMonitor.updateBuildingStatus(pkgName, ActorStatus.WORKING);
                         exector.execute(new BuildingTask(pkgName, pkgBuildService));
                     }
                 }

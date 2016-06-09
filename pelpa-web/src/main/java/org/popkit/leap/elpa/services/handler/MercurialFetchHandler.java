@@ -5,7 +5,7 @@ import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.entity.FetcherEnum;
 import org.popkit.leap.elpa.entity.RecipeDo;
 import org.popkit.leap.elpa.services.FetchHandler;
-import org.popkit.leap.elpa.services.RecipesService;
+import org.popkit.leap.elpa.services.LocalCache;
 import org.popkit.leap.elpa.utils.HGCommandUtils;
 import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.springframework.stereotype.Service;
@@ -35,7 +35,7 @@ public class MercurialFetchHandler implements FetchHandler {
             if (simpleResult.isSuccess()) {
                 long lastModified = HGCommandUtils.getHGLastModified(PelpaUtils.getWorkingPath(recipeDo.getPkgName()));
                 if (lastModified > 0) {
-                    boolean status = RecipesService.updateLastCommit(recipeDo.getPkgName(), lastModified);
+                    boolean status = LocalCache.updateLastCommit(recipeDo.getPkgName(), lastModified);
                     LeapLogger.info("update " + recipeDo.getPkgName() + " lastcommit, status=" + status);
                 } else {
                     LeapLogger.warn("mercurialFetchHandler pkg(" + recipeDo.getPkgName() + ") failed!");

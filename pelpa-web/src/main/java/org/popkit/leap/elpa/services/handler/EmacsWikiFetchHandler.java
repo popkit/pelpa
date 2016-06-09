@@ -5,7 +5,7 @@ import org.popkit.leap.elpa.entity.FetcherEnum;
 import org.popkit.leap.elpa.entity.RecipeDo;
 import org.popkit.leap.elpa.services.FetchHandler;
 import org.popkit.leap.elpa.services.HttpProxyService;
-import org.popkit.leap.elpa.services.RecipesService;
+import org.popkit.leap.elpa.services.LocalCache;
 import org.popkit.leap.elpa.utils.FetchRemoteFileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,7 +37,7 @@ public class EmacsWikiFetchHandler implements FetchHandler {
 
         if (lastModified > 0) {
             if (FetchRemoteFileUtils.downloadWikiFile(pkgName)) {
-                boolean status = RecipesService.updateLastCommit(recipeDo.getPkgName(), lastModified);
+                boolean status = LocalCache.updateLastCommit(recipeDo.getPkgName(), lastModified);
                 LeapLogger.info("update " + recipeDo.getPkgName() + " lastcommit, status=" + status);
             } else {
                 LeapLogger.warn("downloadWikiFile(" + remoteUrl + ") failed!");

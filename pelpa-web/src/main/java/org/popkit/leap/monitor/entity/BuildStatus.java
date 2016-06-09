@@ -1,8 +1,8 @@
 package org.popkit.leap.monitor.entity;
 
 import com.alibaba.fastjson.JSONObject;
+import org.popkit.leap.elpa.entity.PelpaContents;
 import org.popkit.leap.elpa.entity.RoundRun;
-import org.popkit.leap.monitor.RoundSupervisor;
 
 /**
  * Created by Aborn Jiang
@@ -26,7 +26,7 @@ public class BuildStatus {
 
         if (run.getStartTime() != null && run.getEndTime() != null) {
             duration = (run.getEndTime().getTime() - run.getStartTime().getTime()) / 1000;
-            next = (run.getEndTime().getTime() + RoundSupervisor.REST_TIME) / 1000;
+            next = (run.getEndTime().getTime() + PelpaContents.REST_TIME) / 1000;
             completed = run.getEndTime().getTime() / 1000;
         }
 

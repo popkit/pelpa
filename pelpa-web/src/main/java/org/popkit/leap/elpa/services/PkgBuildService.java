@@ -8,7 +8,6 @@ import org.popkit.leap.elpa.services.handler.GitFetchHandler;
 import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.popkit.leap.elpa.utils.RecipeParser;
 import org.popkit.leap.elpa.utils.TimeVersionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -30,11 +29,8 @@ public class PkgBuildService {
     private static final String TYPE_SINGLE = "single";
     private static final String TYPE_TAR = "tar";
 
-    @Autowired
-    private RecipesService recipesService;
-
     public SimpleResult buildPackage(String pkgName) {
-        return buildPackage(recipesService.getRecipeDo(pkgName));
+        return buildPackage(LocalCache.getRecipeDo(pkgName));
     }
 
     public SimpleResult buildPackage(RecipeDo recipeDo) {

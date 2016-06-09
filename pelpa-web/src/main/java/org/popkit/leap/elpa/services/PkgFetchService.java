@@ -20,14 +20,11 @@ import java.util.Map;
 public class PkgFetchService {
 
     @Autowired
-    private RecipesService recipesService;
-
-    @Autowired
     private List<FetchHandler> fetchHandlerList;
 
     public boolean downloadPackage(String pkgName) {
         try {
-            RecipeDo recipeDo = recipesService.getRecipeDo(pkgName);
+            RecipeDo recipeDo = LocalCache.getRecipeDo(pkgName);
             return downloadPackage(recipeDo);
         } catch (Exception e) {
             LeapLogger.warn("downloadPackage@@@" + pkgName, e);

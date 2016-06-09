@@ -9,7 +9,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.popkit.core.logger.LeapLogger;
-import org.popkit.leap.elpa.services.RecipesService;
+import org.popkit.leap.elpa.services.LocalCache;
 import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.springframework.stereotype.Service;
 
@@ -82,7 +82,7 @@ public class LogScanner {
         if (MapUtils.isNotEmpty(logItemMap)) {
             for (String item : logItemMap.keySet()) {
                 jsonObject.put(item, logItemMap.get(item).getCount());
-                RecipesService.updateDls(item, logItemMap.get(item).getCount());
+                LocalCache.updateDls(item, logItemMap.get(item).getCount());
             }
         }
 

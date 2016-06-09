@@ -1,17 +1,23 @@
 package org.popkit.leap.elpa.services;
 
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.entity.ArchiveVo;
 import org.popkit.leap.elpa.entity.PelpaContents;
+import org.popkit.leap.elpa.entity.RecipeDo;
 import org.popkit.leap.elpa.entity.RecipeVo;
 import org.popkit.leap.elpa.utils.PelpaUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -21,34 +27,38 @@ import java.util.concurrent.ConcurrentHashMap;
  * 2016-05-14:15:45
  */
 public class LocalCache {
-    private static final ConcurrentHashMap<String, ArchiveVo> archive = new ConcurrentHashMap<String, ArchiveVo>();
-    private static final ConcurrentHashMap<String, RecipeVo> recipes = new ConcurrentHashMap<String, RecipeVo>();
+    private static final long UPDATE_RECIPE_TIME = 1000*60*10; // 5 minutes
+    private static Date lastUpdateTime;
+    private static final ConcurrentHashMap<String, ArchiveVo> ARCHIVE = new ConcurrentHashMap<String, ArchiveVo>();
+    private static final ConcurrentHashMap<String, RecipeDo> RECIPES = new ConcurrentHashMap<String, RecipeDo>();
 
     public static Map<String, ArchiveVo> getArchive() {
-        return archive;
+        return ARCHIVE;
     }
 
     public static ArchiveVo getArchive(String pkgName) {
-        return archive.get(pkgName);
+        return ARCHIVE.get(pkgName);
     }
 
     public static void updateArchive(String pkgName, ArchiveVo archiveVo) {
-        archive.put(pkgName, archiveVo);
+        ARCHIVE.put(pkgName, archiveVo);
     }
 
-    public static void updateRecipe(String pkgName, RecipeVo recipeVo) {
-        recipes.put(pkgName, recipeVo);
+    public static void updateDls(String pkgName, int dls) {
+        if (RECIPES.containsKey(pkgName)) {
+            RECIPES.get(pkgName).setDls(dls);
+        }
     }
 
     public static void removeArchive(String pkgName) {
-        if (archive.containsKey(pkgName)) {
-            archive.remove(pkgName);
+        if (ARCHIVE.containsKey(pkgName)) {
+            ARCHIVE.remove(pkgName);
         }
     }
 
     public static void removeRecipe(String pkgName) {
-        if (recipes.containsKey(pkgName)) {
-            recipes.remove(pkgName);
+        if (RECIPES.containsKey(pkgName)) {
+            RECIPES.remove(pkgName);
         }
     }
 
@@ -62,11 +72,38 @@ public class LocalCache {
         }
     }
 
+    public static List<RecipeDo> getAllRecipeList() {
+        List<RecipeDo> list = new ArrayList<RecipeDo>();
+        for (String item : RECIPES.keySet()) {
+            list.add(RECIPES.get(item));
+        }
+        return list;
+    }
+    /**
+     * generate/update recipes.json file
+     */
+    public static void writeRecipesJson() {
+        List<RecipeDo> list = getAllRecipeList();
+
+        File file = new File(PelpaUtils.getHtmlPath() + PelpaContents.RECIPES_JSON_FILE_NAME);
+        JSONObject jsonObject = new JSONObject();
+        for (RecipeDo recipeDo : list) {
+            jsonObject.put(recipeDo.getPkgName(), new RecipeVo(recipeDo));
+        }
+
+        String json = jsonObject.toString();
+        try {
+            FileUtils.writeStringToFile(file, json);
+        } catch (IOException e) {
+            //
+        }
+    }
+
     public static String getArchiveJSON() {
         JSONObject jsonObject = new JSONObject();
-        if (MapUtils.isNotEmpty(archive)) {
-            for (String pkgName : archive.keySet()) {
-                jsonObject.put(pkgName, convert(archive.get(pkgName)));
+        if (MapUtils.isNotEmpty(ARCHIVE)) {
+            for (String pkgName : ARCHIVE.keySet()) {
+                jsonObject.put(pkgName, convert(ARCHIVE.get(pkgName)));
             }
         }
         return jsonObject.toJSONString();
@@ -81,9 +118,9 @@ public class LocalCache {
 
     public static String getRecipesJSON() {
         JSONObject jsonObject = new JSONObject();
-        if (MapUtils.isNotEmpty(recipes)) {
-            for (String pkgName : recipes.keySet()) {
-                jsonObject.put(pkgName, recipes.get(pkgName));
+        if (MapUtils.isNotEmpty(RECIPES)) {
+            for (String pkgName : RECIPES.keySet()) {
+                jsonObject.put(pkgName, RECIPES.get(pkgName));
             }
         }
         return jsonObject.toJSONString();
@@ -92,6 +129,43 @@ public class LocalCache {
     public static String url(String url) {
         return url;
         //return url.replaceAll("/","\\/");
+    }
+
+
+    public static boolean initRecipes() {
+        if (lastUpdateTime != null
+                && lastUpdateTime.getTime() + UPDATE_RECIPE_TIME < new Date().getTime()) {
+            return true;
+        }
+
+        if (MapUtils.isNotEmpty(RECIPES)) {
+            for (String pkgName : ARCHIVE.keySet()) {
+                ARCHIVE.remove(pkgName);
+            }
+        }
+
+        List<RecipeDo> recipeDos = PelpaUtils.asRecipeArch(PelpaUtils.getRecipeFileList());
+        if (CollectionUtils.isNotEmpty(recipeDos)) {
+            for (RecipeDo recipeDo : recipeDos) {
+                RECIPES.put(recipeDo.getPkgName(), recipeDo);
+            }
+            lastUpdateTime = new Date();
+            LeapLogger.info("RECIPES updated. TimeStamp:" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        }
+        return true;
+    }
+
+    public static boolean updateLastCommit(String pkgName, long lastcommit) {
+        if (RECIPES.containsKey(pkgName)) {
+            RECIPES.get(pkgName).setLastCommit(lastcommit);
+            return RECIPES.get(pkgName).getLastCommit() == lastcommit;
+        } else {
+            return false;
+        }
+    }
+
+    public static RecipeDo getRecipeDo(String pkgName) {
+        return RECIPES.get(pkgName);
     }
 
     public static void main(String[] args) {

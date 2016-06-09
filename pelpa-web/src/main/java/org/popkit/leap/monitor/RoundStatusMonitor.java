@@ -5,9 +5,10 @@ import org.apache.commons.collections.MapUtils;
 import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.entity.ActorStatus;
 import org.popkit.leap.elpa.entity.RecipeDo;
-import org.popkit.leap.elpa.services.RecipesService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.popkit.leap.elpa.entity.RoundRun;
+import org.popkit.leap.elpa.entity.RoundStatus;
+import org.popkit.leap.elpa.services.ArchiveContentsGenerator;
+import org.popkit.leap.elpa.services.LocalCache;
 
 import java.util.Date;
 import java.util.List;
@@ -15,26 +16,52 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * monitor each round running status
  * Created by Aborn Jiang
  * Mail aborn.jiang@gmail.com
  * 2016-05-14:21:53
  */
-@Service
-public class RoundMonitor {
+public class RoundStatusMonitor {
 
-    @Autowired
-    private RecipesService recipesService;
+    private RoundStatusMonitor() {}
 
-    private static final ConcurrentHashMap<String, EachActor> actors = new ConcurrentHashMap<String, EachActor>();
+    private static RoundRun current = new RoundRun();
 
-    public void init(int roundid) {
+    private static ConcurrentHashMap<String, EachActor> actors = new ConcurrentHashMap<String, EachActor>();
+
+    public static synchronized void nextRoundRun() {
+        current.increase();
+        // last round elapsed time
+        current.updateLastRoundTimeUsed();
+        current.setEndTime(null);
+        current.setStartTime(new Date());
+        current.setStatus(RoundStatus.READY);
+
+    }
+
+    public static synchronized boolean startRun() {
+        current.setStatus(RoundStatus.RUNNING);
+        return true;
+    }
+
+    public static synchronized boolean okFinished() {
+        if (!current.isFinished()) {
+            current.setStatus(RoundStatus.FINISHED);
+            current.setEndTime(new Date());
+            ArchiveContentsGenerator.updateAC();
+            LocalCache.writeArchiveJSON();
+            LocalCache.writeRecipesJson();
+        }
+        return true;
+    }
+
+    public static void init(int roundid, List<RecipeDo> recipeDoList) {
         if (MapUtils.isNotEmpty(actors)) {
             for (String pkg : actors.keySet()) {
                 actors.remove(pkg);
             }
         }
 
-        List<RecipeDo> recipeDoList = recipesService.getAllRecipeList();
         if (CollectionUtils.isNotEmpty(recipeDoList)) {
             for (RecipeDo recipeDo : recipeDoList) {
                 EachActor eachActor = new EachActor(recipeDo.getPkgName(), roundid);
@@ -45,7 +72,11 @@ public class RoundMonitor {
         }
     }
 
-    public Map<String, EachActor> getActors() {
+    public static RoundRun getCurrent() {
+        return current;
+    }
+
+    public static Map<String, EachActor> getActors() {
         return actors;
     }
 
@@ -74,7 +105,7 @@ public class RoundMonitor {
 
     public static String nextBuildingPkg() {
         for (String pkg : actors.keySet()) {
-            if (!actors.get(pkg).isBuildFinished()
+            if ((!actors.get(pkg).isBuildFinished())
                     && actors.get(pkg).getBuildStatus() == ActorStatus.READY
                     && actors.get(pkg).getFetchStatus() == ActorStatus.FINISHED) {
                 return pkg;
@@ -83,7 +114,7 @@ public class RoundMonitor {
         return null;
     }
 
-    public boolean isFinishedThisRun() {
+    public static boolean isFinishedThisRun() {
         for (String pkg : actors.keySet()) {
             if (!actors.get(pkg).isFinished()) {
                 return false;
@@ -92,7 +123,7 @@ public class RoundMonitor {
         return true;
     }
 
-    public String finishedPercent() {
+    public static String finishedPercent() {
         int finished = 0;
         int roundId = 0;
         int total = 0;
@@ -107,7 +138,7 @@ public class RoundMonitor {
                 "/" + total+ ")=" + ((double) finished) / total;
     }
 
-    public double finishedPercentValue() {
+    public static double finishedPercentValue() {
         int finished = 0;
         int total = 0;
         for (String pkg : actors.keySet()) {

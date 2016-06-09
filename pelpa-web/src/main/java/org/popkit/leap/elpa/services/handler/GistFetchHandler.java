@@ -8,7 +8,7 @@ import org.popkit.leap.elpa.entity.FetcherEnum;
 import org.popkit.leap.elpa.entity.RecipeDo;
 import org.popkit.leap.elpa.services.FetchHandler;
 import org.popkit.leap.elpa.services.HttpProxyService;
-import org.popkit.leap.elpa.services.RecipesService;
+import org.popkit.leap.elpa.services.LocalCache;
 import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.popkit.leap.gist.FetchJSON;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,7 +73,7 @@ public class GistFetchHandler implements FetchHandler {
         if (fetchFile != null && fetchFile.isSuccess()) {
             String gistFileUrl = getGistFileUrl(fetchFile.getPkgFile());
             String workingPath = PelpaUtils.getWorkingPath(recipeDo.getPkgName()) + gistFileUrl.substring(gistFileUrl.lastIndexOf("/"));
-            boolean status = RecipesService.updateLastCommit(recipeDo.getPkgName(), fetchFile.getLastCommit());
+            boolean status = LocalCache.updateLastCommit(recipeDo.getPkgName(), fetchFile.getLastCommit());
             System.out.println("update " + recipeDo.getPkgName() + " lastcommit, status=" + status);
             boolean downloadStatus = httpProxyService.downloadGistFile(gistFileUrl, workingPath);
             if (!downloadStatus) {

@@ -21,7 +21,7 @@ public class BuildingTask implements Runnable {
     public void run() {
         LeapLogger.info("pkgName=[" + pkgName + "]正在进行building...");
         if (pkgBuildService.buildPackage(pkgName).isSuccess()) {
-            RoundMonitor.updateBuildingStatus(pkgName, ActorStatus.FINISHED);
+            RoundStatusMonitor.updateBuildingStatus(pkgName, ActorStatus.FINISHED);
         }
         LeapLogger.info("pkgName=[" + pkgName + "]building完成!");
     }

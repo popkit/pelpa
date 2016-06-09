@@ -9,8 +9,6 @@ import org.popkit.leap.elpa.entity.DepsItem;
 import org.popkit.leap.elpa.entity.PropsItem;
 import org.popkit.leap.elpa.entity.RecipeDo;
 import org.popkit.leap.elpa.utils.PelpaUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,11 +22,7 @@ import java.util.List;
  * Mail aborn.jiang@gmail.com
  * 2016-05-16:22:47
  */
-@Service
 public class ArchiveContentsGenerator {
-
-    @Autowired
-    private RecipesService recipesService;
 
     public static void main(String[] args) throws IOException{
         String acc = "\"aaa\"";
@@ -38,7 +32,7 @@ public class ArchiveContentsGenerator {
         System.out.println("acc=" + result);
     }
 
-    public String updateAC() {
+    public static String updateAC() {
         String htmlPath = PelpaUtils.getHtmlPath();
         String fileName = htmlPath + "packages/archive-contents";
         File archiveContents = new File(fileName);
@@ -54,8 +48,8 @@ public class ArchiveContentsGenerator {
         return result;
     }
 
-    public String generator() {
-        List<RecipeDo> recipeDos = recipesService.getAllRecipeList();
+    public static String generator() {
+        List<RecipeDo> recipeDos = LocalCache.getAllRecipeList();
         if (CollectionUtils.isNotEmpty(recipeDos)) {
             List<String> recipesNames = new ArrayList<String>();
             for (RecipeDo recipeDo : recipeDos) {
@@ -69,7 +63,7 @@ public class ArchiveContentsGenerator {
 
             StringBuilder sbList = new StringBuilder("");
             for (String pkgName : recipesNames) {
-                RecipeDo recipeDo = recipesService.getRecipeDo(pkgName);
+                RecipeDo recipeDo = LocalCache.getRecipeDo(pkgName);
                 ArchiveVo archiveVo = LocalCache.getArchive(pkgName);
                 if (recipeDo != null && archiveVo != null) {
                     String version = wrapBracket(StringUtils.join(archiveVo.getVer(), " "));
@@ -90,9 +84,9 @@ public class ArchiveContentsGenerator {
         }
     }
 
-    public List<String> diff() {
+    public static List<String> diff() {
         List<String> result = new ArrayList<String>();
-        List<RecipeDo> recipeDos = recipesService.getAllRecipeList();
+        List<RecipeDo> recipeDos = LocalCache.getAllRecipeList();
         if (CollectionUtils.isNotEmpty(recipeDos)) {
             List<String> recipesNames = new ArrayList<String>();
             for (RecipeDo recipeDo : recipeDos) {
@@ -105,7 +99,7 @@ public class ArchiveContentsGenerator {
             });
 
             for (String pkgName : recipesNames) {
-                RecipeDo recipeDo = recipesService.getRecipeDo(pkgName);
+                RecipeDo recipeDo = LocalCache.getRecipeDo(pkgName);
                 ArchiveVo archiveVo = LocalCache.getArchive(pkgName);
                 if (recipeDo == null || archiveVo == null) {
                     result.add(pkgName);

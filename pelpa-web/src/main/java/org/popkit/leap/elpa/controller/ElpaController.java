@@ -7,9 +7,7 @@ import org.popkit.leap.elpa.entity.ArchiveVo;
 import org.popkit.leap.elpa.entity.PackageItemVo;
 import org.popkit.leap.elpa.entity.RecipeDo;
 import org.popkit.leap.elpa.services.LocalCache;
-import org.popkit.leap.elpa.services.RecipesService;
 import org.popkit.leap.monitor.RoundSupervisor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -27,9 +25,6 @@ import java.util.List;
 @Controller
 @RequestMapping(value = "elpa")
 public class ElpaController extends BaseController {
-
-    @Autowired
-    private RecipesService recipesService;
 
     @RequestMapping(value = "index.html")
     public String index(HttpServletRequest request) {
@@ -50,7 +45,7 @@ public class ElpaController extends BaseController {
 
     private List<PackageItemVo> getPackages() {
         List<PackageItemVo> result = new ArrayList<PackageItemVo>();
-        List<RecipeDo> recipeDos = recipesService.getAllRecipeList();
+        List<RecipeDo> recipeDos = LocalCache.getAllRecipeList();
         if (CollectionUtils.isNotEmpty(recipeDos)) {
             List<String> recipesNames = new ArrayList<String>();
             for (RecipeDo recipeDo : recipeDos) {
@@ -63,7 +58,7 @@ public class ElpaController extends BaseController {
             });
 
             for (String pkgName : recipesNames) {
-                RecipeDo recipeDo = recipesService.getRecipeDo(pkgName);
+                RecipeDo recipeDo = LocalCache.getRecipeDo(pkgName);
                 ArchiveVo archiveVo = LocalCache.getArchive(pkgName);
                 if (recipeDo != null && archiveVo != null) {
                     PackageItemVo packageItemVo = new PackageItemVo();

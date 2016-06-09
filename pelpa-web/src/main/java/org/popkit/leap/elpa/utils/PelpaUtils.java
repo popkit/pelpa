@@ -186,7 +186,7 @@ public class PelpaUtils {
         List<File> fileList = new ArrayList<File>();
         String recipesDir = getRecipeFilePath();
         File directory = new File(recipesDir);
-        if (directory.isDirectory()) {
+        if (directory.exists() && directory.isDirectory()) {
             fileList.addAll(Arrays.asList(directory.listFiles()));
         }
 
