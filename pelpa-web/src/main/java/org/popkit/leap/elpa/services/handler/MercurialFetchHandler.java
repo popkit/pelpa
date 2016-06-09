@@ -20,7 +20,6 @@ import java.util.Map;
 @Service
 public class MercurialFetchHandler implements FetchHandler {
 
-
     public boolean validate(RecipeDo recipeDo, Map<String, Object> extra) {
         if (recipeDo.getFetcherEnum() == FetcherEnum.BITBUCKET) {
             return true;

@@ -42,16 +42,10 @@ public class BuildController {
     private PkgBuildService pkgBuildService;
 
     @Autowired
-    private ArchiveContentsGenerator archiveContentsGenerator;
-
-    @Autowired
     private RoundSupervisor roundSupervisor;
 
     @Autowired
     private LogScanner logScanner;
-
-    @Autowired
-    private RoundStatusMonitor roundStatusMonitor;
 
     @Autowired
     private FetcherExcutorPool fetcherExcutorPool;
@@ -61,7 +55,7 @@ public class BuildController {
 
     @RequestMapping(value = "index.html")
     public String index(HttpServletRequest request) {
-        Map<String, EachActor> actorMap = roundStatusMonitor.getActors();
+        Map<String, EachActor> actorMap = RoundStatusMonitor.getActors();
         List<EachActor> unstarted = new ArrayList<EachActor>();
         List<EachActor> finished = new ArrayList<EachActor>();
         List<EachActor> onging = new ArrayList<EachActor>();
@@ -99,8 +93,8 @@ public class BuildController {
             }
         }
 
-        request.setAttribute("percentDesc", roundStatusMonitor.finishedPercent());
-        request.setAttribute("percent", (roundStatusMonitor.finishedPercentValue() * 100));
+        request.setAttribute("percentDesc", RoundStatusMonitor.finishedPercent());
+        request.setAttribute("percent", (RoundStatusMonitor.finishedPercentValue() * 100));
 
         request.setAttribute("pkgReady", "共有" + pkgReady.size() + "个:" + StringUtils.join(pkgReady, ","));
         request.setAttribute("pkgOnging", "共有" + pkgOnging.size() + "个:" + StringUtils.join(pkgOnging, ","));
@@ -117,8 +111,8 @@ public class BuildController {
     @RequestMapping(value = "ajaxBuildStatus.json")
     public void ajaxBuildStatus(HttpServletResponse response) {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("percentDesc", roundStatusMonitor.finishedPercent() + " ##" + roundStatusMonitor.toString());
-        jsonObject.put("percent", (roundStatusMonitor.finishedPercentValue() * 100));
+        jsonObject.put("percentDesc", RoundStatusMonitor.finishedPercent());
+        jsonObject.put("percent", (RoundStatusMonitor.finishedPercentValue() * 100));
         jsonObject.put("currentRun", RoundStatusMonitor.getCurrent().tohumanable());
         ResponseUtils.renderJson(response, jsonObject.toJSONString());
     }
@@ -178,7 +172,7 @@ public class BuildController {
     @RequestMapping(value = "updateAC")
     public CommonResponse updateAC() {
         CommonResponse commonResponse = new CommonResponse();
-        String result = archiveContentsGenerator.updateAC();
+        String result = ArchiveContentsGenerator.updateAC();
         commonResponse.setData(result);
         return commonResponse;
     }
@@ -198,7 +192,7 @@ public class BuildController {
     @RequestMapping(value = "missed.html")
     public CommonResponse missed() {
         CommonResponse commonResponse = new CommonResponse();
-        List<String> missed = archiveContentsGenerator.diff();
+        List<String> missed = ArchiveContentsGenerator.diff();
         commonResponse.setData(missed);
         return commonResponse;
     }
