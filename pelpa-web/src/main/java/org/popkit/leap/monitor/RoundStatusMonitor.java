@@ -80,18 +80,26 @@ public class RoundStatusMonitor {
         return actors;
     }
 
-    public static void updateFetcherStatus(String pkg, ActorStatus actStatus) {
+    public static ActorStatus getFetcherStatus(String pkg) {
+        return actors.containsKey(pkg) ? actors.get(pkg).getFetchStatus() : null;
+    }
+
+    public static synchronized void updateFetcherStatus(String pkg, ActorStatus actStatus) {
         if (actStatus == ActorStatus.WORKING) {
             actors.get(pkg).setStartTime(new Date());
         }
         actors.get(pkg).setFetchStatus(actStatus);
     }
 
-    public static void updateBuildingStatus(String pkg, ActorStatus actStatus) {
+    public static synchronized void updateBuildingStatus(String pkg, ActorStatus actStatus) {
         if (actStatus == ActorStatus.FINISHED) {
             actors.get(pkg).setEndTime(new Date());
         }
         actors.get(pkg).setBuildStatus(actStatus);
+    }
+
+    public static ActorStatus getBuildingStatus(String pkg) {
+        return actors.containsKey(pkg) ? actors.get(pkg).getBuildStatus() : null;
     }
 
     public static String nexFetcherPkg() {

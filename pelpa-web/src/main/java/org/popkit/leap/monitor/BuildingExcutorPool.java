@@ -1,5 +1,6 @@
 package org.popkit.leap.monitor;
 
+import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.entity.ActorStatus;
 import org.popkit.leap.elpa.services.PkgBuildService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +39,12 @@ public class BuildingExcutorPool {
                             // TODO
                         }
                     } else {
-                        RoundStatusMonitor.updateBuildingStatus(pkgName, ActorStatus.WORKING);
-                        exector.execute(new BuildingTask(pkgName, pkgBuildService));
+                        ActorStatus actorStatus = RoundStatusMonitor.getBuildingStatus(pkgName);
+                        if (actorStatus == ActorStatus.READY) {
+                            LeapLogger.info("pkgName:" + pkgName + " added to build working queue!");
+                            RoundStatusMonitor.updateBuildingStatus(pkgName, ActorStatus.WORKING);
+                            exector.execute(new BuildingTask(pkgName, pkgBuildService));
+                        }
                     }
                 }
             }

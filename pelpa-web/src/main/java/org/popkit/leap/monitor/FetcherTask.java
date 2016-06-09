@@ -20,7 +20,7 @@ public class FetcherTask implements Runnable {
 
     public void run() {
         LeapLogger.info("pkgName=[" + pkgName + "]正在进行fetch...");
-        if (fetchService.downloadPackage(pkgName)) {
+        if (fetchService.downloadPackage(pkgName)) {  // TODO 如果失败,会出问题!!!,会使得没有更新
             RoundStatusMonitor.updateFetcherStatus(pkgName, ActorStatus.FINISHED);
         }
         LeapLogger.info("pkgName=[" + pkgName + "]fetch完成!");

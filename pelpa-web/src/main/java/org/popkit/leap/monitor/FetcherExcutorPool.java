@@ -1,5 +1,6 @@
 package org.popkit.leap.monitor;
 
+import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.entity.ActorStatus;
 import org.popkit.leap.elpa.services.PkgFetchService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ public class FetcherExcutorPool {
     }
 
     public void excute() {
+        // // FIXME: 6/9/16 这里有个bug,一个pkg可能会循环加入fetch任务队列
         new Thread(new Runnable() {
             public void run() {
                 while (true) {
@@ -40,8 +42,12 @@ public class FetcherExcutorPool {
                             // TODO
                         }
                     } else {
-                        RoundStatusMonitor.updateFetcherStatus(pkgName, ActorStatus.WORKING);
-                        exector.execute(new FetcherTask(pkgName, pkgFetchService));
+                        ActorStatus actorStatus = RoundStatusMonitor.getFetcherStatus(pkgName);
+                        if (actorStatus == ActorStatus.READY) {
+                            LeapLogger.info("pkgName:" + pkgName + " added to fetch working queue!");
+                            RoundStatusMonitor.updateFetcherStatus(pkgName, ActorStatus.WORKING);
+                            exector.execute(new FetcherTask(pkgName, pkgFetchService));
+                        }
                     }
                 }
             }
