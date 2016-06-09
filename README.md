@@ -1,4 +1,5 @@
 # pelpa
+[![Build Status](https://travis-ci.org/popkit/pelpa.svg?branch=master)](https://travis-ci.org/popkit/pelpa)  
 pelpa是对原来的[popkit-elpa](https://github.com/aborn/popkit-elpa)进行的
 重构,采用java语言完成.
 
