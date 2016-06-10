@@ -3,9 +3,7 @@ sudo: false
 before_script:
   - echo $HOME
 script:
-  - sh scripts/leap.sh
-  - mvn clean
+  - git clone https://github.com/popkit/leap.git
   - mvn compile
-  - mvn package -Dmaven.test.skip=ture
 after_script:
   - ls -a
