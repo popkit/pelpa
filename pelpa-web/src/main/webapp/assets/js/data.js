@@ -50,7 +50,7 @@ function draw() {
         if (dataRes.hasOwnProperty("today")) {
             $('#myChartTodayDiv').removeClass('hidden');
             var myLineChartToday = new Chart(ctxToday, {
-                type: 'line',
+                type: 'bar',
                 data: buildFromObj(dataRes.today)
             });
         } else {
