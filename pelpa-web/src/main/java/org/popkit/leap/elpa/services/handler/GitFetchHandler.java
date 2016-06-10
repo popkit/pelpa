@@ -66,6 +66,7 @@ public class GitFetchHandler implements FetchHandler {
 
             Git git = new Git(repository);
             PullCommand pullCommand = git.pull();
+            pullCommand.setTimeout(10*1000);  // 10s timeout
             PullResult result = pullCommand.call();
 
             // http://stackoverflow.com/questions/13399990/usage-of-pull-command-in-jgit
@@ -100,6 +101,8 @@ public class GitFetchHandler implements FetchHandler {
         LeapLogger.info("Cloning from " + remote_url + " to " + localPathDir);
         try {
             Git result = Git.cloneRepository()
+                    .setCloneSubmodules(true)
+                    .setTimeout(10*1000)
                     .setURI(remote_url)
                     .setDirectory(new File(localPathDir))
                     .call();
