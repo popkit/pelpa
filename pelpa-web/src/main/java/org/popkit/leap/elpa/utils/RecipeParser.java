@@ -58,7 +58,7 @@ public class RecipeParser {
             }
             String key = keyValuePair[0].trim();
             String value = keyValueString.substring(keyValueString.indexOf(keyValuePair[0]) + keyValuePair[0].length());
-            if ("repo".equals(key) || "url".equals(key)) {
+            if ("repo".equals(key)) {
                 recipeDo.update(key, PelpaUtils.unwrap(value));
             } else if ("files".endsWith(key)) {
                 String fileString = extraFileListString(keyValueStringPairString);
@@ -67,8 +67,43 @@ public class RecipeParser {
                 recipeDo.update(key, value.trim());
             }
         }
+        String url = extraUrl(keyValueStringPairString);
+        if (url != null) {
+            recipeDo.setUrl(url);
+        }
         return recipeDo;
     }
+
+    private static String extraUrl(String keyValueStringPairString) {
+        if (!keyValueStringPairString.contains(":url")) {
+            return null;
+        }
+
+        String key = ":url";
+        int index = keyValueStringPairString.indexOf(key);
+        String otherString = keyValueStringPairString.substring(index + key.length());
+        int startIndex = -1;
+        int endIndex;
+        int i = -1;
+        for (char c : otherString.toCharArray()) {
+            i++;
+            if (c == '"' && startIndex == -1) {
+                startIndex = i;
+                continue;
+            }
+            if (c == '"' && startIndex != -1) {
+                endIndex = i;
+                if (endIndex > startIndex) {
+                    return otherString.substring(startIndex + 1, endIndex);
+                } else {
+                    return null;
+                }
+            }
+
+        }
+        return null;
+    }
+
 
     private static String extraFileListString(String keyValueStringPairString) {
         int index = keyValueStringPairString.indexOf(":files");

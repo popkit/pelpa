@@ -1,13 +1,3 @@
 issue  package     type
 15     drupal-mode tar
 16     geiser      tar
-
-
-
-## 自己报的issue
-
-# yasnippet
-问题：缺少snippets文件夹
-git clone --recursive https://github.com/capitaomorte/yasnippet
-# spaceline
-显示不出来,原因为spaceline-pkg.el文件生成不正确!
