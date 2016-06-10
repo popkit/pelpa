@@ -1,5 +1,8 @@
 package org.popkit.leap.elpa.entity;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.List;
 
 /**
@@ -29,12 +32,25 @@ public class PackageInfo {
         }
     }
 
+    public void setShortInfoIfAbsent(String shortInfo) {
+        if (StringUtils.isBlank(this.shortInfo) && StringUtils.isNotBlank(shortInfo)) {
+            this.shortInfo = shortInfo;
+        }
+    }
+
     public String getReadmeInfo() {
         return readmeInfo;
     }
 
     public void setReadmeInfo(String readmeInfo) {
         this.readmeInfo = readmeInfo;
+    }
+
+    public void setReadmeInfoIfAbsent(String readmeInfo) {
+        if (StringUtils.isBlank(this.readmeInfo)
+                && StringUtils.isNotBlank(readmeInfo)) {
+            this.readmeInfo = readmeInfo;
+        }
     }
 
     public List<DepsItem> getDeps() {
@@ -45,11 +61,23 @@ public class PackageInfo {
         this.deps = deps;
     }
 
+    public void setDepsIfAbsent(List<DepsItem> deps) {
+        if (CollectionUtils.isEmpty(this.deps)) {
+            this.deps = deps;
+        }
+    }
+
     public List<String> getKeywords() {
         return keywords;
     }
 
     public void setKeywords(List<String> keywords) {
         this.keywords = keywords;
+    }
+
+    public void setKeywordsIfAbsent(List<String> keywords) {
+        if (CollectionUtils.isEmpty(this.keywords)) {
+            this.keywords = keywords;
+        }
     }
 }

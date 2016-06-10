@@ -114,9 +114,20 @@ public class PkgBuildService {
 
             // TODO 当没有 PACKAGE-NAME.el时,可采用PACKAGE-NAME-pkg.el提取信息,如tao-theme
             if (pkgFile != null || pkgPkgFile != null) {
-                PackageInfo pkgInfo = pkgFile != null ?
-                        getPkgInfo(pkgFile, recipeDo.getPkgName())
-                        : getPkgInfoBasePkgFile(pkgPkgFile, recipeDo.getPkgName());
+                PackageInfo pkgInfo = null;
+                if (pkgFile != null) {
+                    pkgInfo = getPkgInfo(pkgFile, recipeDo.getPkgName());
+                    // both exists!
+                    if (pkgPkgFile != null) {
+                        PackageInfo pkgPkgInfo = getPkgInfoBasePkgFile(pkgPkgFile, recipeDo.getPkgName());
+                        pkgInfo.setDepsIfAbsent(pkgPkgInfo.getDeps());
+                        pkgInfo.setKeywordsIfAbsent(pkgPkgInfo.getKeywords());
+                        pkgInfo.setReadmeInfoIfAbsent(pkgPkgInfo.getReadmeInfo());
+                        pkgInfo.setShortInfoIfAbsent(pkgPkgInfo.getShortInfo());
+                    }
+                } else if (pkgPkgFile != null) {
+                    pkgInfo = getPkgInfoBasePkgFile(pkgPkgFile, recipeDo.getPkgName());
+                }
                 if (pkgInfo == null) { return; }
 
                 ArchiveVo archiveVo = new ArchiveVo();

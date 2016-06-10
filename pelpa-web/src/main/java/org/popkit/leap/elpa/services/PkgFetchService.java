@@ -42,7 +42,7 @@ public class PkgFetchService {
         extra.put("pkgPath", pkgPath);
 
         if (CollectionUtils.isNotEmpty(fetchHandlerList)) {
-            LeapLogger.info("fetchHandlerList: size=" + fetchHandlerList.size());
+            LeapLogger.info("fetchHandlerList: size=" + fetchHandlerList.size() + fetchHandlerList.toString());
             for (FetchHandler fetchHandler : fetchHandlerList) {
                 if (fetchHandler.validate(recipeDo, extra)) {
                     fetchHandler.execute(recipeDo, extra);
