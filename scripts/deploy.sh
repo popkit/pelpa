@@ -11,6 +11,12 @@ if [ -d "leap" ]; then
   git clone https://github.com/popkit/leap.git
 fi
 
+# clean first
+mvn clean;
+
+# install it
+mvn install;
+
 # compile first
 mvn compile
 
