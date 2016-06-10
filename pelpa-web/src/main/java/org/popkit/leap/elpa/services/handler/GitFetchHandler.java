@@ -32,6 +32,7 @@ import java.util.Map;
 public class GitFetchHandler implements FetchHandler {
     public static final String GITHUB_HTTPS_ROOT = "https://github.com/";
     public static final String GITLAB_HTTPS_ROOT = "https://gitlab.com/";
+    public static final int GIT_TIME_OUT = 60 * 1000;    // 60 seconds
 
     public boolean validate(RecipeDo recipeDo, Map<String, Object> extra) {
         if (recipeDo.getFetcherEnum() == FetcherEnum.GITHUB ||
@@ -66,7 +67,7 @@ public class GitFetchHandler implements FetchHandler {
 
             Git git = new Git(repository);
             PullCommand pullCommand = git.pull();
-            pullCommand.setTimeout(10*1000);  // 10s timeout
+            pullCommand.setTimeout(GIT_TIME_OUT);
             PullResult result = pullCommand.call();
 
             // http://stackoverflow.com/questions/13399990/usage-of-pull-command-in-jgit
@@ -102,7 +103,7 @@ public class GitFetchHandler implements FetchHandler {
         try {
             Git result = Git.cloneRepository()
                     .setCloneSubmodules(true)
-                    .setTimeout(10*1000)
+                    .setTimeout(GIT_TIME_OUT)
                     .setURI(remote_url)
                     .setDirectory(new File(localPathDir))
                     .call();
