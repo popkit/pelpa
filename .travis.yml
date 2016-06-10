@@ -3,6 +3,7 @@ sudo: false
 before_script:
   - echo $HOME
 script:
+  - sh scripts/leap.sh
   - mvn clean
   - mvn compile
   - mvn package -Dmaven.test.skip=ture
