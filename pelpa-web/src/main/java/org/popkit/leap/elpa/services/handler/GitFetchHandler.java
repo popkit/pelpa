@@ -33,6 +33,7 @@ public class GitFetchHandler implements FetchHandler {
     public static final String GITHUB_HTTPS_ROOT = "https://github.com/";
     public static final String GITLAB_HTTPS_ROOT = "https://gitlab.com/";
     public static final int GIT_TIME_OUT = 60 * 1000;    // 60 seconds
+    public static final int GIT_TIME_OUT_CLONE = 10 * 60 * 1000;    // 10 minutes
 
     public boolean validate(RecipeDo recipeDo, Map<String, Object> extra) {
         if (recipeDo.getFetcherEnum() == FetcherEnum.GITHUB ||
@@ -103,7 +104,7 @@ public class GitFetchHandler implements FetchHandler {
         try {
             Git result = Git.cloneRepository()
                     .setCloneSubmodules(true)
-                    .setTimeout(GIT_TIME_OUT)
+                    .setTimeout(GIT_TIME_OUT_CLONE)
                     .setURI(remote_url)
                     .setDirectory(new File(localPathDir))
                     .call();
