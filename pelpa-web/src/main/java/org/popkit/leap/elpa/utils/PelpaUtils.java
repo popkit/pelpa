@@ -83,7 +83,7 @@ public class PelpaUtils {
                     .append(" ").append(keywords(keywords));
 
             stringBuilder.append(")");
-            resultContent.toString();
+            resultContent = stringBuilder.toString();
         }
 
         try {
