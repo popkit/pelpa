@@ -54,6 +54,7 @@ public class RoundSupervisor {
                     if (current.isReady()) {
                         if (LocalCache.initRecipes()) {
                             List<RecipeDo> recipeDoList = LocalCache.getAllRecipeList();
+                            LeapLogger.info("recipeDoList.size=" + recipeDoList.size());
                             RoundStatusMonitor.init(current.getRoundId(), recipeDoList);
                             if (RoundStatusMonitor.startRun()
                                     && PelpaUtils.getEnv() == EnvEnum.PRODUCTION) {
@@ -86,7 +87,7 @@ public class RoundSupervisor {
 
                     updateDiskStatus();
                     updateBuildStatus();
-                    LeapLogger.info(current.tohumanable());
+                    LeapLogger.info(current.tohumanable() + current.toString());
                 }
             }
         }).start();

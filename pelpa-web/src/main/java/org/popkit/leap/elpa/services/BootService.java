@@ -1,18 +1,12 @@
 package org.popkit.leap.elpa.services;
 
 import com.alibaba.fastjson.JSONObject;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.entity.ArchiveVo;
-import org.popkit.leap.elpa.entity.PelpaContents;
 import org.popkit.leap.elpa.utils.ArchiveParser;
-import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +21,7 @@ public class BootService {
 
     @PostConstruct
     private void init() {
-
+        /**
         String htmlPath = PelpaUtils.getHtmlPath();
         if (StringUtils.isBlank(htmlPath)) {
             htmlPath = "/Users/aborn/github/popkit-elpa/html/";
@@ -50,6 +44,7 @@ public class BootService {
         } catch (Exception e) {
             LeapLogger.warn("error in readFileToString", e);
         }
+         */
     }
 
     private static Map<String, ArchiveVo> convert2archivemap(JSONObject jsonObject) {

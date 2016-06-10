@@ -52,15 +52,15 @@ public class GitFetchHandler implements FetchHandler {
         File pkgPathFile = new File(pkgPath);
         if (pkgPathFile.exists() && pkgPathFile.isDirectory()
                 && new File(pkgPath + "/.git").exists()) {
-            update(recipeDo, pkgPath);
+            update(pkgPath);
         } else {
             create(recipeDo, pkgPath);
         }
     }
 
-    private void update(RecipeDo recipeDo, String localPath) {
+    private void update(String localPath) {
         try {
-            LeapLogger.info("github fetch:" + localPath);
+            LeapLogger.info("github fetch update:" + localPath);
             Repository repository = FileRepositoryBuilder.create(new File(localPath + "/.git"));
             //System.out.println("Starting fetch");
 
@@ -82,7 +82,7 @@ public class GitFetchHandler implements FetchHandler {
 
     private void create(RecipeDo recipeDo, String localPathDir) {
         // prepare a new folder for the cloned repository
-        LeapLogger.info("github create:" + localPathDir);
+        LeapLogger.info("github fetch new:" + localPathDir);
         String remote_url = getRemoteGitUrl(recipeDo);
         if (StringUtils.isBlank(remote_url)) {
             LeapLogger.info("remote url is blank, pkgName:" + recipeDo.getPkgName());
