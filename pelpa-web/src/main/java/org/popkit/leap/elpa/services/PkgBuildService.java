@@ -112,6 +112,15 @@ public class PkgBuildService {
                 }
             }
 
+            // 当不在list中时,看下pkgName-pkg.el文件是否存在!
+            if (pkgFile == null && pkgPkgFile == null) {
+                String pkgName = recipeDo.getPkgName();
+                File pkgTmp = new File(PelpaUtils.getWorkingPath(pkgName) + File.separator + pkgName + "-pkg.el");
+                if (pkgTmp.exists() && pkgTmp.isFile()) {
+                    pkgPkgFile = pkgTmp;
+                }
+            }
+
             // TODO 当没有 PACKAGE-NAME.el时,可采用PACKAGE-NAME-pkg.el提取信息,如tao-theme
             if (pkgFile != null || pkgPkgFile != null) {
                 PackageInfo pkgInfo = null;
