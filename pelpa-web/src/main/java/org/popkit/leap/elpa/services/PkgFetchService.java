@@ -1,12 +1,15 @@
 package org.popkit.leap.elpa.services;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.FileUtils;
 import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.entity.RecipeDo;
 import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +41,9 @@ public class PkgFetchService {
         }
 
         String pkgPath = PelpaUtils.getWorkingPath(recipeDo.getPkgName());
+        File pkgPathFile = new File(pkgPath);
+        deleteEmptyPath(pkgPathFile);
+
         Map<String, Object> extra = new HashMap<String, Object>();
         extra.put("pkgPath", pkgPath);
 
@@ -50,5 +56,34 @@ public class PkgFetchService {
         }
 
         return true;
+    }
+
+    public void deleteEmptyPath(File pkgPathFile) {
+        boolean emptypath;
+
+        if (pkgPathFile.exists() && pkgPathFile.isDirectory()) {
+            File[] files = pkgPathFile.listFiles();
+            String[] fileStrings = pkgPathFile.list();
+
+            if (fileStrings == null || fileStrings.length == 0) {
+                emptypath = true;
+            } else {
+                boolean containsFile = false;
+                for (String item : fileStrings){
+                    if (!item.startsWith(".")) {
+                        containsFile = true;
+                    }
+                }
+                emptypath = !containsFile;
+            }
+            if (emptypath) {
+                try {
+                    // delete empty path
+                    FileUtils.deleteDirectory(pkgPathFile);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }
