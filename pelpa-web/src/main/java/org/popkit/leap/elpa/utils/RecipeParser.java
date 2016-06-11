@@ -19,7 +19,7 @@ public class RecipeParser {
 
     public static void main(String[] args) {
         String origin = "(wiki;afsf";
-        String origin2 = "(wiki\";\";a\"fsf";
+        String origin2 = "(wiki\";a\"b;e\";a\"fsf";
         System.out.println("origin:" + origin);
         System.out.println("origin:" + trimComments(origin));
         System.out.println("origin:" + origin2);
@@ -27,15 +27,36 @@ public class RecipeParser {
     }
 
     public static String trimComments(String origin) {
-        int idex = origin.lastIndexOf(";");
-        if (idex > 0) {
-            String other = origin.substring(idex);
-            if (!other.contains("\"")) {
-                return origin.substring(0, idex);
-            }
+        int index = findSeparatorPosition(origin);
+        if (index > 0) {
+            return origin.substring(0, index);
         }
 
         return origin;
+    }
+
+    public static int findSeparatorPosition(String origin) {
+        int count = 0;
+        int idx = -1;
+        for (int i=0; i < origin.length(); i++) {
+            char c = origin.charAt(i);
+            if (c == '"' && count > 0) {
+                count --;
+                continue;
+            }
+
+            if (c== '"' && count == 0) {
+                count ++;
+                continue;
+            }
+
+            if (c== ';' && count == 0) {
+                if (i > idx) {
+                    idx = i;
+                }
+            }
+        }
+        return idx;
     }
 
     public static String readFileToStringWithoutComments(File file) {
