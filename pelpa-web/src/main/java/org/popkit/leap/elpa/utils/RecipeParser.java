@@ -1,12 +1,13 @@
 package org.popkit.leap.elpa.utils;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.entity.RecipeDo;
-import org.popkit.leap.elpa.entity.RoundRun;
-import org.popkit.leap.elpa.entity.RoundStatus;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 /**
  * Created by Aborn Jiang
@@ -16,12 +17,61 @@ import java.io.File;
 public class RecipeParser {
     private RecipeParser(){}
 
+    public static void main(String[] args) {
+        String origin = "(wiki;afsf";
+        String origin2 = "(wiki\";\";a\"fsf";
+        System.out.println("origin:" + origin);
+        System.out.println("origin:" + trimComments(origin));
+        System.out.println("origin:" + origin2);
+        System.out.println("origin:" + trimComments(origin2));
+    }
+
+    public static String trimComments(String origin) {
+        int idex = origin.lastIndexOf(";");
+        if (idex > 0) {
+            String other = origin.substring(idex);
+            if (!other.contains("\"")) {
+                return origin.substring(0, idex);
+            }
+        }
+
+        return origin;
+    }
+
+    public static String readFileToStringWithoutComments(File file) {
+        BufferedReader br = null;
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            br = new BufferedReader(new FileReader(file));
+            String sCurrentLine;
+            boolean needContinue = true;
+            while ((sCurrentLine = br.readLine()) != null && needContinue) {
+                if (sCurrentLine.contains(";")) {
+                    stringBuilder.append(trimComments(sCurrentLine)).append(" ");
+                } else {
+                    stringBuilder.append(sCurrentLine).append(" ");
+                }
+            }
+        } catch (IOException e) {
+            LeapLogger.error("error", e);
+            e.printStackTrace();
+        } finally {
+            try {
+                if (br != null) br.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return stringBuilder.toString();
+    }
+
     public static RecipeDo parsePkgRecipe(String pkgName) {
         String recipe = PelpaUtils.getRecipeFilePath() + pkgName;
         File recipeFile = new File(recipe);
         if (recipeFile.exists() && recipeFile.isFile()) {
             try {
-                String content = FileUtils.readFileToString(recipeFile, "UTF-8");
+                //FileUtils.readFileToString(recipeFile, "UTF-8");
+                String content = readFileToStringWithoutComments(recipeFile);
                 return parse(content);
             } catch (Exception e) {
 
@@ -37,7 +87,7 @@ public class RecipeParser {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (sub == null) {
+        if (StringUtils.isBlank(sub)) {
             return null;
         }
 
@@ -158,12 +208,5 @@ public class RecipeParser {
             }
         }
         return -1;
-    }
-
-    public static void main(String[] args) {
-        RoundRun roundRun = new RoundRun();
-        System.out.println("ini:" + roundRun.hashCode());
-        roundRun.setStatus(RoundStatus.FINISHED);
-        System.out.println("after:" + roundRun.hashCode());
     }
 }
