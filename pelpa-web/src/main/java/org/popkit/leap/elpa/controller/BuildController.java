@@ -93,8 +93,21 @@ public class BuildController {
     public void ajaxBuildStatus(HttpServletResponse response) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("percentDesc", RoundStatusMonitor.finishedPercent());
-        jsonObject.put("percent", (RoundStatusMonitor.finishedPercentValue() * 100));
+        double finishedPercent = RoundStatusMonitor.finishedPercentValue();
+        jsonObject.put("percent", (finishedPercent * 100));
         jsonObject.put("currentRun", RoundStatusMonitor.getCurrent().tohumanable());
+
+        if (finishedPercent > 0.8) {
+            List<RecipeDo> missed = ArchiveContentsGenerator.diff();
+            List<String> missedList = new ArrayList<String>();
+            for (RecipeDo recipeDo : missed) {
+                missedList.add(recipeDo.getPkgName());
+            }
+            jsonObject.put("missed", "Missed:" + missedList.size() + ":"+ StringUtils.join(missedList, ","));
+        } else {
+            jsonObject.put("missed", "");
+        }
+
         ResponseUtils.renderJson(response, jsonObject.toJSONString());
     }
 

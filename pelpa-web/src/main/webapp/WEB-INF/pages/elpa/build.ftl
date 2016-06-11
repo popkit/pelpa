@@ -50,6 +50,13 @@
         <div class="content">
             <p>${pkgFinished}</p>
         </div>
+        <div class="title">
+            <i class="dropdown icon"></i>
+            missed的包有哪些?
+        </div>
+        <div class="content">
+            <p id="missedHtmlDiv"></p>
+        </div>
     </div>
 
 <#if (missed?? && missed?size > 0)>
@@ -97,6 +104,7 @@
                 });
                 $('#buildProgressDesc').html(data.percentDesc);
                 $('#currentRunDiv').html(data.currentRun);
+                $('#missedHtmlDiv').html(data.missed);
             },
             error: function (jXHR, textStatus, errorThrown) {
                 //alert(errorThrown);
