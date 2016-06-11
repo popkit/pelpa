@@ -67,8 +67,8 @@
             <#list missed as item >
             <tr>
                 <td>${item.pkgName}</td>
-                <td>${item.fetcher}</td>
-                <td>${item.repo}</td>
+                <td>${(item.fetcher)!}</td>
+                <td>${(item.repo)!}</td>
                 <td>${(item.files)!}</td>
                 <td>${(item.url)!}</td>
             </tr>

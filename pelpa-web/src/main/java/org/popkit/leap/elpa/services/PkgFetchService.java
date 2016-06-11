@@ -27,7 +27,7 @@ public class PkgFetchService {
             RecipeDo recipeDo = LocalCache.getRecipeDo(pkgName);
             return downloadPackage(recipeDo);
         } catch (Exception e) {
-            LeapLogger.warn("downloadPackage@@@" + pkgName, e);
+            LeapLogger.warn("exception in downloadPackage@@@" + pkgName, e);
             return true;
         }
     }
@@ -42,7 +42,6 @@ public class PkgFetchService {
         extra.put("pkgPath", pkgPath);
 
         if (CollectionUtils.isNotEmpty(fetchHandlerList)) {
-            LeapLogger.info("fetchHandlerList: size=" + fetchHandlerList.size() + fetchHandlerList.toString());
             for (FetchHandler fetchHandler : fetchHandlerList) {
                 if (fetchHandler.validate(recipeDo, extra)) {
                     fetchHandler.execute(recipeDo, extra);
