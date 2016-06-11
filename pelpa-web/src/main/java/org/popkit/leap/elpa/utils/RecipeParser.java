@@ -21,9 +21,9 @@ public class RecipeParser {
         String origin = "(wiki;afsf";
         String origin2 = "(wiki\";a\"b;e\";a\"fsf";
         System.out.println("origin:" + origin);
-        System.out.println("origin:" + trimComments(origin));
+        System.out.println("after:" + trimComments(origin));
         System.out.println("origin:" + origin2);
-        System.out.println("origin:" + trimComments(origin2));
+        System.out.println("after:" + trimComments(origin2));
     }
 
     public static String trimComments(String origin) {
