@@ -257,7 +257,40 @@ public class PelpaUtils {
                                     }
                                 }
                             }
-                        } else {
+                        } else if (fileName.contains("*")) {
+                            int indexStar = fileName.lastIndexOf("*");
+                            String preffix = null;
+                            String suffix = null;
+
+                            if (indexStar == fileName.length() -1) {
+                                int index = fileName.lastIndexOf("/");
+                                if (index >= 0 && indexStar > index) {
+                                    preffix = fileName.substring(index + 1, indexStar);
+                                }
+                            } else {
+                                suffix = fileName.substring(indexStar+1);
+                            }
+
+                            String sub = "";
+                            int index = fileName.lastIndexOf("/");
+                            if (index > 0) {
+                                sub = fileName.substring(0, index);
+                            }
+                            File pathFile = new File(workingPath + File.separator + sub);
+
+                            if (pathFile.exists() && pathFile.isDirectory()) {
+                                for (File file : pathFile.listFiles()) {
+                                    if (suffix != null && file.getName().endsWith(suffix)) {
+                                        elispFileList.add(file);
+                                    }
+
+                                    if (preffix != null && file.getName().startsWith(preffix)) {
+                                        elispFileList.add(file);
+                                    }
+                                }
+                            }
+                        }
+                        else {
                             File fileTmp = new File(workingPath + File.separator + fileName);
                             if (fileTmp.exists()) {
                                 elispFileList.add(fileTmp);
