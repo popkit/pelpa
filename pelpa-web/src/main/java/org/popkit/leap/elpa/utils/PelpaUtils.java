@@ -4,12 +4,10 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.popkit.core.config.LeapConfigLoader;
-import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.constents.EnvEnum;
 import org.popkit.leap.elpa.entity.DepsItem;
 import org.popkit.leap.elpa.entity.RecipeDo;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -59,9 +57,9 @@ public class PelpaUtils {
      * @return
      */
     public static boolean generatePkgElispFileContent(String pkgName, String version,
-                                                   String shortInfo, List<String> keywords,
-                                                   List<DepsItem> deps, String url,
-                                                   File destPkgDescFile, File originPkgFile) {
+                                                      String shortInfo, List<String> keywords,
+                                                      List<DepsItem> deps, String url,
+                                                      File destPkgDescFile, File originPkgFile) {
         String resultContent = null;
         if (originPkgFile != null && originPkgFile.exists() && originPkgFile.isFile()) {
             try {
@@ -202,27 +200,12 @@ public class PelpaUtils {
 
     public static List<RecipeDo> asRecipeArch(List<File> fileList) {
         List<RecipeDo> recipeList = new ArrayList<RecipeDo>();
-
         for (File item : fileList) {
-            BufferedReader br = null;
-            try {
-                String contetnString = FileUtils.readFileToString(item, "UTF-8");
-                RecipeDo resItem = RecipeParser.parse(contetnString);
-                if (resItem != null) {
-                    recipeList.add(resItem);
-                }
-            } catch (IOException e) {
-                LeapLogger.error("error", e);
-                e.printStackTrace();
-            } finally {
-                try {
-                    if (br != null) br.close();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+            RecipeDo resItem = RecipeParser.parsePkgRecipe(item);
+            if (resItem != null) {
+                recipeList.add(resItem);
             }
         }
-
         return recipeList;
     }
 

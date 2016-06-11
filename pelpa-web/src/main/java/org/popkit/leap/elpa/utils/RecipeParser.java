@@ -86,9 +86,7 @@ public class RecipeParser {
         return stringBuilder.toString();
     }
 
-    public static RecipeDo parsePkgRecipe(String pkgName) {
-        String recipe = PelpaUtils.getRecipeFilePath() + pkgName;
-        File recipeFile = new File(recipe);
+    public static RecipeDo parsePkgRecipe(File recipeFile) {
         if (recipeFile.exists() && recipeFile.isFile()) {
             try {
                 //FileUtils.readFileToString(recipeFile, "UTF-8");
@@ -99,6 +97,12 @@ public class RecipeParser {
             }
         }
         return null;
+    }
+
+    public static RecipeDo parsePkgRecipe(String pkgName) {
+        String recipe = PelpaUtils.getRecipeFilePath() + pkgName;
+        File recipeFile = new File(recipe);
+        return parsePkgRecipe(recipeFile);
     }
 
     public static RecipeDo parse(String origin) {
