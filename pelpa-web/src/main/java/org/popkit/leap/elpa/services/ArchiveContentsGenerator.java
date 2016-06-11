@@ -84,8 +84,8 @@ public class ArchiveContentsGenerator {
         }
     }
 
-    public static List<String> diff() {
-        List<String> result = new ArrayList<String>();
+    public static List<RecipeDo> diff() {
+        List<RecipeDo> result = new ArrayList<RecipeDo>();
         List<RecipeDo> recipeDos = LocalCache.getAllRecipeList();
         if (CollectionUtils.isNotEmpty(recipeDos)) {
             List<String> recipesNames = new ArrayList<String>();
@@ -101,8 +101,8 @@ public class ArchiveContentsGenerator {
             for (String pkgName : recipesNames) {
                 RecipeDo recipeDo = LocalCache.getRecipeDo(pkgName);
                 ArchiveVo archiveVo = LocalCache.getArchive(pkgName);
-                if (recipeDo == null || archiveVo == null) {
-                    result.add(pkgName);
+                if (archiveVo == null) {
+                    result.add(recipeDo);
                 }
             }
             return result;

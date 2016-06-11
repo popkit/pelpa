@@ -237,7 +237,9 @@ public class PelpaUtils {
                     continue;
                 }
 
-                if (fileName.endsWith("*.el")) {
+                if (":defaults".equals(fileName)) {
+                    elispFileList.addAll(PelpaUtils.getElispFile(workingPath));
+                } else if (fileName.endsWith("*.el")) {
                     String sub = "";
                     if (fileName.contains("/")) {
                         sub = fileName.substring(0, fileName.lastIndexOf("/"));

@@ -56,38 +56,21 @@ public class BuildController {
     @RequestMapping(value = "index.html")
     public String index(HttpServletRequest request) {
         Map<String, EachActor> actorMap = RoundStatusMonitor.getActors();
-        List<EachActor> unstarted = new ArrayList<EachActor>();
-        List<EachActor> finished = new ArrayList<EachActor>();
-        List<EachActor> onging = new ArrayList<EachActor>();
-
-        int unstartedNo = 0;
-        int finishedNo = 0;
-        int ongingNo = 0;
         List<String> pkgReady = new ArrayList<String>();
         List<String> pkgFinished = new ArrayList<String>();
         List<String> pkgOnging = new ArrayList<String>();
+
+        List<RecipeDo> missedPkg = ArchiveContentsGenerator.diff();
 
         if (MapUtils.isNotEmpty(actorMap)) {
             for (String pkg : actorMap.keySet()) {
                 EachActor actor = actorMap.get(pkg);
                 if (actor.getFetchStatus() == ActorStatus.READY) {
-                    if (unstartedNo < 50) {
-                        unstarted.add(actor);
-                        unstartedNo++;
-                    }
                     pkgReady.add(pkg);
                 } else if (actor.getBuildStatus() == ActorStatus.WORKING
                         || actor.getFetchStatus() == ActorStatus.WORKING) {
-                    if (ongingNo < 50) {
-                        onging.add(actor);
-                        ongingNo++;
-                    }
                     pkgOnging.add(pkg);
                 } else if (actor.getBuildStatus() == ActorStatus.FINISHED) {
-                    if (finishedNo < 50) {
-                        finished.add(actor);
-                        finishedNo++;
-                    }
                     pkgFinished.add(pkg);
                 }
             }
@@ -100,10 +83,7 @@ public class BuildController {
         request.setAttribute("pkgOnging", "共有" + pkgOnging.size() + "个:" + StringUtils.join(pkgOnging, ","));
         request.setAttribute("pkgFinished", "共有" + pkgFinished.size() + "个:" + StringUtils.join(pkgFinished, ","));
 
-        request.setAttribute("unstarted", unstarted);
-        request.setAttribute("finished", finished);
-        request.setAttribute("onging", onging);
-
+        request.setAttribute("missed", missedPkg);
         request.setAttribute("currentRun", RoundStatusMonitor.getCurrent().tohumanable());
         return "elpa/build";
     }
@@ -182,7 +162,7 @@ public class BuildController {
         CommonResponse commonResponse = new CommonResponse();
         if (StringUtils.isNotBlank(pkgName)) {
             RecipeDo recipeDo = RecipeParser.parsePkgRecipe(pkgName);
-            pkgFetchService.downloadPackage(pkgName);
+            //pkgFetchService.downloadPackage(pkgName);
             SimpleResult simpleResult = pkgBuildService.buildPackage(pkgName);
             commonResponse.setData(simpleResult);
         }
@@ -192,7 +172,7 @@ public class BuildController {
     @RequestMapping(value = "missed.html")
     public CommonResponse missed() {
         CommonResponse commonResponse = new CommonResponse();
-        List<String> missed = ArchiveContentsGenerator.diff();
+        List<RecipeDo> missed = ArchiveContentsGenerator.diff();
         commonResponse.setData(missed);
         return commonResponse;
     }
