@@ -91,7 +91,10 @@
             dataType: 'json',
             success: function (data) {
                 $('#buildProgress').attr('data-percent', data.percent);
-                $('#buildProgress').progress({percent:data.percent});
+                $('#buildProgress').progress({
+                    percent : data.percent,
+                    precision : 2
+                });
                 $('#buildProgressDesc').html(data.percentDesc);
                 $('#currentRunDiv').html(data.currentRun);
             },
