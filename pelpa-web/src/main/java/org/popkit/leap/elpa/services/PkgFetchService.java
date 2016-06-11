@@ -5,6 +5,7 @@ import org.apache.commons.io.FileUtils;
 import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.entity.RecipeDo;
 import org.popkit.leap.elpa.utils.PelpaUtils;
+import org.popkit.leap.elpa.utils.ToolUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -59,23 +60,8 @@ public class PkgFetchService {
     }
 
     public void deleteEmptyPath(File pkgPathFile) {
-        boolean emptypath;
-
         if (pkgPathFile.exists() && pkgPathFile.isDirectory()) {
-            File[] files = pkgPathFile.listFiles();
-            String[] fileStrings = pkgPathFile.list();
-
-            if (fileStrings == null || fileStrings.length == 0) {
-                emptypath = true;
-            } else {
-                boolean containsFile = false;
-                for (String item : fileStrings){
-                    if (!item.startsWith(".")) {
-                        containsFile = true;
-                    }
-                }
-                emptypath = !containsFile;
-            }
+            boolean emptypath = ToolUtils.isEmptyPath(pkgPathFile);
             if (emptypath) {
                 try {
                     // delete empty path

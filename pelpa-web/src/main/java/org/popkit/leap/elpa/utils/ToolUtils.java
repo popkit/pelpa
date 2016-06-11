@@ -1,5 +1,7 @@
 package org.popkit.leap.elpa.utils;
 
+import java.io.File;
+
 /**
  * Created by Aborn Jiang
  * Mail aborn.jiang@gmail.com
@@ -19,5 +21,33 @@ public class ToolUtils {
         } else {
             return second / (60*60*24) + "day";
         }
+    }
+
+    public static boolean isEmptyPath(String dirStr) {
+        return isEmptyPath(new File(dirStr));
+    }
+
+    public static boolean isEmptyPath(File directory) {
+
+        if (directory.exists() && directory.isDirectory()) {
+
+            boolean emptypath = false;
+            String[] fileStrings = directory.list();
+
+            if (fileStrings == null || fileStrings.length == 0) {
+                emptypath = true;
+            } else {
+                boolean containsFile = false;
+                for (String item : fileStrings){
+                    if (!item.startsWith(".")) {
+                        containsFile = true;
+                    }
+                }
+                emptypath = !containsFile;
+            }
+            return emptypath;
+        }
+
+        return false;
     }
 }

@@ -13,6 +13,7 @@ import org.popkit.leap.elpa.entity.RecipeDo;
 import org.popkit.leap.elpa.services.*;
 import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.popkit.leap.elpa.utils.RecipeParser;
+import org.popkit.leap.elpa.utils.ToolUtils;
 import org.popkit.leap.log.LogScanner;
 import org.popkit.leap.monitor.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -163,7 +164,9 @@ public class BuildController {
         if (StringUtils.isNotBlank(pkgName)) {
             RecipeDo recipeDo = RecipeParser.parsePkgRecipe(pkgName);
             File workingPath = new File(PelpaUtils.getWorkingPath(pkgName));
-            if (workingPath.exists() && workingPath.isDirectory() && "beta".equals(PelpaUtils.getEnv())) {
+            if (workingPath.exists() && workingPath.isDirectory()
+                    && "beta".equals(PelpaUtils.getEnv())
+                    && (!ToolUtils.isEmptyPath(workingPath))) {
             } else {
                 pkgFetchService.downloadPackage(pkgName);
             }
