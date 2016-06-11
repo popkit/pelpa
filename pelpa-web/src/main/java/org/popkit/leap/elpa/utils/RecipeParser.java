@@ -67,6 +67,10 @@ public class RecipeParser {
             String sCurrentLine;
             boolean needContinue = true;
             while ((sCurrentLine = br.readLine()) != null && needContinue) {
+                if (StringUtils.isNotBlank(sCurrentLine) && sCurrentLine.trim().startsWith(";")) {
+                    continue;
+                }
+
                 if (sCurrentLine.contains(";")) {
                     stringBuilder.append(trimComments(sCurrentLine)).append(" ");
                 } else {
