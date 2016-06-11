@@ -10,6 +10,7 @@ import org.popkit.core.entity.SimpleResult;
 import org.popkit.core.utils.ResponseUtils;
 import org.popkit.leap.elpa.entity.ActorStatus;
 import org.popkit.leap.elpa.entity.RecipeDo;
+import org.popkit.leap.elpa.entity.RoundRun;
 import org.popkit.leap.elpa.services.*;
 import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.popkit.leap.elpa.utils.RecipeParser;
@@ -95,9 +96,10 @@ public class BuildController {
         jsonObject.put("percentDesc", RoundStatusMonitor.finishedPercent());
         double finishedPercent = RoundStatusMonitor.finishedPercentValue();
         jsonObject.put("percent", (finishedPercent * 100));
-        jsonObject.put("currentRun", RoundStatusMonitor.getCurrent().tohumanable());
+        RoundRun current = RoundStatusMonitor.getCurrent();
+        jsonObject.put("currentRun", current.tohumanable() + current.toString());
 
-        if (finishedPercent > 0.8) {
+        if (finishedPercent > 0.9 && finishedPercent < 1) {
             List<RecipeDo> missed = ArchiveContentsGenerator.diff();
             List<String> missedList = new ArrayList<String>();
             for (RecipeDo recipeDo : missed) {
