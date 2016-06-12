@@ -4,15 +4,20 @@ cd "$(dirname "$0")"
 cd ..
 git pull
 if [ -d "leap" ]; then
-  cd leap
-  git pull
-  cd ..
-  else
-  git clone https://github.com/popkit/leap.git
+    cd leap
+    git pull
+    cd ..
+else
+    git clone https://github.com/popkit/leap.git
 fi
 
 # clean first
 mvn clean;
+if [ -d "pelpa-web" ]; then
+    cd pelpa-web;
+    mvn clean;
+    cd ..
+fi
 
 # install it
 mvn install;
