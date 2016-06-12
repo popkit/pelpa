@@ -104,7 +104,9 @@
                 });
                 $('#buildProgressDesc').html(data.percentDesc);
                 $('#currentRunDiv').html(data.currentRun);
-                $('#missedHtmlDiv').html(data.missed);
+                if (!data.missed) {
+                    $('#missedHtmlDiv').html(data.missed);
+                }
             },
             error: function (jXHR, textStatus, errorThrown) {
                 //alert(errorThrown);
