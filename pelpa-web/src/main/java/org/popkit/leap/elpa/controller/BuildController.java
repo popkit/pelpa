@@ -100,12 +100,14 @@ public class BuildController {
         RoundRun current = RoundStatusMonitor.getCurrent();
         jsonObject.put("currentRun", current.tohumanable() + current.toString());
 
+        String missedInfo = "";
         if (finishedPercent > 0.9 && finishedPercent < 1) {
             List<RecipeDo> missed = ArchiveContentsGenerator.diff();
             List<String> missedList = convert(missed);
-            jsonObject.put("missed", "Missed:" + missedList.size() + ":"+ StringUtils.join(missedList, ","));
+            missedInfo = "Missed:" + missedList.size() + ":"+ StringUtils.join(missedList, ",");
+            jsonObject.put("missed", missedInfo);
         } else {
-            jsonObject.put("missed", "");
+            jsonObject.put("missed", missedInfo);
         }
 
         ResponseUtils.renderJson(response, jsonObject.toJSONString());
