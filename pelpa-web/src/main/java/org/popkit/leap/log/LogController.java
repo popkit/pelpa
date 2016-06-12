@@ -102,7 +102,7 @@ public class LogController extends BaseController {
             public void run() {
                 generateTodayStaticsJSON();
             }
-        }, delayMinutes.getMinutes(), 5, TimeUnit.MINUTES);   // execute each 5 minutes.
+        }, 14, 15, TimeUnit.MINUTES);   // execute each 15 minutes.
 
         // init executed it and periodic each day executed
         generateLatestMonthStaticsJSON();

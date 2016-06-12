@@ -62,8 +62,6 @@ public class BuildController {
         List<String> pkgFinished = new ArrayList<String>();
         List<String> pkgOnging = new ArrayList<String>();
 
-        List<RecipeDo> missedPkg = ArchiveContentsGenerator.diff();
-
         if (MapUtils.isNotEmpty(actorMap)) {
             for (String pkg : actorMap.keySet()) {
                 EachActor actor = actorMap.get(pkg);
@@ -85,7 +83,10 @@ public class BuildController {
         request.setAttribute("pkgOnging", "共有" + pkgOnging.size() + "个:" + StringUtils.join(pkgOnging, ","));
         request.setAttribute("pkgFinished", "共有" + pkgFinished.size() + "个:" + StringUtils.join(pkgFinished, ","));
 
-        request.setAttribute("missed", missedPkg);
+        List<RecipeDo> missed = ArchiveContentsGenerator.diff();
+        List<String> missedList = convert(missed);
+
+        request.setAttribute("missed", "Missed:" + missedList.size() + ":"+ StringUtils.join(missedList, ","));
         request.setAttribute("currentRun", RoundStatusMonitor.getCurrent().tohumanable());
         return "elpa/build";
     }
@@ -101,16 +102,22 @@ public class BuildController {
 
         if (finishedPercent > 0.9 && finishedPercent < 1) {
             List<RecipeDo> missed = ArchiveContentsGenerator.diff();
-            List<String> missedList = new ArrayList<String>();
-            for (RecipeDo recipeDo : missed) {
-                missedList.add(recipeDo.getPkgName());
-            }
+            List<String> missedList = convert(missed);
             jsonObject.put("missed", "Missed:" + missedList.size() + ":"+ StringUtils.join(missedList, ","));
         } else {
             jsonObject.put("missed", "");
         }
 
         ResponseUtils.renderJson(response, jsonObject.toJSONString());
+    }
+
+    private List<String> convert(List<RecipeDo> recipes) {
+        List<String> result = new ArrayList<String>();
+        for (RecipeDo item : recipes) {
+            result.add(item.getPkgName());
+        }
+
+        return result;
     }
 
     @RequestMapping(value = "d8")
