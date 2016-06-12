@@ -68,7 +68,7 @@ public class RoundSupervisor {
                         if (RoundStatusMonitor.isFinishedThisRun()) {
                             RoundStatusMonitor.okFinished();
                         }
-                        LeapLogger.info("roundId:" + current.getStatus() +
+                        LeapLogger.info("roundId:" + current.getRoundId() + ", status:" + current.getStatus() +
                                 ",完成度:" + RoundStatusMonitor.finishedPercent());
                     } else if (current.isFinished()) {
                         if (current.getEndTime().getTime() + PelpaContents.REST_TIME > new Date().getTime()) {
