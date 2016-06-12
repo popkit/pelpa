@@ -86,7 +86,8 @@ public class BuildController {
         List<RecipeDo> missed = ArchiveContentsGenerator.diff();
         List<String> missedList = convert(missed);
 
-        request.setAttribute("missed", "Missed:" + missedList.size() + ":"+ StringUtils.join(missedList, ","));
+        request.setAttribute("missed", missed);
+        request.setAttribute("pkgMissed","Missed:" + missedList.size() + ":"+ StringUtils.join(missedList, ","));
         request.setAttribute("currentRun", RoundStatusMonitor.getCurrent().tohumanable());
         return "elpa/build";
     }

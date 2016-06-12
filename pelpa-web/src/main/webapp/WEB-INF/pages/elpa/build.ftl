@@ -55,7 +55,7 @@
             missed的包有哪些?
         </div>
         <div class="content">
-            <p id="missedHtmlDiv">${missed}</p>
+            <p id="missedHtmlDiv">${pkgMissed}</p>
         </div>
     </div>
 
