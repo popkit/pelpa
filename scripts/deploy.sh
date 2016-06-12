@@ -14,6 +14,7 @@ fi
 # clean first
 mvn clean;
 if [ -d "pelpa-web" ]; then
+    rm -r pelpa-web/target
     cd pelpa-web;
     mvn clean;
     cd ..
