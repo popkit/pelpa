@@ -63,7 +63,7 @@ public class PelpaUtils {
         String resultContent = null;
         if (originPkgFile != null && originPkgFile.exists() && originPkgFile.isFile()) {
             try {
-                String originContent = FileUtils.readFileToString(originPkgFile);
+                String originContent = RecipeParser.readFileToStringWithoutComments(originPkgFile);
                 String[] originContentArr = originContent.split("\\s+");
                 if (originContentArr.length > 2 && pkgName.equals(PelpaUtils.unwrap(originContentArr[1]))) {
                     String versionOrigin = originContentArr[2];

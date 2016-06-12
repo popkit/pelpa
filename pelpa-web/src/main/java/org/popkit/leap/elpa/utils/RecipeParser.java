@@ -87,7 +87,7 @@ public class RecipeParser {
                 ex.printStackTrace();
             }
         }
-        return stringBuilder.toString();
+        return stringBuilder.toString().trim();
     }
 
     public static RecipeDo parsePkgRecipe(File recipeFile) {

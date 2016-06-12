@@ -162,7 +162,16 @@ public class PkgBuildService {
 
                 FileTarHandler.tar(recipeDo.getPkgName(), recipeDo, elispFileList,
                         lastcommit, archiveVo, repoUrl, pkgInfo);
-                LocalCache.updateArchive(recipeDo.getPkgName(), archiveVo);
+
+                String packagePath = PelpaUtils.getHtmlPath() + "packages/";
+                String version = TimeVersionUtils.toVersionString(lastcommit);
+                File destTar = new File(packagePath + recipeDo.getPkgName() + "-"+ version + ".tar");
+
+                if (destTar.exists() && destTar.isFile()) {
+                    LocalCache.updateArchive(recipeDo.getPkgName(), archiveVo);
+                } else {
+                    LeapLogger.error("generate destTar error! #destTar=" + destTar.getAbsolutePath());
+                }
             }
         } catch (Exception e) {
             LeapLogger.warn("generate tar file failed, pkgName:" + recipeDo.getPkgName(), e);
