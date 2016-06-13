@@ -27,7 +27,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * 2016-05-14:15:45
  */
 public class LocalCache {
-    private static final long UPDATE_RECIPE_TIME = 1000*60*10; // 5 minutes
+
+    private static final long UPDATE_RECIPE_TIME = 1000*60*10; // 10 minutes
+
     private static Date lastUpdateTime;
     private static final ConcurrentHashMap<String, ArchiveVo> ARCHIVE = new ConcurrentHashMap<String, ArchiveVo>();
     private static final ConcurrentHashMap<String, RecipeDo> RECIPES = new ConcurrentHashMap<String, RecipeDo>();
@@ -134,13 +136,13 @@ public class LocalCache {
 
     public static boolean initRecipes() {
         if (lastUpdateTime != null
-                && lastUpdateTime.getTime() + UPDATE_RECIPE_TIME < new Date().getTime()) {
+                && lastUpdateTime.getTime() + UPDATE_RECIPE_TIME > new Date().getTime()) {
             return true;
         }
 
         if (MapUtils.isNotEmpty(RECIPES)) {
-            for (String pkgName : ARCHIVE.keySet()) {
-                ARCHIVE.remove(pkgName);
+            for (String pkgName : RECIPES.keySet()) {
+                RECIPES.remove(pkgName);
             }
         }
 
@@ -150,10 +152,12 @@ public class LocalCache {
                 RECIPES.put(recipeDo.getPkgName(), recipeDo);
             }
             lastUpdateTime = new Date();
-            LeapLogger.info("RECIPES updated. TimeStamp:" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+            LeapLogger.info("RECIPES updated. TimeStamp:" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lastUpdateTime));
         }
         return true;
     }
+
+    // TODO 每次新的build开始,要清空ARCHIVE
 
     public static boolean updateLastCommit(String pkgName, long lastcommit) {
         if (RECIPES.containsKey(pkgName)) {
