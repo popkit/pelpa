@@ -28,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class LocalCache {
 
-    private static final long UPDATE_RECIPE_TIME = 1000*60*10; // 10 minutes
+    private static final long UPDATE_RECIPE_TIME = 1000*60*30; // 30 minutes
 
     private static Date lastUpdateTime;
     private static final ConcurrentHashMap<String, ArchiveVo> ARCHIVE = new ConcurrentHashMap<String, ArchiveVo>();
