@@ -195,8 +195,9 @@ public class PkgBuildService {
         String packagePath = htmlPath + "packages/";
         PackageInfo pkgInfo = getPkgInfo(elispfile, recipeDo.getPkgName());
         String readMeFile = packagePath + recipeDo.getPkgName() + "-readme.txt";
+        File finalPkgFile = null;
         try {
-            File finalPkgFile = new File(packagePath + recipeDo.getPkgName() + "-"+ version + ".el");
+            finalPkgFile = new File(packagePath + recipeDo.getPkgName() + "-"+ version + ".el");
             // if this version package already exists, do not copy it!
             if (!finalPkgFile.exists()) {
                 FileUtils.writeStringToFile(new File(readMeFile), pkgInfo.getReadmeInfo());
@@ -216,7 +217,9 @@ public class PkgBuildService {
             archiveVo.setPropsUrl(GitFetchHandler.GITHUB_HTTPS_ROOT + recipeDo.getRepo());
         }
 
-        LocalCache.updateArchive(recipeDo.getPkgName(), archiveVo);
+        if (finalPkgFile != null && finalPkgFile.exists() && finalPkgFile.isFile()) {
+            LocalCache.updateArchive(recipeDo.getPkgName(), archiveVo);
+        }
     }
 
     public PackageInfo getPkgInfoBasePkgFile(File pkgFile, String pkgName) {

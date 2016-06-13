@@ -134,7 +134,7 @@ public class LocalCache {
     }
 
 
-    public static boolean initRecipes() {
+    public static boolean initLocalCache() {
         if (lastUpdateTime != null
                 && lastUpdateTime.getTime() + UPDATE_RECIPE_TIME > new Date().getTime()) {
             return true;
@@ -143,6 +143,12 @@ public class LocalCache {
         if (MapUtils.isNotEmpty(RECIPES)) {
             for (String pkgName : RECIPES.keySet()) {
                 RECIPES.remove(pkgName);
+            }
+        }
+
+        if (MapUtils.isNotEmpty(ARCHIVE)) {
+            for (String item : ARCHIVE.keySet()) {
+                ARCHIVE.remove(item);
             }
         }
 

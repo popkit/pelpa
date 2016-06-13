@@ -52,7 +52,7 @@ public class RoundSupervisor {
 
                     RoundRun current = RoundStatusMonitor.getCurrent();
                     if (current.isReady()) {
-                        if (LocalCache.initRecipes()) {
+                        if (LocalCache.initLocalCache()) {
                             List<RecipeDo> recipeDoList = LocalCache.getAllRecipeList();
                             LeapLogger.info("recipeDoList.size=" + recipeDoList.size());
                             RoundStatusMonitor.init(current.getRoundId(), recipeDoList);
