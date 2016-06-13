@@ -99,7 +99,7 @@ public class BuildController {
         double finishedPercent = RoundStatusMonitor.finishedPercentValue();
         jsonObject.put("percent", (finishedPercent * 100));
         RoundRun current = RoundStatusMonitor.getCurrent();
-        jsonObject.put("currentRun", current.tohumanable() + current.toString());
+        jsonObject.put("currentRun", current.tohumanable() + " @"+ Integer.toHexString(current.hashCode()));
 
         String missedInfo;
         if (finishedPercent > 0.9 && finishedPercent < 1) {
