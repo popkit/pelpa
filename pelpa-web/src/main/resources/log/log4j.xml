@@ -11,10 +11,7 @@
     </appender>
 
     <appender name="leapLogger" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="append" value="false" />
-        <param name="maxFileSize" value="100MB" />
-        <param name="maxBackupIndex" value="7" />
-        <param name="file" value="/data/applogs/pelpa-web/leap.log" />
+        <param name="File" value="/data/applogs/pelpa-web/leap.log" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern"
                    value="[pelpa]%d %-5p [%c] %m%n" />
