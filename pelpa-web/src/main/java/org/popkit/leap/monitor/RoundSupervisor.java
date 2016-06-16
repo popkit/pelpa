@@ -18,9 +18,9 @@ import javax.annotation.PostConstruct;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by Aborn Jiang
@@ -31,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 public class RoundSupervisor {
     private static final String BUILD_STATUS_FILE = "build-status.json";
     private static final String DISK_STATUS_FILE = "disk_status.json";
+    private static AtomicBoolean initStatus = new AtomicBoolean(false);
 
     @Autowired
     private FetcherExcutorPool fetcherExcutorPool;
@@ -40,7 +41,13 @@ public class RoundSupervisor {
 
     @PostConstruct
     public void init() {
-        LeapLogger.info("@PostConstruct" + Integer.toHexString(this.hashCode()));
+        if (initStatus.compareAndSet(false, true)) {
+            LeapLogger.info("@PostConstruct" + Integer.toHexString(this.hashCode()));
+            run();
+        }
+    }
+
+    private void run() {
         new Thread(new Runnable() {
             public void run() {
                 while (true) {
