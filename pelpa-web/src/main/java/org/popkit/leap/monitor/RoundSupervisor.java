@@ -40,6 +40,7 @@ public class RoundSupervisor {
 
     @PostConstruct
     public void init() {
+        LeapLogger.info("@PostConstruct" + Integer.toHexString(this.hashCode()));
         new Thread(new Runnable() {
             public void run() {
                 while (true) {
