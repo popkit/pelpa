@@ -22,6 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 2016-05-14:21:53
  */
 public class RoundStatusMonitor {
+    private static final long AT_LEAST_TIME = 1000*60*60*2; // 2 hours
 
     private RoundStatusMonitor() {}
 
@@ -29,14 +30,19 @@ public class RoundStatusMonitor {
 
     private static ConcurrentHashMap<String, EachActor> actors = new ConcurrentHashMap<String, EachActor>();
 
-    public static synchronized void nextRoundRun() {
+    public static synchronized RoundRun nextRoundRun() {
+        if (current.getStartTime() != null
+                && (new Date().getTime() - current.getStartTime().getTime() < AT_LEAST_TIME)) {
+            return current;
+        }
+
         current.increase();
         // last round elapsed time
         current.updateLastRoundTimeUsed();
         current.setEndTime(null);
         current.setStartTime(new Date());
         current.setStatus(RoundStatus.READY);
-
+        return current;
     }
 
     public static synchronized boolean startRun() {
@@ -55,7 +61,7 @@ public class RoundStatusMonitor {
         return true;
     }
 
-    public static void init(int roundid, List<RecipeDo> recipeDoList) {
+    public static synchronized void init(int roundid, List<RecipeDo> recipeDoList) {
         if (MapUtils.isNotEmpty(actors)) {
             for (String pkg : actors.keySet()) {
                 actors.remove(pkg);
@@ -72,7 +78,7 @@ public class RoundStatusMonitor {
         }
     }
 
-    public static RoundRun getCurrent() {
+    public static synchronized RoundRun getCurrent() {
         return current;
     }
 

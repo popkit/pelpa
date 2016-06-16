@@ -54,7 +54,8 @@ public class RoundSupervisor {
                     if (current.isReady()) {
                         if (LocalCache.initLocalCache()) {
                             List<RecipeDo> recipeDoList = LocalCache.getAllRecipeList();
-                            LeapLogger.info("recipeDoList.size=" + recipeDoList.size());
+                            LeapLogger.info("isReady roundId:" + current.getRoundId() + "recipeDoList.size=" + recipeDoList.size()
+                                    + " @" + Integer.toHexString(current.hashCode()));
                             RoundStatusMonitor.init(current.getRoundId(), recipeDoList);
                             if (RoundStatusMonitor.startRun()
                                     && PelpaUtils.getEnv() == EnvEnum.PRODUCTION) {
@@ -69,25 +70,35 @@ public class RoundSupervisor {
                             RoundStatusMonitor.okFinished();
                         }
                         LeapLogger.info("roundId:" + current.getRoundId() + ", status:" + current.getStatus() +
-                                ",完成度:" + RoundStatusMonitor.finishedPercent());
+                                ",完成度:" + RoundStatusMonitor.finishedPercent() + " @" + Integer.toHexString(current.hashCode()));
+                        try {
+                            TimeUnit.SECONDS.sleep(30);
+                        } catch (InterruptedException e) {
+                            //
+                        }
                     } else if (current.isFinished()) {
                         if (current.getEndTime().getTime() + PelpaContents.REST_TIME > new Date().getTime()) {
                             long next = ((current.getEndTime().getTime() + PelpaContents.REST_TIME) - new Date().getTime())/1000;
                             LeapLogger.info("roundId:" + current.getRoundId()
                                     + "已经完成, 正在进行休息中! 离下次开始还有:" + next + "s!"
-                                    + " ##" + current.toString());
+                                    + " ##" + current.toString() + " @" + Integer.toHexString(current.hashCode()));
+                            try {
+                                TimeUnit.MINUTES.sleep(5);
+                            } catch (InterruptedException e) {
+                                //
+                            }
                             continue;
                         } else {
-                            RoundStatusMonitor.nextRoundRun();
+                            RoundRun nexRun = RoundStatusMonitor.nextRoundRun();
                             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm.SS");
-                            LeapLogger.info("新一轮构建开始!开始时间:" + simpleDateFormat.format(current.getStartTime())
-                                    + ", roundId:" + current.getRoundId());
+                            LeapLogger.info("新一轮构建开始!开始时间:" + simpleDateFormat.format(nexRun.getStartTime())
+                                    + ", roundId:" + nexRun.getRoundId() + " @" + Integer.toHexString(nexRun.hashCode()));
                         }
                     }
 
                     updateDiskStatus();
                     updateBuildStatus();
-                    LeapLogger.info(current.tohumanable() + current.toString());
+                    //LeapLogger.info(current.tohumanable() + current.toString());
                 }
             }
         }).start();
