@@ -30,7 +30,7 @@
         <appender-ref ref="rootAppender" />
     </logger>
 
-    <logger name="leap-biz-log">
+    <logger name="leap-biz-log" additivity="false">
         <level value="INFO"/>
         <appender-ref ref="leapLogger"/>
     </logger>
