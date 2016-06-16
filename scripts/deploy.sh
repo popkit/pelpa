@@ -6,6 +6,7 @@ git pull
 if [ -d "leap" ]; then
     cd leap
     git pull
+    rm -r target
     cd ..
 else
     git clone https://github.com/popkit/leap.git
