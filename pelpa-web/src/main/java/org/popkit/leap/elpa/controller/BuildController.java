@@ -11,12 +11,15 @@ import org.popkit.core.utils.ResponseUtils;
 import org.popkit.leap.elpa.entity.ActorStatus;
 import org.popkit.leap.elpa.entity.RecipeDo;
 import org.popkit.leap.elpa.entity.RoundRun;
-import org.popkit.leap.elpa.services.*;
+import org.popkit.leap.elpa.services.ArchiveContentsGenerator;
+import org.popkit.leap.elpa.services.LocalCache;
+import org.popkit.leap.elpa.services.PkgBuildService;
+import org.popkit.leap.elpa.services.PkgFetchService;
 import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.popkit.leap.elpa.utils.RecipeParser;
 import org.popkit.leap.elpa.utils.ToolUtils;
-import org.popkit.leap.log.LogScanner;
-import org.popkit.leap.monitor.*;
+import org.popkit.leap.monitor.EachActor;
+import org.popkit.leap.monitor.RoundStatusMonitor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,18 +45,6 @@ public class BuildController {
 
     @Autowired
     private PkgBuildService pkgBuildService;
-
-    @Autowired
-    private RoundSupervisor roundSupervisor;
-
-    @Autowired
-    private LogScanner logScanner;
-
-    @Autowired
-    private FetcherExcutorPool fetcherExcutorPool;
-
-    @Autowired
-    private BuildingExcutorPool buildingExcutorPool;
 
     @RequestMapping(value = "index.html")
     public String index(HttpServletRequest request) {
