@@ -185,7 +185,7 @@ public class PkgBuildService {
         if (recipeDo.getLastCommit() > 0) {
             lastcommit = recipeDo.getLastCommit();
         } else {
-            GitFetchHandler.getLastCommiterTime(recipeDo.getPkgName());
+            lastcommit = GitFetchHandler.getLastCommiterTime(recipeDo.getPkgName());
             lastcommit = lastcommit == 0 ? elispfile.lastModified() : lastcommit;
         }
 
