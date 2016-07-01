@@ -45,6 +45,10 @@ public class PelpaUtils {
         return LeapConfigLoader.get(WORKING_DIR_KEY) + pkgName;
     }
 
+    public static String getWorkingRootDir() {
+        return LeapConfigLoader.get(WORKING_DIR_KEY);
+    }
+
     public static String getPkgElispFileName(String pkgName) {
         return getWorkingPath(pkgName) +  "/" + pkgName + "-pkg.el";
     }

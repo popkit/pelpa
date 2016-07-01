@@ -38,6 +38,20 @@ public class RecipeDo {
         return FetcherEnum.getFetcher(this.fetcher);
     }
 
+    @Override
+    public String toString() {
+        return "RecipeDo{" +
+                "pkgName='" + pkgName + '\'' +
+                ", fetcher='" + fetcher + '\'' +
+                ", repo='" + repo + '\'' +
+                ", dls=" + dls +
+                ", versionRegexp='" + versionRegexp + '\'' +
+                ", files='" + files + '\'' +
+                ", url='" + url + '\'' +
+                ", lastCommit=" + lastCommit +
+                '}';
+    }
+
     public List<String> getFileList() {
         if (StringUtils.isNotBlank(this.files)) {
             if (this.files.contains("(") || this.files.contains(")")) {
