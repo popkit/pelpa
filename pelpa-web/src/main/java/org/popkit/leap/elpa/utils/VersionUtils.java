@@ -23,7 +23,7 @@ public class VersionUtils {
 
     public static List<Integer> toArr(String version) {
         List<Integer> list = new ArrayList<Integer>();
-        String[] versionList = version.split(".");
+        String[] versionList = version.split("\\.");
         for (String item : versionList) {
             list.add(Integer.parseInt(item));
         }
