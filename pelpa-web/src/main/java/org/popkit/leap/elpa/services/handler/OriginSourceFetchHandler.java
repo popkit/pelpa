@@ -7,6 +7,7 @@ import org.popkit.leap.elpa.services.FetchHandler;
 import org.popkit.leap.elpa.utils.FetchRemoteFileUtils;
 import org.popkit.leap.elpa.utils.OriginSourceElpaUtils;
 import org.popkit.leap.elpa.utils.PelpaUtils;
+import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
@@ -16,6 +17,7 @@ import java.util.Map;
  * Date  : 07-01-2016
  * Time  : 12:25 PM
  */
+@Service
 public class OriginSourceFetchHandler implements FetchHandler {
 
     public boolean validate(RecipeDo recipeDo, Map<String, Object> extra) {
