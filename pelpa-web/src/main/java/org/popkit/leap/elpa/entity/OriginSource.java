@@ -1,5 +1,6 @@
 package org.popkit.leap.elpa.entity;
 
+import org.apache.commons.lang3.StringUtils;
 import org.popkit.leap.elpa.utils.PelpaUtils;
 
 /**
@@ -22,7 +23,12 @@ public class OriginSource {
     }
 
     public String getLocalFilePath() {
-        return PelpaUtils.getWorkingRootDir() + "archive-contents-" + this.name;
+        String root = PelpaUtils.getWorkingRootDir();
+        if (StringUtils.isBlank(root)) {
+            return "/Users/aborn/github/pelpa/working/" + this.name;
+        } else {
+            return root + "archive-contents-" + this.name;
+        }
     }
 
     public String getName() {

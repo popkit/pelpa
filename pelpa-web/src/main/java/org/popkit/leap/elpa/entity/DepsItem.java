@@ -79,6 +79,13 @@ public class DepsItem {
         this.versions = versions;
     }
 
+    @Override
+    public String toString() {
+        return "DepsItem{" +
+                "name='" + name + '\'' +
+                ", versions=" + versions +
+                '}';
+    }
 
     public static void main(String[] args) {
         String testA = "((emacs \"24.4\") (elscreen \"1.4.6\") (multi-term \"1.3\"))";

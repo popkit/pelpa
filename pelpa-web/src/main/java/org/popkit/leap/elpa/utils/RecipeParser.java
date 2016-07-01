@@ -191,20 +191,20 @@ public class RecipeParser {
                 : StringUtils.EMPTY;
     }
 
-    public static String extraPairContent(String origin) {
+    public static String extraPairContent(String origin, char open, char close) {
         boolean gotfirstLeft = false;
         int leftIndex = -1;
         int rightIndex = -1;
         int match = 0;
         for (int i=0; i<origin.length(); i++) {
-            if (origin.charAt(i) == '(') {
+            if (origin.charAt(i) == open) {
                 if (!gotfirstLeft) {
                     gotfirstLeft = true;
                     leftIndex = i;
                 } else {
                     match ++;
                 }
-            } else if (origin.charAt(i) == ')') {
+            } else if (origin.charAt(i) == close) {
                 if (match == 0) {
                     rightIndex = i;
                     break;
@@ -219,6 +219,9 @@ public class RecipeParser {
         }
 
         return StringUtils.EMPTY;
+    }
+    public static String extraPairContent(String origin) {
+       return extraPairContent(origin, '(', ')');
     }
 
     public static int findAnotherBracket(int leftBracketPos, String content) {

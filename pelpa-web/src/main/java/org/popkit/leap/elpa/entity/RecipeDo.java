@@ -30,6 +30,12 @@ public class RecipeDo {
 
     private long lastCommit;
 
+    private String shortInfo;
+
+    private String type;
+
+    private List<DepsItem> depsItemList;
+
     public String getPkgName() {
         return pkgName;
     }
@@ -49,6 +55,9 @@ public class RecipeDo {
                 ", files='" + files + '\'' +
                 ", url='" + url + '\'' +
                 ", lastCommit=" + lastCommit +
+                ", shortInfo='" + shortInfo + '\'' +
+                ", type='" + type + '\'' +
+                ", depsItemList=" + depsItemList +
                 '}';
     }
 
@@ -145,5 +154,29 @@ public class RecipeDo {
 
     public void setDls(int dls) {
         this.dls = dls;
+    }
+
+    public List<DepsItem> getDepsItemList() {
+        return depsItemList;
+    }
+
+    public void setDepsItemList(List<DepsItem> depsItemList) {
+        this.depsItemList = depsItemList;
+    }
+
+    public String getShortInfo() {
+        return shortInfo;
+    }
+
+    public void setShortInfo(String shortInfo) {
+        this.shortInfo = shortInfo;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }
