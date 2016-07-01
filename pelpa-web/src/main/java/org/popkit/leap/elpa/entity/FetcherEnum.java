@@ -12,7 +12,9 @@ public enum FetcherEnum {
     WIKI("wiki"),
     GITLAB("gitlab"),
     BITBUCKET("bitbucket"),
-    UNKNOWN("null")
+    UNKNOWN("null"),
+    GNU("gnu"),      // GNU官方源
+    ORG("org"),      // ORG官方源
     ;
     private String fetcher;
 
