@@ -182,7 +182,7 @@ public class PkgBuildService {
     }
 
     public void buildOriginSourcePackage(RecipeDo recipeDo) {
-        String workingFileName = PelpaUtils.getWorkingPath(recipeDo.getPkgName()) + recipeDo.getPkgName() + "." + recipeDo.getType();
+        String workingFileName = PelpaUtils.getWorkingPath(recipeDo.getPkgName()) + recipeDo.getPkgName() + "." + recipeDo.getFileSuffix();
         ArchiveVo archiveVo = new ArchiveVo();
         archiveVo.setDesc(recipeDo.getShortInfo());
         archiveVo.setVer(VersionUtils.toArr(recipeDo.getVersionRegexp()));
@@ -192,7 +192,7 @@ public class PkgBuildService {
 
         String version = recipeDo.getVersionRegexp();
         String packagePath = PelpaUtils.getHtmlPath() + "packages/";
-        File finalPkgFile = new File(packagePath + recipeDo.getPkgName() + "-"+ version + ".el");
+        File finalPkgFile = new File(packagePath + recipeDo.getPkgName() + "-"+ version + "." + recipeDo.getFileSuffix());
         File elispfile = new File(workingFileName);
 
         if (!finalPkgFile.exists()) {

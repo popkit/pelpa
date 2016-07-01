@@ -183,6 +183,14 @@ public class RecipeDo {
         this.type = type;
     }
 
+    public String getFileSuffix() {
+        if ("single".equals(this.getType())) {
+            return "el";
+        } else {
+            return "tar";
+        }
+    }
+
     public List<String> getKeywords() {
         return keywords;
     }

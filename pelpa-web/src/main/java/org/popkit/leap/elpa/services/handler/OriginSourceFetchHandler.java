@@ -33,13 +33,13 @@ public class OriginSourceFetchHandler implements FetchHandler {
         OriginSource originSource = OriginSourceElpaUtils.getOriginSource(recipeDo.getFetcher());
         if (originSource == null) { return; }
         String workingPath = PelpaUtils.getWorkingPath(recipeDo.getPkgName());
-        FetchRemoteFileUtils.downloadFile(getRemoteUrl(recipeDo, originSource), workingPath + recipeDo.getPkgName() + "." + recipeDo.getType());
+        FetchRemoteFileUtils.downloadFile(getRemoteUrl(recipeDo, originSource), workingPath + recipeDo.getPkgName() + "." + recipeDo.getFileSuffix());
     }
 
 
     private String getRemoteUrl(RecipeDo recipeDo, OriginSource originSource) {
         String root = originSource.getRoot();
-        String fileName = recipeDo.getPkgName() + "-" + recipeDo.getVersionRegexp() + "." + recipeDo.getType();
+        String fileName = recipeDo.getPkgName() + "-" + recipeDo.getVersionRegexp() + "." + recipeDo.getFileSuffix();
         return root + fileName;
     }
 
