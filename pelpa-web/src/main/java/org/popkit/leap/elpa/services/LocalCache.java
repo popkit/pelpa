@@ -162,7 +162,9 @@ public class LocalCache {
             List<RecipeDo> recipeDosSource = OriginSourceElpaUtils.collectionRecipes();
             if (CollectionUtils.isNotEmpty(recipeDosSource)) {
                 for (RecipeDo recipeDo : recipeDosSource) {
-                    RECIPES.put(recipeDo.getPkgName(), recipeDo);
+                    if (!pkg.contains(recipeDo.getPkgName())) {
+                        RECIPES.put(recipeDo.getPkgName(), recipeDo);
+                    }
                 }
             }
             lastUpdateTime = new Date();
