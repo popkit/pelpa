@@ -7,7 +7,7 @@ import org.popkit.leap.elpa.entity.*;
 import org.popkit.leap.elpa.services.handler.GitFetchHandler;
 import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.popkit.leap.elpa.utils.RecipeParser;
-import org.popkit.leap.elpa.utils.TimeVersionUtils;
+import org.popkit.leap.elpa.utils.VersionUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -44,7 +44,9 @@ public class PkgBuildService {
 
             if (workingPathFile.exists() && workingPathFile.isDirectory()) {
                 File singleFile = getSingleFile(recipeDo, workingPath);
-                if (singleFile != null) {
+                if (FetcherEnum.isOriginSource(recipeDo.getFetcher())) {
+                    buildOriginSourcePackage(recipeDo);
+                } else if (singleFile != null) {
                     LeapLogger.info("#single#" + recipeDo.getPkgName() + "  file:" + singleFile.getAbsolutePath());
                     buildSingleFilePackage(recipeDo, singleFile);
                 } else {
@@ -150,7 +152,7 @@ public class PkgBuildService {
                 }
 
                 lastcommit = lastcommit == 0 ? pkgFile.lastModified() : lastcommit;
-                archiveVo.setVer(TimeVersionUtils.toArr(lastcommit));
+                archiveVo.setVer(VersionUtils.toArr(lastcommit));
                 archiveVo.setType(TYPE_TAR);
                 archiveVo.setKeywords(pkgInfo.getKeywords());
                 archiveVo.setDeps(pkgInfo.getDeps());
@@ -164,7 +166,7 @@ public class PkgBuildService {
                         lastcommit, archiveVo, repoUrl, pkgInfo);
 
                 String packagePath = PelpaUtils.getHtmlPath() + "packages/";
-                String version = TimeVersionUtils.toVersionString(lastcommit);
+                String version = VersionUtils.toVersionString(lastcommit);
                 File destTar = new File(packagePath + recipeDo.getPkgName() + "-"+ version + ".tar");
 
                 if (destTar.exists() && destTar.isFile()) {
@@ -179,6 +181,33 @@ public class PkgBuildService {
 
     }
 
+    public void buildOriginSourcePackage(RecipeDo recipeDo) {
+        String workingFileName = PelpaUtils.getWorkingPath(recipeDo.getPkgName()) + recipeDo.getPkgName() + "." + recipeDo.getType();
+        ArchiveVo archiveVo = new ArchiveVo();
+        archiveVo.setDesc(recipeDo.getShortInfo());
+        archiveVo.setVer(VersionUtils.toArr(recipeDo.getVersionRegexp()));
+        archiveVo.setType(recipeDo.getType());
+        archiveVo.setKeywords(recipeDo.getKeywords());
+        archiveVo.setDeps(recipeDo.getDepsItemList());
+
+        String version = recipeDo.getVersionRegexp();
+        String packagePath = PelpaUtils.getHtmlPath() + "packages/";
+        File finalPkgFile = new File(packagePath + recipeDo.getPkgName() + "-"+ version + ".el");
+        File elispfile = new File(workingFileName);
+
+        if (!finalPkgFile.exists()) {
+            try {
+                FileUtils.copyFile(elispfile, finalPkgFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (finalPkgFile != null && finalPkgFile.exists() && finalPkgFile.isFile()) {
+            LocalCache.updateArchive(recipeDo.getPkgName(), archiveVo);
+        }
+    }
+
     public void buildSingleFilePackage(RecipeDo recipeDo, File elispfile) {
         String htmlPath = PelpaUtils.getHtmlPath();
         long lastcommit = 0;
@@ -189,7 +218,7 @@ public class PkgBuildService {
             lastcommit = lastcommit == 0 ? elispfile.lastModified() : lastcommit;
         }
 
-        String version = TimeVersionUtils.toVersionString(lastcommit);
+        String version = VersionUtils.toVersionString(lastcommit);
         LeapLogger.info("pkg:" + recipeDo.getPkgName() + ", 版本号:" + version);
 
         String packagePath = htmlPath + "packages/";
@@ -209,7 +238,7 @@ public class PkgBuildService {
 
         ArchiveVo archiveVo = new ArchiveVo();
         archiveVo.setDesc(pkgInfo.getShortInfo());
-        archiveVo.setVer(TimeVersionUtils.toArr(lastcommit));
+        archiveVo.setVer(VersionUtils.toArr(lastcommit));
         archiveVo.setType(TYPE_SINGLE);
         archiveVo.setKeywords(pkgInfo.getKeywords());
         archiveVo.setDeps(pkgInfo.getDeps());

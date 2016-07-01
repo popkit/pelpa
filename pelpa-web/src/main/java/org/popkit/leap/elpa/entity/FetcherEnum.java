@@ -32,6 +32,11 @@ public enum FetcherEnum {
         return UNKNOWN;
     }
 
+    public static boolean isOriginSource(String fetcher) {
+        FetcherEnum fetcherEnum = getFetcher(fetcher);
+        return fetcherEnum == GNU || fetcherEnum == ORG;
+    }
+
     public String getFetcher() {
         return fetcher;
     }

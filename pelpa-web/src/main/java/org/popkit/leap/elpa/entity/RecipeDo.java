@@ -36,6 +36,8 @@ public class RecipeDo {
 
     private List<DepsItem> depsItemList;
 
+    private List<String> keywords;
+
     public String getPkgName() {
         return pkgName;
     }
@@ -58,6 +60,7 @@ public class RecipeDo {
                 ", shortInfo='" + shortInfo + '\'' +
                 ", type='" + type + '\'' +
                 ", depsItemList=" + depsItemList +
+                ", keywords=" + keywords +
                 '}';
     }
 
@@ -178,5 +181,13 @@ public class RecipeDo {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public List<String> getKeywords() {
+        return keywords;
+    }
+
+    public void setKeywords(List<String> keywords) {
+        this.keywords = keywords;
     }
 }

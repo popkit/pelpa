@@ -9,7 +9,7 @@ import org.popkit.leap.elpa.entity.ArchiveVo;
 import org.popkit.leap.elpa.entity.PackageInfo;
 import org.popkit.leap.elpa.entity.RecipeDo;
 import org.popkit.leap.elpa.utils.PelpaUtils;
-import org.popkit.leap.elpa.utils.TimeVersionUtils;
+import org.popkit.leap.elpa.utils.VersionUtils;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -72,7 +72,7 @@ public class FileTarHandler {
         String pkgWorkingPath = PelpaUtils.getWorkingPath(pkgName);
         File originPkgFile = new File(pkgWorkingPath + File.separator + pkgName + "-pkg.el");
 
-        String version = TimeVersionUtils.toVersionString(lastcommit);
+        String version = VersionUtils.toVersionString(lastcommit);
         String destTar = packagePath + recipeDo.getPkgName() + "-"+ version + ".tar";
         // if final package tar file exists, do not need to build it!
         File desTarFile = new File(destTar);
@@ -93,7 +93,7 @@ public class FileTarHandler {
 
         File destPkgDescFile = new File(tmpTarWorking + File.separator + recipeDo.getPkgName() + "-pkg.el");
         boolean pkgStatus = PelpaUtils.generatePkgElispFileContent(recipeDo.getPkgName(),
-                TimeVersionUtils.toVersionString(lastcommit), archiveVo.getDesc(),
+                VersionUtils.toVersionString(lastcommit), archiveVo.getDesc(),
                 archiveVo.getProps().getKeywords(),
                 pkgInfo.getDeps(), repoUrl, destPkgDescFile, originPkgFile);
 

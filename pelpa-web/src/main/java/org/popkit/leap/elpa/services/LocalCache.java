@@ -10,15 +10,13 @@ import org.popkit.leap.elpa.entity.ArchiveVo;
 import org.popkit.leap.elpa.entity.PelpaContents;
 import org.popkit.leap.elpa.entity.RecipeDo;
 import org.popkit.leap.elpa.entity.RecipeVo;
+import org.popkit.leap.elpa.utils.OriginSourceElpaUtils;
 import org.popkit.leap.elpa.utils.PelpaUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -155,8 +153,17 @@ public class LocalCache {
 
         List<RecipeDo> recipeDos = PelpaUtils.asRecipeArch(PelpaUtils.getRecipeFileList());
         if (CollectionUtils.isNotEmpty(recipeDos)) {
+            Set<String> pkg = new HashSet<String>();
             for (RecipeDo recipeDo : recipeDos) {
                 RECIPES.put(recipeDo.getPkgName(), recipeDo);
+                pkg.add(recipeDo.getPkgName());
+            }
+
+            List<RecipeDo> recipeDosSource = OriginSourceElpaUtils.collectionRecipes();
+            if (CollectionUtils.isNotEmpty(recipeDosSource)) {
+                for (RecipeDo recipeDo : recipeDosSource) {
+                    RECIPES.put(recipeDo.getPkgName(), recipeDo);
+                }
             }
             lastUpdateTime = new Date();
             LeapLogger.info("RECIPES updated. TimeStamp:" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lastUpdateTime));

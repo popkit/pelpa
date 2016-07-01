@@ -9,6 +9,7 @@ import org.popkit.leap.elpa.entity.RecipeDo;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -31,6 +32,16 @@ public class OriginSourceElpaUtils {
         result.add(new OriginSource("gnu", "http://elpa.gnu.org/packages/"));
         result.add(new OriginSource("org", "http://orgmode.org/elpa/"));
         return result;
+    }
+
+    public static OriginSource getOriginSource(String name) {
+        for (OriginSource item : getSourceElpaList()) {
+            if (item.getName().equals(name)) {
+                return item;
+            }
+        }
+
+        return null;
     }
 
     public static List<RecipeDo> collectionRecipes() {
@@ -128,6 +139,10 @@ public class OriginSourceElpaUtils {
                                 if (start > 0 && end > 0) {
                                     result.setUrl(unwrapOtherItem.substring(start + 1, end));
                                 }
+                            } else if (unwrapOtherItem.contains(":keywords")) {
+                                List<String> keywods = Arrays.asList(unwrapOtherItem.replace(":keywords", "")
+                                        .replace("\"", "").split("\\s+"));
+                                result.setKeywords(keywods);
                             }
                         }
                     }
