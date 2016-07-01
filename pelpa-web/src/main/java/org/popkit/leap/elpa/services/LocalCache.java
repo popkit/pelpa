@@ -174,7 +174,6 @@ public class LocalCache {
     }
 
     // TODO 每次新的build开始,要清空ARCHIVE
-
     public static boolean updateLastCommit(String pkgName, long lastcommit) {
         if (RECIPES.containsKey(pkgName)) {
             RECIPES.get(pkgName).setLastCommit(lastcommit);

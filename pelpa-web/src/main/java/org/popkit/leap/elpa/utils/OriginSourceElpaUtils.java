@@ -53,7 +53,7 @@ public class OriginSourceElpaUtils {
                     FetchRemoteFileUtils.downloadFile(originSource.getRomoteArchiveContents(), originSource.getLocalFilePath());
                 }
                 if (!acLocalFile.exists()) { continue; }
-                
+
                 String acOriginValue = FileUtils.readFileToString(acLocalFile);
                 recipeDos.addAll(parse2list(acOriginValue.trim(), originSource));
             }
@@ -97,6 +97,7 @@ public class OriginSourceElpaUtils {
         return result;
     }
 
+    // 对每个pkg进行处理
     public static RecipeDo parseEachRecipeList(String origin) {
         RecipeDo result = new RecipeDo();
         String unwrapResult = RecipeParser.extraPairContent(origin);
@@ -159,16 +160,15 @@ public class OriginSourceElpaUtils {
             if (versionOk && depsOk) {
                 if (attributes.charAt(i) == '"' && !shortInfoOK) {
                     int rightPair = attributes.indexOf("tar");
-                    if (rightPair > 0) {
-                        result.setType("tar");
-                    } else {
+                    result.setType(rightPair > 0 ? "tar" : "single");
+                    if (rightPair < 0) {
                         rightPair = attributes.indexOf("single");
-                        if (rightPair > 0) {
-                            result.setType("single");
-                            String content = attributes.substring(i, rightPair).replace("\"", "").trim();
-                            result.setShortInfo(content);
-                            shortInfoOK = true;
-                        }
+                    }
+
+                    if (rightPair > 0) {
+                        String content = attributes.substring(i, rightPair).replace("\"", "").trim();
+                        result.setShortInfo(content);
+                        shortInfoOK = true;
                     }
                 }
             }
