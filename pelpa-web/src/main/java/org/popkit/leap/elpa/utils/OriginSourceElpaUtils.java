@@ -49,9 +49,8 @@ public class OriginSourceElpaUtils {
         try {
             for (OriginSource originSource : getSourceElpaList()) {
                 File acLocalFile = new File(originSource.getLocalFilePath());
-                if (!acLocalFile.exists()) {   // TODO: 上线时这行删除
-                    FetchRemoteFileUtils.downloadFile(originSource.getRomoteArchiveContents(), originSource.getLocalFilePath());
-                }
+                // beta 环境不需要!
+                FetchRemoteFileUtils.downloadFile(originSource.getRomoteArchiveContents(), originSource.getLocalFilePath());
                 if (!acLocalFile.exists()) { continue; }
 
                 String acOriginValue = FileUtils.readFileToString(acLocalFile);
@@ -83,6 +82,13 @@ public class OriginSourceElpaUtils {
         return result;
     }
 
+    /**
+     * 将 (emacs "24.4") (elscreen "1.4.6") (multi-term "1.3")
+     * 字符串,转成[emacs "24.4", elscreen "1.4.6", multi-term "1.3"]
+     * 这样的列表
+     * @param unwrapResult
+     * @return
+     */
     public static List<String> parseStringAsArrayList(String unwrapResult) {
         List<String> result = new ArrayList<String>();
         for (int i=0; i<unwrapResult.length(); i++) {

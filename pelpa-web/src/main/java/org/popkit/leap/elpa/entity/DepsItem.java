@@ -2,9 +2,9 @@ package org.popkit.leap.elpa.entity;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.popkit.core.logger.LeapLogger;
+import org.popkit.leap.elpa.utils.OriginSourceElpaUtils;
+import org.popkit.leap.elpa.utils.RecipeParser;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,36 +28,8 @@ public class DepsItem {
      * @return
      */
     public static List<DepsItem> fromString(String str) {
-        String pureStr = str.trim().replaceAll("\\(", " ")
-                .replaceAll("\\)", " ").replaceAll("\"", " ");
-        String[] pureStrArr = pureStr.trim().split("\\s+");
-        List<DepsItem> depsItems = new ArrayList<DepsItem>();
-        try {
-            for (int i = 0; i < pureStrArr.length; i++) {
-                if (i%2 == 0) {
-                    DepsItem depsItem = new DepsItem();
-                    depsItem.setName(pureStrArr[i]);
-                    depsItem.setVersions(toVersionList(pureStrArr[i+1]));
-                    depsItems.add(depsItem);
-                }
-            }
-        } catch (Exception e) {
-            LeapLogger.warn("error parser DepsItem form string:" + str, e);
-        }
-        return depsItems;
-    }
-
-    // TODO 可能不是数字
-    private static List<Integer> toVersionList(String ver) {
-        List<Integer> result = new ArrayList<Integer>();
-        for (String item : ver.split("\\.")) {
-            //try {
-                result.add(Integer.parseInt(item));
-            //} catch (Exception e) {
-            //    LeapLogger.warn("error in Integer.parseInt(" + item + ")", e);
-            //}
-        }
-        return result;
+        String unWrapContent = RecipeParser.extraPairContent(str).trim();
+        return OriginSourceElpaUtils.parseDepsItemList(unWrapContent);
     }
 
     public void setName(String name) {
