@@ -33,7 +33,7 @@ public class OriginSourceFetchHandler implements FetchHandler {
         OriginSource originSource = OriginSourceElpaUtils.getOriginSource(recipeDo.getFetcher());
         if (originSource == null) { return; }
         String workingPath = PelpaUtils.getWorkingPath(recipeDo.getPkgName());
-        FetchRemoteFileUtils.downloadFile(getRemoteUrl(recipeDo, originSource), workingPath + recipeDo.getPkgName() + "." + recipeDo.getFileSuffix());
+        FetchRemoteFileUtils.downloadFile(getRemoteUrl(recipeDo, originSource), workingPath + "/"+ recipeDo.getPkgName() + "." + recipeDo.getFileSuffix());
     }
 
 
