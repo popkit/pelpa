@@ -40,10 +40,10 @@ public class DepsItem {
             String[] nameVersionArr = unwrapEach.split("\\s+");
             depsItem.setName(nameVersionArr[0].trim());
             String version = PelpaUtils.unwrap(nameVersionArr[1]);
-            if (version.contains("alpha")) {
-                version = version.replace("alpha", ".-3.");
+            String nonNumeric = version.replaceAll("[\\d.]", "");
+            if (StringUtils.isNotBlank(nonNumeric)) {
+                version = version.replace(nonNumeric, ".-3.");
             }
-
             List<Integer> versionList = new ArrayList<Integer>();
             for (String eachVersion : version.split("\\.")) {
                 versionList.add(Integer.parseInt(eachVersion));
