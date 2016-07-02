@@ -182,6 +182,13 @@ public class OriginSourceElpaUtils {
         return result;
     }
 
+    /**
+     * 将原始的这种依赖:
+     * (emacs (24 1)) (cl-lib (0 5))
+     * 转成DepsItem的List
+     * @param origin
+     * @return
+     */
     public static List<DepsItem> parseDepsItemList(String origin) {
         List<DepsItem> depsItemList = new ArrayList<DepsItem>();
         List<String> depsStringList = parseStringAsArrayList(origin);
