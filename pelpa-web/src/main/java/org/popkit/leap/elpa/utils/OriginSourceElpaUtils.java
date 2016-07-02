@@ -96,7 +96,7 @@ public class OriginSourceElpaUtils {
                 int rightPair = RecipeParser.findAnotherBracket(i, unwrapResult);
                 if (rightPair > 0) {
                     result.add(unwrapResult.substring(i,rightPair+1));
-                    i = rightPair + 2;
+                    i = rightPair + 1;
                 }
             }
         }

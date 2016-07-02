@@ -3,8 +3,10 @@ package org.popkit.leap.elpa.entity;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.popkit.leap.elpa.utils.OriginSourceElpaUtils;
+import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.popkit.leap.elpa.utils.RecipeParser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,7 +31,23 @@ public class DepsItem {
      */
     public static List<DepsItem> fromString(String str) {
         String unWrapContent = RecipeParser.extraPairContent(str).trim();
-        return OriginSourceElpaUtils.parseDepsItemList(unWrapContent);
+        List<String> depsStringList = OriginSourceElpaUtils.parseStringAsArrayList(unWrapContent);
+
+        List<DepsItem> depsItemList = new ArrayList<DepsItem>();
+        for (String each : depsStringList) {
+            DepsItem depsItem = new DepsItem();
+            String unwrapEach = RecipeParser.extraPairContent(each);
+            String[] nameVersionArr = unwrapEach.split("\\s+");
+            depsItem.setName(nameVersionArr[0].trim());
+            String version = PelpaUtils.unwrap(nameVersionArr[1]);
+            List<Integer> versionList = new ArrayList<Integer>();
+            for (String eachVersion : version.split("\\.")) {
+                versionList.add(Integer.parseInt(eachVersion));
+            }
+            depsItem.setVersions(versionList);
+            depsItemList.add(depsItem);
+        }
+        return depsItemList;
     }
 
     public void setName(String name) {
