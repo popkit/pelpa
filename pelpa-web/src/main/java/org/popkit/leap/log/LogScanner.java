@@ -114,7 +114,7 @@ public class LogScanner {
                 }
             }
         } catch (IOException e) {
-            LeapLogger.error("error", e);
+            LeapLogger.error("error readLogFromStartTime", e);
             e.printStackTrace();
         } finally {
             try {
@@ -151,7 +151,7 @@ public class LogScanner {
                 }
             }
         } catch (IOException e) {
-            LeapLogger.error("error", e);
+            LeapLogger.error("error in readLogScanFile", e);
             e.printStackTrace();
         } finally {
             try {

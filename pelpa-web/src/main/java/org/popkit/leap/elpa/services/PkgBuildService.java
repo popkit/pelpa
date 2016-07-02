@@ -372,7 +372,7 @@ public class PkgBuildService {
                 i ++;
             }
         } catch (IOException e) {
-            LeapLogger.error("error", e);
+            LeapLogger.error("error in getPkgInfo:" + pkgName, e);
             e.printStackTrace();
         } finally {
             try {

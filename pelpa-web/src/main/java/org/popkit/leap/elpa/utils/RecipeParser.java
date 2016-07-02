@@ -78,7 +78,7 @@ public class RecipeParser {
                 }
             }
         } catch (IOException e) {
-            LeapLogger.error("error", e);
+            LeapLogger.error("error readFileToStringWithoutComments", e);
             e.printStackTrace();
         } finally {
             try {

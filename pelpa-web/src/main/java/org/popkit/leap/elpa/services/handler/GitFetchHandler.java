@@ -135,14 +135,14 @@ public class GitFetchHandler implements FetchHandler {
             String workingPath = PelpaUtils.getWorkingPath(pkgName);
             Repository repository = FileRepositoryBuilder.create(new File(workingPath + "/.git"));
             RevWalk revWalk = new RevWalk( repository );
-            revWalk.markStart( revWalk.parseCommit(repository.resolve(Constants.HEAD)));
+            revWalk.markStart(revWalk.parseCommit(repository.resolve(Constants.HEAD)));
             // revWalk.sort(RevSort.COMMIT_TIME_DESC );
             // revWalk.sort(RevSort.REVERSE, false);
             RevCommit commit = revWalk.next();
             revWalk.dispose();
             return commit.getCommitterIdent().getWhen().getTime();
         } catch (Exception e) {
-            LeapLogger.warn("error", e);
+            LeapLogger.warn("error in getLastCommiterTime", e);
         }
         return 0;
     }
