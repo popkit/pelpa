@@ -51,6 +51,13 @@ public class LogScanner {
                 new Runnable() {
                     public void run() {
                         while (true) {
+                            try {
+                                TimeUnit.MINUTES.sleep(15);    // generate it every 15 minutes
+                            } catch (InterruptedException e) {
+                                LeapLogger.warn("write log download_counts thread InterruptedException!");
+                                e.printStackTrace();
+                            }
+
                             String log = toJSONString();
                             if (StringUtils.isNotBlank(log)) {
                                 File logFile = new File(PelpaUtils.getHtmlPath() + "download_counts.json");
@@ -62,13 +69,6 @@ public class LogScanner {
                                 }
                             } else {
                                 LeapLogger.warn("write log to download_counts failed because it empty!");
-                            }
-
-                            try {
-                                TimeUnit.MINUTES.sleep(15);    // generate it every 15 minutes
-                            } catch (InterruptedException e) {
-                                LeapLogger.warn("write log download_counts thread InterruptedException!");
-                                e.printStackTrace();
                             }
                         }
                     }
@@ -131,7 +131,12 @@ public class LogScanner {
 
         BufferedReader br = null;
         try {
-            br = new BufferedReader(new FileReader(getLogFileName()));
+            String logfileName = getLogFileName();
+            if (StringUtils.isBlank(logfileName)) {
+                return result;
+            }
+
+            br = new BufferedReader(new FileReader(logfileName));
             String sCurrentLine;
             boolean needContinue = true;
             while ((sCurrentLine = br.readLine()) != null && needContinue) {
