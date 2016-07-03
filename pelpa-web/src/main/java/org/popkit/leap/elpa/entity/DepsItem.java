@@ -38,9 +38,14 @@ public class DepsItem {
             DepsItem depsItem = new DepsItem();
             String unwrapEach = RecipeParser.extraPairContent(each);
             String[] nameVersionArr = unwrapEach.split("\\s+");
+
+            if (nameVersionArr.length < 2) {
+                continue;
+            }
             depsItem.setName(nameVersionArr[0].trim());
             String version = PelpaUtils.unwrap(nameVersionArr[1]);
             String nonNumeric = version.replaceAll("[\\d.]", "");
+
             if (StringUtils.isNotBlank(nonNumeric)) {
                 version = version.replace(nonNumeric, ".-3.");
             }
