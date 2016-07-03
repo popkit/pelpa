@@ -70,11 +70,21 @@ public class PelpaUtils {
                 String originContent = RecipeParser.readFileToStringWithoutComments(originPkgFile);
                 String[] originContentArr = originContent.split("\\s+");
                 String originPkgName = PelpaUtils.unwrap(originContentArr[1]);
-                if (originContentArr.length > 2 && pkgName.equalsIgnoreCase(originPkgName)) {
+                if (originContentArr.length < 2) {
+                    return false;
+                }
+                if (pkgName.equalsIgnoreCase(originPkgName)) {
                     String versionOrigin = originContentArr[2];
                     resultContent = originContent.replace(versionOrigin, PelpaUtils.wrap(version));
                     if (!pkgName.equals(originPkgName)) {
                         resultContent = resultContent.replace(originPkgName, pkgName);
+                    }
+                } else {
+                    List<String> unwrapOriginContentList = splitSmartSpace(originContent);
+                    if (unwrapOriginContentList.size() > 2) {
+                        String orgPkgName = PelpaUtils.unwrap(unwrapOriginContentList.get(1));
+                        String versionOrigin = PelpaUtils.unwrap(unwrapOriginContentList.get(2));
+                        resultContent = originContent.replace(orgPkgName, pkgName).replace(versionOrigin, version);
                     }
                 }
             } catch (Exception e) {
@@ -103,6 +113,41 @@ public class PelpaUtils {
         }
 
         return true;
+    }
+
+    /**
+     * 将这种转成List<String>
+     * (define-package "Chinese Wubi Input Method" "0.1"   "Enable Wubi Input Method in Emacs.")
+      */
+    private static List<String> splitSmartSpace(String origin) {
+        List<String> result = new ArrayList<String>();
+        String unwrapResult = origin;
+        if (origin.trim().startsWith("(")) {
+            unwrapResult = RecipeParser.extraPairContent(origin);
+        }
+        int start = 0;
+        int record = 0;
+        for (int i=0; i<unwrapResult.length(); i++) {
+            if (unwrapResult.charAt(i) == ' ') {
+                if (record == 0 && i>0) {
+                    String current = unwrapResult.substring(start, i).trim();
+                    start = i;
+                    if (StringUtils.isNotBlank(current)) {
+                        result.add(current);
+                    }
+                    continue;
+                }
+            }
+
+            if (unwrapResult.charAt(i) == '"') {
+                if (record == 0) {
+                    record ++;
+                } else {
+                    record --;
+                }
+            }
+        }
+        return result;
     }
 
     private static String deps(List<DepsItem> depsItems) {
