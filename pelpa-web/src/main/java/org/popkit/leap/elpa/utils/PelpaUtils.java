@@ -69,9 +69,13 @@ public class PelpaUtils {
             try {
                 String originContent = RecipeParser.readFileToStringWithoutComments(originPkgFile);
                 String[] originContentArr = originContent.split("\\s+");
-                if (originContentArr.length > 2 && pkgName.equals(PelpaUtils.unwrap(originContentArr[1]))) {
+                String originPkgName = PelpaUtils.unwrap(originContentArr[1]);
+                if (originContentArr.length > 2 && pkgName.equalsIgnoreCase(originPkgName)) {
                     String versionOrigin = originContentArr[2];
                     resultContent = originContent.replace(versionOrigin, PelpaUtils.wrap(version));
+                    if (!pkgName.equals(originPkgName)) {
+                        resultContent = resultContent.replace(originPkgName, pkgName);
+                    }
                 }
             } catch (Exception e) {
                 //
