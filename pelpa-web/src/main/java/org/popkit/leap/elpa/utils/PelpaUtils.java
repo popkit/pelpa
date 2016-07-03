@@ -80,11 +80,12 @@ public class PelpaUtils {
                         resultContent = resultContent.replace(originPkgName, pkgName);
                     }
                 } else {
+                    // chinese-wbim
                     List<String> unwrapOriginContentList = splitSmartSpace(originContent);
                     if (unwrapOriginContentList.size() > 2) {
                         String orgPkgName = PelpaUtils.unwrap(unwrapOriginContentList.get(1));
-                        String versionOrigin = PelpaUtils.unwrap(unwrapOriginContentList.get(2));
-                        resultContent = originContent.replace(orgPkgName, pkgName).replace(versionOrigin, version);
+                        String versionOrigin = unwrapOriginContentList.get(2);
+                        resultContent = originContent.replace(orgPkgName, pkgName).replace(versionOrigin, PelpaUtils.wrap(version));
                     }
                 }
             } catch (Exception e) {
