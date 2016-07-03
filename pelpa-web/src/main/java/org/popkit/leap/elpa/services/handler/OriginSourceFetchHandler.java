@@ -22,12 +22,7 @@ import java.util.Map;
 public class OriginSourceFetchHandler implements FetchHandler {
 
     public boolean validate(RecipeDo recipeDo, Map<String, Object> extra) {
-        if (recipeDo.getFetcherEnum() == FetcherEnum.GNU
-                || recipeDo.getFetcherEnum() == FetcherEnum.ORG) {
-            return true;
-        }
-
-        return false;
+        return FetcherEnum.isOriginSource(recipeDo.getFetcher());
     }
 
     public void execute(RecipeDo recipeDo, Map<String, Object> extra) {

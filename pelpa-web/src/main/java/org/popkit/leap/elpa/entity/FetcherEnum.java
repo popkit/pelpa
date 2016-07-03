@@ -15,6 +15,7 @@ public enum FetcherEnum {
     UNKNOWN("null"),
     GNU("gnu"),      // GNU官方源
     ORG("org"),      // ORG官方源
+    MELPASTABLE("melpa-stable")  // melpa stable
     ;
     private String fetcher;
 
@@ -34,7 +35,7 @@ public enum FetcherEnum {
 
     public static boolean isOriginSource(String fetcher) {
         FetcherEnum fetcherEnum = getFetcher(fetcher);
-        return fetcherEnum == GNU || fetcherEnum == ORG;
+        return fetcherEnum == GNU || fetcherEnum == ORG || fetcherEnum == MELPASTABLE;
     }
 
     public String getFetcher() {

@@ -31,6 +31,7 @@ public class OriginSourceElpaUtils {
         List<OriginSource> result = new ArrayList<OriginSource>();
         result.add(new OriginSource("gnu", "http://elpa.gnu.org/packages/"));
         result.add(new OriginSource("org", "http://orgmode.org/elpa/"));
+        result.add(new OriginSource("melpa-stable", "http://stable.melpa.org/packages/"));
         return result;
     }
 
