@@ -50,7 +50,7 @@ public class OriginSourceElpaUtils {
             for (OriginSource originSource : getSourceElpaList()) {
                 File acLocalFile = new File(originSource.getLocalFilePath());
                 // beta 环境不需要!
-                FetchRemoteFileUtils.downloadFile(originSource.getRomoteArchiveContents(), originSource.getLocalFilePath());
+                FetchRemoteFileUtils.downloadRemoteFile(originSource.getRomoteArchiveContents(), originSource.getLocalFilePath());
                 if (!acLocalFile.exists()) { continue; }
 
                 String acOriginValue = FileUtils.readFileToString(acLocalFile);

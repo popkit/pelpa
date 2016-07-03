@@ -190,9 +190,8 @@ public class PkgBuildService {
         archiveVo.setKeywords(recipeDo.getKeywords());
         archiveVo.setDeps(recipeDo.getDepsItemList());
 
-        String version = recipeDo.getVersionRegexp();
         String packagePath = PelpaUtils.getHtmlPath() + "packages/";
-        File finalPkgFile = new File(packagePath + recipeDo.getPkgName() + "-"+ version + "." + recipeDo.getFileSuffix());
+        File finalPkgFile = PelpaUtils.getOriginSourceFinalPkgFile(recipeDo);
         File elispfile = new File(workingFileName);
         String readMeFile = packagePath + recipeDo.getPkgName() + "-readme.txt";
         PackageInfo pkgInfo = getPkgInfo(elispfile, recipeDo.getPkgName());

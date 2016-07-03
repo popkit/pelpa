@@ -309,4 +309,11 @@ public class PelpaUtils {
 
         return elispFileList;
     }
+
+    public static File getOriginSourceFinalPkgFile(RecipeDo recipeDo) {
+        String packagePath = PelpaUtils.getHtmlPath() + "packages/";
+        File finalPkgFile = new File(packagePath + recipeDo.getPkgName()
+                + "-"+ recipeDo.getVersionRegexp() + "." + recipeDo.getFileSuffix());
+        return finalPkgFile;
+    }
 }

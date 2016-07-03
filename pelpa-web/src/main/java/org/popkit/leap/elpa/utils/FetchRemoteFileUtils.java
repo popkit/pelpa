@@ -11,8 +11,6 @@ import org.apache.http.util.EntityUtils;
 import org.popkit.core.logger.LeapLogger;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -26,7 +24,6 @@ public class FetchRemoteFileUtils {
 
     public static void main(String[] args) {
     }
-
 
     public static String getRemoteWikiUrl(String pkgName) {
         return "https://www.emacswiki.org/emacs/download/" + pkgName + ".el";
@@ -81,7 +78,8 @@ public class FetchRemoteFileUtils {
     }
 
     public static String getCurlCommand(String pkgName, String localFullPathName) {
-        String curlCommand = "curl -o " + localFullPathName + " https://www.emacswiki.org/emacs/download/" + pkgName + ".el";
+        String curlCommand = "curl -o " + localFullPathName
+                + " https://www.emacswiki.org/emacs/download/" + pkgName + ".el";
         return curlCommand;
     }
 
@@ -118,7 +116,7 @@ public class FetchRemoteFileUtils {
     }
 
     public static boolean createDirectoryBaseFileName(String path) {
-        if(StringUtils.isNoneBlank(path) && path.contains(File.separator)) {
+        if(StringUtils.isNotBlank(path) && path.contains(File.separator)) {
             String filePath = path.substring(0, path.lastIndexOf(File.separator));
             return createDirectory(filePath);
         } else {
@@ -140,7 +138,9 @@ public class FetchRemoteFileUtils {
         int connectTimeout = 10000; // 链接超时
 
         // 设置请求参数
-        RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(socketTimeout).setConnectTimeout(connectTimeout).build();
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setSocketTimeout(socketTimeout)
+                .setConnectTimeout(connectTimeout).build();
         HttpGet httpGet = new HttpGet(remoteFilePath);
         httpGet.setConfig(requestConfig);
 
@@ -151,7 +151,6 @@ public class FetchRemoteFileUtils {
 
         try {
             CloseableHttpResponse response = httpclient.execute(httpGet);
-            LeapLogger.info("#getJSON#" + response.getStatusLine().getStatusCode());
             if (response.getStatusLine().getStatusCode() == 200) {
                 HttpEntity responseEntity = response.getEntity();
                 bis = new BufferedInputStream(responseEntity.getContent());
@@ -168,7 +167,7 @@ public class FetchRemoteFileUtils {
                 return false;
             }
         } catch (Exception e) {
-            LeapLogger.warn("#getJSON# exception" + remoteFilePath);
+            LeapLogger.warn("downloadRemoteFile exception" + remoteFilePath);
         } finally {
             try {
                 if (bis != null){
@@ -183,58 +182,5 @@ public class FetchRemoteFileUtils {
             }
         }
         return false;
-    }
-
-    public static boolean downloadFile(String remoteFilePath, String localFilePath) {
-        URL urlfile = null;
-        HttpURLConnection httpUrl = null;
-        BufferedInputStream bis = null;
-        BufferedOutputStream bos = null;
-        File f = new File(localFilePath);
-        if(!createDirectoryBaseFileName(localFilePath)) {
-            return false;
-        } else {
-            boolean b;
-            try {
-                urlfile = new URL(remoteFilePath);
-                httpUrl = (HttpURLConnection)urlfile.openConnection();
-                httpUrl.setConnectTimeout(5000);
-
-
-                httpUrl.connect();
-                bis = new BufferedInputStream(httpUrl.getInputStream());
-                bos = new BufferedOutputStream(new FileOutputStream(f));
-                short e = 2048;
-                byte[] b1 = new byte[e];
-
-                int e2;
-                while((e2 = bis.read(b1)) != -1) {
-                    bos.write(b1, 0, e2);
-                }
-
-                bos.flush();
-                bis.close();
-                httpUrl.disconnect();
-                boolean e1 = f.exists();
-                return e1;
-            } catch (Exception var19) {
-                LeapLogger.warn("## download remote file" + remoteFilePath + " to " + localFilePath + "failed. ");
-                b = false;
-            } finally {
-                try {
-                    if (bis != null) {
-                        bis.close();
-                    }
-                    if (bos != null) {
-                        bos.close();
-                    }
-                } catch (IOException var18) {
-                    var18.printStackTrace();
-                }
-
-            }
-
-            return b;
-        }
     }
 }

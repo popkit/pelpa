@@ -9,6 +9,7 @@ import org.popkit.leap.elpa.utils.OriginSourceElpaUtils;
 import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.Map;
 
 /**
@@ -33,7 +34,10 @@ public class OriginSourceFetchHandler implements FetchHandler {
         OriginSource originSource = OriginSourceElpaUtils.getOriginSource(recipeDo.getFetcher());
         if (originSource == null) { return; }
         String workingPath = PelpaUtils.getWorkingPath(recipeDo.getPkgName());
-        FetchRemoteFileUtils.downloadFile(getRemoteUrl(recipeDo, originSource), workingPath + "/"+ recipeDo.getPkgName() + "." + recipeDo.getFileSuffix());
+        File finalPkgFile = PelpaUtils.getOriginSourceFinalPkgFile(recipeDo);
+        if (!finalPkgFile.exists()) {
+            FetchRemoteFileUtils.downloadRemoteFile(getRemoteUrl(recipeDo, originSource), workingPath + "/" + recipeDo.getPkgName() + "." + recipeDo.getFileSuffix());
+        }
     }
 
 

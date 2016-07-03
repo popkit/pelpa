@@ -26,7 +26,7 @@ import java.io.InputStreamReader;
 public class HttpProxyService {
 
     public boolean downloadGistFile(String url, String workingPath) {
-        return FetchRemoteFileUtils.downloadFile(url, workingPath);
+        return FetchRemoteFileUtils.downloadRemoteFile(url, workingPath);
     }
 
     public String getJSON(String url) throws IOException {
