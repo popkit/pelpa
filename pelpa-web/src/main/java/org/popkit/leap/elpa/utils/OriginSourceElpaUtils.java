@@ -8,8 +8,10 @@ import org.popkit.leap.elpa.entity.OriginSource;
 import org.popkit.leap.elpa.entity.RecipeDo;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -48,9 +50,19 @@ public class OriginSourceElpaUtils {
     public static List<RecipeDo> collectionRecipes() {
         List<RecipeDo> recipeDos = new ArrayList<RecipeDo>();
         try {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm");
             for (OriginSource originSource : getSourceElpaList()) {
-                File acLocalFile = new File(originSource.getLocalFilePath());
-                FetchRemoteFileUtils.downloadRemoteFile(originSource.getRomoteArchiveContents(), originSource.getLocalFilePath());
+                String acLocalFileName = originSource.getLocalFilePath();
+                String acTempFileName = acLocalFileName + simpleDateFormat.format(new Date());
+                FetchRemoteFileUtils.downloadRemoteFile(originSource.getRomoteArchiveContents(), acTempFileName);
+
+                File acTempFile = new File(acTempFileName);
+                File acLocalFile = new File(acLocalFileName);
+                if (acTempFile.exists()) {
+                    FileUtils.copyFile(acTempFile, acLocalFile);
+                    acTempFile.delete();
+                }
+
                 if (!acLocalFile.exists()) { continue; }
                 String acOriginValue = FileUtils.readFileToString(acLocalFile);
                 recipeDos.addAll(parse2list(acOriginValue.trim(), originSource));
