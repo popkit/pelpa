@@ -11,6 +11,8 @@ import org.joda.time.format.DateTimeFormatter;
 import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.services.LocalCache;
 import org.popkit.leap.elpa.utils.PelpaUtils;
+import org.popkit.leap.log.entity.DownloadCount;
+import org.popkit.leap.monitor.utils.BadgeUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -58,11 +60,14 @@ public class LogScanner {
                                 e.printStackTrace();
                             }
 
-                            String log = toJSONString();
+                            DownloadCount downloadCount = toJSONString();
+                            String log = downloadCount.getJson();
                             if (StringUtils.isNotBlank(log)) {
                                 File logFile = new File(PelpaUtils.getHtmlPath() + "download_counts.json");
+                                File downloadBadge = new File(PelpaUtils.getHtmlPath() + "download_counts.svg");
                                 try {
                                     FileUtils.writeStringToFile(logFile, log);
+                                    FileUtils.writeStringToFile(downloadBadge, BadgeUtils.getDownloadCount(downloadCount.getTotal()));
                                     LeapLogger.info("write log to file: " + logFile.getAbsolutePath() + " success!");
                                 } catch (IOException ie) {
                                     LeapLogger.warn("write log to file: " + logFile.getAbsolutePath() + " failed!");
@@ -76,17 +81,23 @@ public class LogScanner {
         ).start();
     }
 
-    public String toJSONString() {
+    public DownloadCount toJSONString() {
+        DownloadCount downloadCount = new DownloadCount();
         Map<String, EachLogItem> logItemMap = readLogScanFile();
         JSONObject jsonObject = new JSONObject();
+        int total = 0;
         if (MapUtils.isNotEmpty(logItemMap)) {
             for (String item : logItemMap.keySet()) {
-                jsonObject.put(item, logItemMap.get(item).getCount());
-                LocalCache.updateDls(item, logItemMap.get(item).getCount());
+                int currentCount = logItemMap.get(item).getCount();
+                total += currentCount;
+                jsonObject.put(item, currentCount);
+                LocalCache.updateDls(item, currentCount);
             }
         }
 
-        return jsonObject.toJSONString();
+        downloadCount.setJson(jsonObject.toJSONString());
+        downloadCount.setTotal(total);
+        return downloadCount;
     }
 
     public List<EachLogItem> readLogFromStartTime(DateTime startTime) {

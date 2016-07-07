@@ -6,8 +6,15 @@ package org.popkit.leap.elpa.entity;
  * 2016-05-14:21:21
  */
 public enum RoundStatus {
-    READY,
-    RUNNING,
-    REST,
-    FINISHED,
+    READY("ready"),
+    RUNNING("building"),
+    REST("finished"),
+    FINISHED("finished"),
+    ;
+
+    private String value;
+
+    private RoundStatus(String value) {
+        this.value = value;
+    }
 }

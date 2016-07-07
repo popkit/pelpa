@@ -2,6 +2,7 @@ package org.popkit.leap.monitor;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.io.FileUtils;
 import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.entity.ActorStatus;
 import org.popkit.leap.elpa.entity.RecipeDo;
@@ -9,7 +10,11 @@ import org.popkit.leap.elpa.entity.RoundRun;
 import org.popkit.leap.elpa.entity.RoundStatus;
 import org.popkit.leap.elpa.services.ArchiveContentsGenerator;
 import org.popkit.leap.elpa.services.LocalCache;
+import org.popkit.leap.elpa.utils.PelpaUtils;
+import org.popkit.leap.monitor.utils.BadgeUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class RoundStatusMonitor {
     private static final long AT_LEAST_TIME = 1000*60*60*2; // 2 hours
+    private static final String LAST_UPDATE_TIME_BADGE = "last_update.svg";
 
     private RoundStatusMonitor() {}
 
@@ -57,6 +63,13 @@ public class RoundStatusMonitor {
             ArchiveContentsGenerator.updateAC();
             LocalCache.writeArchiveJSON();
             LocalCache.writeRecipesJson();
+
+            try {
+                File lastUpdateBadge = new File(PelpaUtils.getHtmlPath() + LAST_UPDATE_TIME_BADGE);
+                FileUtils.writeStringToFile(lastUpdateBadge, BadgeUtils.getLastUpdateTime(current.getEndTime()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return true;
     }

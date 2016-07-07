@@ -10,6 +10,7 @@ import org.popkit.leap.elpa.services.LocalCache;
 import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.popkit.leap.monitor.entity.BuildStatus;
 import org.popkit.leap.monitor.entity.DiskStatus;
+import org.popkit.leap.monitor.utils.BadgeUtils;
 import org.popkit.leap.monitor.utils.DiskUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class RoundSupervisor {
     private static final String BUILD_STATUS_FILE = "build-status.json";
     private static final String DISK_STATUS_FILE = "disk_status.json";
+    private static final String BUILD_STATUS_FILE_BADGE = "build-status.svg";
     private static AtomicBoolean initStatus = new AtomicBoolean(false);
 
     @Autowired
@@ -117,9 +119,11 @@ public class RoundSupervisor {
         BuildStatus buildStatus = new BuildStatus(RoundStatusMonitor.getCurrent());
         String htmlPath = PelpaUtils.getHtmlPath();
         File file = new File(htmlPath + BUILD_STATUS_FILE);
+        File statusBadge = new File(htmlPath + BUILD_STATUS_FILE_BADGE);
 
         try {
             FileUtils.writeStringToFile(file, buildStatus.toJSONString());
+            FileUtils.writeStringToFile(statusBadge, BadgeUtils.getCurrentStatus(RoundStatusMonitor.getCurrent()));
         } catch (Exception e) {
             LeapLogger.warn("error in updateBuildStatus!");
         }
