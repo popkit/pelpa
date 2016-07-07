@@ -73,10 +73,10 @@ public class BadgeUtils {
 
     public static String getCurrentStatus(RoundRun roundRun) {
         RoundStatus roundStatus = roundRun.getStatus();
-        int time = roundRun.getRoundId();
         if (roundStatus == RoundStatus.RUNNING) {
             return "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"108\" height=\"20\"><linearGradient id=\"b\" x2=\"0\" y2=\"100%\"><stop offset=\"0\" stop-color=\"#bbb\" stop-opacity=\".1\"/><stop offset=\"1\" stop-opacity=\".1\"/></linearGradient><mask id=\"a\"><rect width=\"108\" height=\"20\" rx=\"3\" fill=\"#fff\"/></mask><g mask=\"url(#a)\"><path fill=\"#555\" d=\"M0 0h55v20H0z\"/><path fill=\"#9f9f9f\" d=\"M55 0h53v20H55z\"/><path fill=\"url(#b)\" d=\"M0 0h108v20H0z\"/></g><g fill=\"#fff\" text-anchor=\"middle\" font-family=\"DejaVu Sans,Verdana,Geneva,sans-serif\" font-size=\"11\"><text x=\"27.5\" y=\"15\" fill=\"#010101\" fill-opacity=\".3\">当前状态</text><text x=\"27.5\" y=\"14\">当前状态</text><text x=\"80.5\" y=\"15\" fill=\"#010101\" fill-opacity=\".3\">building</text><text x=\"80.5\" y=\"14\">building</text></g></svg>\n";
         } else {
+            int time = roundRun.getRoundId() - 1;
             if (time < 10) {
                 return "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"126\" height=\"20\"><linearGradient id=\"b\" x2=\"0\" " +
                         "y2=\"100%\"><stop offset=\"0\" stop-color=\"#bbb\" stop-opacity=\".1\"/><stop offset=\"1\" " +
