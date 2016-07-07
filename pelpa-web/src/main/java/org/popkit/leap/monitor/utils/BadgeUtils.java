@@ -41,7 +41,8 @@ public class BadgeUtils {
                     "d=\"M69 0h49v20H69z\"/><path fill=\"url(#b)\" d=\"M0 0h118v20H0z\"/></g><g fill=\"#fff\" text-anchor=\"middle\" " +
                     "font-family=\"DejaVu Sans,Verdana,Geneva,sans-serif\" font-size=\"11\"><text x=\"34.5\" y=\"15\" fill=\"#010101\"" +
                     " fill-opacity=\".3\">downloads</text><text x=\"34.5\" y=\"14\">downloads</text><text x=\"92.5\" " +
-                    "y=\"15\" fill=\"#010101\" fill-opacity=\".3\">" + countString + "</text><text x=\"92.5\" y=\"14\">12,345</text></g></svg>";
+                    "y=\"15\" fill=\"#010101\" fill-opacity=\".3\">" + countString + "</text><text x=\"92.5\"" +
+                    " y=\"14\">" + countString + "</text></g></svg>";
         } else {
             return "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"124\" height=\"20\"><linearGradient id=\"b\" " +
                     "x2=\"0\" y2=\"100%\"><stop offset=\"0\" stop-color=\"#bbb\" stop-opacity=\".1\"/><stop offset=\"1\" " +
@@ -50,7 +51,8 @@ public class BadgeUtils {
                     "d=\"M69 0h55v20H69z\"/><path fill=\"url(#b)\" d=\"M0 0h124v20H0z\"/></g><g fill=\"#fff\" text-anchor=\"middle\" " +
                     "font-family=\"DejaVu Sans,Verdana,Geneva,sans-serif\" font-size=\"11\"><text x=\"34.5\" y=\"15\" fill=\"#010101\" " +
                     "fill-opacity=\".3\">downloads</text><text x=\"34.5\" y=\"14\">downloads</text><text x=\"95.5\" y=\"15\"" +
-                    " fill=\"#010101\" fill-opacity=\".3\">" + countString + "</text><text x=\"95.5\" y=\"14\">312,345</text></g></svg>";
+                    " fill=\"#010101\" fill-opacity=\".3\">" + countString + "</text><text x=\"95.5\"" +
+                    " y=\"14\">" + countString + "</text></g></svg>";
         }
     }
 
@@ -68,7 +70,8 @@ public class BadgeUtils {
                 "font-family=\"DejaVu Sans,Verdana,Geneva,sans-serif\" font-size=\"11\"><text x=\"32.5\" y=\"15\" fill=\"#010101\" " +
                 "fill-opacity=\".3\">最近更新于</text><text x=\"32.5\" " +
                 "y=\"14\">最近更新于</text><text x=\"119.5\" y=\"15\" fill=\"#010101\" " +
-                "fill-opacity=\".3\">" + time + "</text><text x=\"119.5\" y=\"14\">2016.07.07 09:13</text></g></svg>\n";
+                "fill-opacity=\".3\">" + time + "</text><text x=\"119.5\" y=\"14\">" +
+                time + "</text></g></svg>\n";
     }
 
     public static String getCurrentStatus(RoundRun roundRun) {
@@ -76,7 +79,7 @@ public class BadgeUtils {
         if (roundStatus == RoundStatus.RUNNING) {
             return "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"108\" height=\"20\"><linearGradient id=\"b\" x2=\"0\" y2=\"100%\"><stop offset=\"0\" stop-color=\"#bbb\" stop-opacity=\".1\"/><stop offset=\"1\" stop-opacity=\".1\"/></linearGradient><mask id=\"a\"><rect width=\"108\" height=\"20\" rx=\"3\" fill=\"#fff\"/></mask><g mask=\"url(#a)\"><path fill=\"#555\" d=\"M0 0h55v20H0z\"/><path fill=\"#9f9f9f\" d=\"M55 0h53v20H55z\"/><path fill=\"url(#b)\" d=\"M0 0h108v20H0z\"/></g><g fill=\"#fff\" text-anchor=\"middle\" font-family=\"DejaVu Sans,Verdana,Geneva,sans-serif\" font-size=\"11\"><text x=\"27.5\" y=\"15\" fill=\"#010101\" fill-opacity=\".3\">当前状态</text><text x=\"27.5\" y=\"14\">当前状态</text><text x=\"80.5\" y=\"15\" fill=\"#010101\" fill-opacity=\".3\">building</text><text x=\"80.5\" y=\"14\">building</text></g></svg>\n";
         } else {
-            int time = roundRun.getRoundId() - 1;
+            int time = roundRun.getRoundId();
             if (time < 10) {
                 return "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"126\" height=\"20\"><linearGradient id=\"b\" x2=\"0\" " +
                         "y2=\"100%\"><stop offset=\"0\" stop-color=\"#bbb\" stop-opacity=\".1\"/><stop offset=\"1\" " +
@@ -86,7 +89,8 @@ public class BadgeUtils {
                         "text-anchor=\"middle\" font-family=\"DejaVu Sans,Verdana,Geneva,sans-serif\"" +
                         " font-size=\"11\"><text x=\"27.5\" y=\"15\" fill=\"#010101\" fill-opacity=\".3\">当前状态</text><text x=\"27.5\"" +
                         " y=\"14\">当前状态</text><text x=\"89.5\" y=\"15\" fill=\"#010101\"" +
-                        " fill-opacity=\".3\">finished@" + time + "</text><text x=\"89.5\" y=\"14\">finished@2</text></g></svg>";
+                        " fill-opacity=\".3\">finished@" + time + "</text><text x=\"89.5\" " +
+                        "y=\"14\">finished@" + time + "</text></g></svg>";
             } else if (time < 100) {
                 return "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"132\" height=\"20\"><linearGradient " +
                         "id=\"b\" x2=\"0\" y2=\"100%\"><stop offset=\"0\" stop-color=\"#bbb\" stop-opacity=\".1\"/><stop " +
@@ -96,7 +100,8 @@ public class BadgeUtils {
                         "d=\"M0 0h132v20H0z\"/></g><g fill=\"#fff\" text-anchor=\"middle\" " +
                         "font-family=\"DejaVu Sans,Verdana,Geneva,sans-serif\" font-size=\"11\"><text " +
                         "x=\"27.5\" y=\"15\" fill=\"#010101\" fill-opacity=\".3\">当前状态</text><text x=\"27.5\" " +
-                        "y=\"14\">当前状态</text><text x=\"92.5\" y=\"15\" fill=\"#010101\" fill-opacity=\".3\">finished@12</text><text x=\"92.5\" " +
+                        "y=\"14\">当前状态</text><text x=\"92.5\" y=\"15\" fill=\"#010101\" " +
+                        "fill-opacity=\".3\">finished@" + time + "</text><text x=\"92.5\" " +
                         "y=\"14\">finished@" + time + "</text></g></svg>\n";
             } else if (time < 1000) {
                 return "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"140\" height=\"20\"><linearGradient " +
@@ -108,7 +113,7 @@ public class BadgeUtils {
                         "font-size=\"11\"><text x=\"27.5\" y=\"15\" fill=\"#010101\" fill-opacity=\".3\">当前状态</text><text x=\"27.5\" " +
                         "y=\"14\">当前状态</text><text x=\"96.5\" y=\"15\" fill=\"#010101\" " +
                         "fill-opacity=\".3\">finished@" + time + "</text><text x=\"96.5\" " +
-                        "y=\"14\">finished@212</text></g></svg>\n";
+                        "y=\"14\">finished@" + time + "</text></g></svg>\n";
             } else {
                 return "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"146\" height=\"20\"><linearGradient id=\"b\" " +
                         "x2=\"0\" y2=\"100%\"><stop offset=\"0\" stop-color=\"#bbb\" stop-opacity=\".1\"/><stop offset=\"1\" " +
@@ -117,7 +122,8 @@ public class BadgeUtils {
                         "d=\"M55 0h91v20H55z\"/><path fill=\"url(#b)\" d=\"M0 0h146v20H0z\"/></g><g fill=\"#fff\" text-anchor=\"middle\" " +
                         "font-family=\"DejaVu Sans,Verdana,Geneva,sans-serif\" font-size=\"11\"><text x=\"27.5\" y=\"15\" fill=\"#010101\" " +
                         "fill-opacity=\".3\">当前状态</text><text x=\"27.5\" y=\"14\">当前状态</text><text x=\"99.5\" y=\"15\" fill=\"#010101\" " +
-                        "fill-opacity=\".3\">finished@" + time + "</text><text x=\"99.5\" y=\"14\">finished@1251</text></g></svg>";
+                        "fill-opacity=\".3\">finished@" + time + "</text><text x=\"99.5\" " +
+                        "y=\"14\">finished@" + time + "</text></g></svg>";
             }
         }
     }
