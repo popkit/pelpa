@@ -64,7 +64,7 @@ public class LogScanner {
                             String log = downloadCount.getJson();
                             if (StringUtils.isNotBlank(log)) {
                                 File logFile = new File(PelpaUtils.getHtmlPath() + "download_counts.json");
-                                File downloadBadge = new File(PelpaUtils.getHtmlPath() + "download_counts.svg");
+                                File downloadBadge = new File(PelpaUtils.getHtmlPath() + "packages/" + "download_counts.svg");
                                 try {
                                     FileUtils.writeStringToFile(logFile, log);
                                     FileUtils.writeStringToFile(downloadBadge, BadgeUtils.getDownloadCount(downloadCount.getTotal()));

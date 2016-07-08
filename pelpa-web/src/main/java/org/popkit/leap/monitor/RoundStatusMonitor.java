@@ -65,7 +65,7 @@ public class RoundStatusMonitor {
             LocalCache.writeRecipesJson();
 
             try {
-                File lastUpdateBadge = new File(PelpaUtils.getHtmlPath() + LAST_UPDATE_TIME_BADGE);
+                File lastUpdateBadge = new File(PelpaUtils.getHtmlPath() + "packages/" + LAST_UPDATE_TIME_BADGE);
                 FileUtils.writeStringToFile(lastUpdateBadge, BadgeUtils.getLastUpdateTime(current.getEndTime()));
             } catch (IOException e) {
                 e.printStackTrace();
