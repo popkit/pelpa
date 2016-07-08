@@ -117,9 +117,9 @@ public class RoundSupervisor {
 
     private void updateBuildStatus() {
         BuildStatus buildStatus = new BuildStatus(RoundStatusMonitor.getCurrent());
-        String htmlPath = PelpaUtils.getHtmlPath() + "packages/";
+        String htmlPath = PelpaUtils.getHtmlPath();
         File file = new File(htmlPath + BUILD_STATUS_FILE);
-        File statusBadge = new File(htmlPath + BUILD_STATUS_FILE_BADGE);
+        File statusBadge = new File(htmlPath + "packages/" + BUILD_STATUS_FILE_BADGE);
 
         try {
             FileUtils.writeStringToFile(file, buildStatus.toJSONString());
