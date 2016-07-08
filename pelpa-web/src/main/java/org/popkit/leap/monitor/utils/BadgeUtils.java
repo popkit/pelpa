@@ -1,8 +1,13 @@
 package org.popkit.leap.monitor.utils;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.popkit.leap.elpa.entity.RoundRun;
 import org.popkit.leap.elpa.entity.RoundStatus;
+import org.popkit.leap.elpa.utils.PelpaUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -25,6 +30,49 @@ public class BadgeUtils {
         System.out.println(b + ":" + toCountString(b));
         System.out.println(c + ":" + toCountString(c));
         System.out.println(d + ":" + toCountString(d));
+    }
+
+    public static void buildVersionBadge(String pkgName, String version) {
+        if (StringUtils.isBlank(pkgName) || StringUtils.isBlank(version)) {
+            return;
+        }
+
+        String packagePath = PelpaUtils.getHtmlPath() + "packages/";
+        String badgeFileName = packagePath + pkgName + "-badge.svg";
+        String badgeContent = getVersionBadge(version);
+        File badgeFile = new File(badgeFileName);
+
+        try {
+            FileUtils.writeStringToFile(badgeFile, badgeContent);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public static String getVersionBadge(String version) {
+        if (version.length() < 6) {
+            return "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"112\" height=\"20\"><linearGradient " +
+                    "id=\"b\" x2=\"0\" y2=\"100%\"><stop offset=\"0\" stop-color=\"#bbb\" " +
+                    "stop-opacity=\".1\"/><stop offset=\"1\" stop-opacity=\".1\"/></linearGradient><mask " +
+                    "id=\"a\"><rect width=\"112\" height=\"20\" rx=\"3\" fill=\"#fff\"/></mask><g " +
+                    "mask=\"url(#a)\"><path fill=\"#555\" d=\"M0 0h73v20H0z\"/><path fill=\"#007ec6\" " +
+                    "d=\"M73 0h39v20H73z\"/><path fill=\"url(#b)\" d=\"M0 0h112v20H0z\"/></g><g fill=\"#fff\" " +
+                    "text-anchor=\"middle\" font-family=\"DejaVu Sans,Verdana,Geneva,sans-serif\" font-size=\"11\"><text " +
+                    "x=\"36.5\" y=\"15\" fill=\"#010101\" fill-opacity=\".3\">popkit-elpa</text><text x=\"36.5\" " +
+                    "y=\"14\">popkit-elpa</text><text x=\"91.5\" y=\"15\" fill=\"#010101\"" +
+                    " fill-opacity=\".3\">" + version + "</text><text x=\"91.5\" y=\"14\">" + version + "</text></g></svg>";
+
+        } else {
+            return "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"170\" height=\"20\"><linearGradient " +
+                    "id=\"b\" x2=\"0\" y2=\"100%\"><stop offset=\"0\" stop-color=\"#bbb\" " +
+                    "stop-opacity=\".1\"/><stop offset=\"1\" stop-opacity=\".1\"/></linearGradient><mask" +
+                    " id=\"a\"><rect width=\"170\" height=\"20\" rx=\"3\" fill=\"#fff\"/></mask><g " +
+                    "mask=\"url(#a)\"><path fill=\"#555\" d=\"M0 0h73v20H0z\"/><path fill=\"#007ec6\" " +
+                    "d=\"M73 0h97v20H73z\"/><path fill=\"url(#b)\" d=\"M0 0h170v20H0z\"/></g><g fill=\"#fff\" " +
+                    "text-anchor=\"middle\" font-family=\"DejaVu Sans,Verdana,Geneva,sans-serif\" font-size=\"11\"><text " +
+                    "x=\"36.5\" y=\"15\" fill=\"#010101\" fill-opacity=\".3\">popkit-elpa</text><text x=\"36.5\" " +
+                    "y=\"14\">popkit-elpa</text><text x=\"120.5\" y=\"15\" fill=\"#010101\" " +
+                    "fill-opacity=\".3\">" + version + "</text><text x=\"120.5\" y=\"14\">" + version + "</text></g></svg>";
+        }
     }
 
     public static String toCountString(int count) {

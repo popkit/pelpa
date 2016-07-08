@@ -8,6 +8,7 @@ import org.popkit.leap.elpa.services.handler.GitFetchHandler;
 import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.popkit.leap.elpa.utils.RecipeParser;
 import org.popkit.leap.elpa.utils.VersionUtils;
+import org.popkit.leap.monitor.utils.BadgeUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -170,6 +171,7 @@ public class PkgBuildService {
                 File destTar = new File(packagePath + recipeDo.getPkgName() + "-"+ version + ".tar");
 
                 if (destTar.exists() && destTar.isFile()) {
+                    BadgeUtils.buildVersionBadge(recipeDo.getPkgName(), version);
                     LocalCache.updateArchive(recipeDo.getPkgName(), archiveVo);
                 } else {
                     LeapLogger.error("generate destTar error! #destTar=" + destTar.getAbsolutePath());
@@ -205,6 +207,7 @@ public class PkgBuildService {
         }
 
         if (finalPkgFile != null && finalPkgFile.exists() && finalPkgFile.isFile()) {
+            BadgeUtils.buildVersionBadge(recipeDo.getPkgName(), recipeDo.getVersionRegexp());
             LocalCache.updateArchive(recipeDo.getPkgName(), archiveVo);
         }
     }
@@ -248,6 +251,7 @@ public class PkgBuildService {
         }
 
         if (finalPkgFile != null && finalPkgFile.exists() && finalPkgFile.isFile()) {
+            BadgeUtils.buildVersionBadge(recipeDo.getPkgName(), version);
             LocalCache.updateArchive(recipeDo.getPkgName(), archiveVo);
         }
     }
