@@ -1,5 +1,9 @@
 package org.popkit.leap.elpa.entity;
 
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.popkit.core.config.LeapConfigLoader;
 import org.popkit.leap.elpa.utils.ToolUtils;
 
 import java.text.SimpleDateFormat;
@@ -22,6 +26,10 @@ public class RoundRun {
 
     public RoundRun() {
         this.roundId = 1;
+        String current = LeapConfigLoader.get("current_run");
+        if (StringUtils.isNoneBlank(current)) {
+            this.roundId = NumberUtils.toInt(current, 1);
+        }
         this.startTime = new Date();
         this.endTime = null;
         this.status = RoundStatus.READY;
