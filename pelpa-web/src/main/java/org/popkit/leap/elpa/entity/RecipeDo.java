@@ -19,10 +19,10 @@ import java.util.regex.Pattern;
 public class RecipeDo {
     public static void main(String[] args) {
         String tester = "aaa (:exclude a.el b.el) fa";
-        extraExclude(tester);
+        System.out.println(extraExclude(tester));
     }
 
-    private static final Pattern EXCLUDE_PATTERN = Pattern.compile(".*(\\(:exclude.*\\)).*", Pattern.CASE_INSENSITIVE);
+    private static final Pattern EXCLUDE_PATTERN = Pattern.compile(".*\\(:exclude(.*)\\).*", Pattern.CASE_INSENSITIVE);
     private String pkgName;
     private String fetcher;
     private String repo;
@@ -87,13 +87,20 @@ public class RecipeDo {
 
     public static String extraExclude(String origin) {
         Matcher matcher = EXCLUDE_PATTERN.matcher(origin);
+        if (matcher.find()) {
+            String value = matcher.group(1);
+            return value;
+        }
         return "";
     }
 
     public List<String> getExcludeFileList() {
         List<String> result = new ArrayList<String>();
         if (this.files.contains(":exclude")) {
-
+            String value = extraExclude(this.files);
+            if (StringUtils.isNotBlank(value)) {
+                return Arrays.asList(value.trim().split("\\s+"));
+            }
         }
         return result;
     }
