@@ -182,7 +182,7 @@ public class BuildController {
                     && "beta".equals(PelpaUtils.getEnv())
                     && (!ToolUtils.isEmptyPath(workingPath))) {
             } else {
-                pkgFetchService.downloadPackage(pkgName);
+                //pkgFetchService.downloadPackage(pkgName);
             }
             SimpleResult simpleResult = pkgBuildService.buildPackage(pkgName);
             commonResponse.setData(simpleResult);

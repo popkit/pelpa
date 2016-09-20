@@ -267,9 +267,10 @@ public class PelpaUtils {
         List<File> elispFileList = new ArrayList<File>();
         String workingPath = PelpaUtils.getWorkingPath(recipeDo.getPkgName());
 
+        List<String> excludeList = recipeDo.getExcludeFileList();
+
         // get all files which will be tar.
         if (CollectionUtils.isNotEmpty(recipeDo.getFileList())) {
-            List<String> excludeList = recipeDo.getExcludeFileList();
             for (String fileName : recipeDo.getFileList()) {
                 if (StringUtils.isBlank(fileName) || excludeList.contains(fileName.trim())) {
                     continue;
@@ -358,6 +359,15 @@ public class PelpaUtils {
             elispFileList.addAll(PelpaUtils.getElispFile(workingPath));
         }
 
+        if (CollectionUtils.isEmpty(excludeList)
+                && CollectionUtils.isNotEmpty(elispFileList)) {
+            Iterator<File> iterator = elispFileList.iterator();
+            while (iterator.hasNext()) {
+                if (excludeList.contains(iterator.next().getName())) {
+                    iterator.remove();
+                }
+            }
+        }
         return elispFileList;
     }
 
