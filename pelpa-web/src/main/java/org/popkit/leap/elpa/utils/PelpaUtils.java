@@ -269,8 +269,9 @@ public class PelpaUtils {
 
         // get all files which will be tar.
         if (CollectionUtils.isNotEmpty(recipeDo.getFileList())) {
+            List<String> excludeList = recipeDo.getExcludeFileList();
             for (String fileName : recipeDo.getFileList()) {
-                if (StringUtils.isBlank(fileName)) {
+                if (StringUtils.isBlank(fileName) || excludeList.contains(fileName.trim())) {
                     continue;
                 }
 

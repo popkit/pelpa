@@ -8,6 +8,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Aborn Jiang
@@ -15,6 +17,12 @@ import java.util.List;
  * 2016-05-14:07:14
  */
 public class RecipeDo {
+    public static void main(String[] args) {
+        String tester = "aaa (:exclude a.el b.el) fa";
+        extraExclude(tester);
+    }
+
+    private static final Pattern EXCLUDE_PATTERN = Pattern.compile(".*(\\(:exclude.*\\)).*", Pattern.CASE_INSENSITIVE);
     private String pkgName;
     private String fetcher;
     private String repo;
@@ -75,6 +83,19 @@ public class RecipeDo {
         } else {
             return new ArrayList<String>();
         }
+    }
+
+    public static String extraExclude(String origin) {
+        Matcher matcher = EXCLUDE_PATTERN.matcher(origin);
+        return "";
+    }
+
+    public List<String> getExcludeFileList() {
+        List<String> result = new ArrayList<String>();
+        if (this.files.contains(":exclude")) {
+
+        }
+        return result;
     }
 
     public void update(String key, String value) {
