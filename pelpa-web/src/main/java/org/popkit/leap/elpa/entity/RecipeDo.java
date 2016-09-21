@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
  */
 public class RecipeDo {
     public static void main(String[] args) {
-        String tester = "aaa (:exclude a.el b.el) fa";
+        String tester = "aaa (:exclude a.el b.el) c.el)fa";
         System.out.println(extraExclude(tester));
     }
 
@@ -89,6 +89,9 @@ public class RecipeDo {
         Matcher matcher = EXCLUDE_PATTERN.matcher(origin);
         if (matcher.find()) {
             String value = matcher.group(1);
+            if (value.contains(")")) {
+                value = value.split("\\)")[0];
+            }
             return value;
         }
         return "";
