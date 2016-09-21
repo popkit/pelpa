@@ -99,7 +99,7 @@ public class RecipeDo {
 
     public List<String> getExcludeFileList() {
         List<String> result = new ArrayList<String>();
-        if (this.files.contains(":exclude")) {
+        if (this.files != null && this.files.contains(":exclude")) {
             String value = extraExclude(this.files);
             if (StringUtils.isNotBlank(value)) {
                 return Arrays.asList(value.trim().split("\\s+"));
