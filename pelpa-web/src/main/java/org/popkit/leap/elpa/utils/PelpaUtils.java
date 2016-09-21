@@ -359,7 +359,7 @@ public class PelpaUtils {
             elispFileList.addAll(PelpaUtils.getElispFile(workingPath));
         }
 
-        if (CollectionUtils.isEmpty(excludeList)
+        if (CollectionUtils.isNotEmpty(excludeList)
                 && CollectionUtils.isNotEmpty(elispFileList)) {
             Iterator<File> iterator = elispFileList.iterator();
             while (iterator.hasNext()) {
