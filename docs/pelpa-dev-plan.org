@@ -11,3 +11,5 @@
 ** TODO 超时控制
 ** TODO melpa-stable 稳定版
 ** TODO readme 详情一些
+** TODO 对org及org-plus-contrib是否正确下载tar包进行检测
+         http://orgmode.org/elpa/archive-contents
