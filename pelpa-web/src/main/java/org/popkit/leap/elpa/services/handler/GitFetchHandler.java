@@ -32,7 +32,7 @@ import java.util.Map;
 public class GitFetchHandler implements FetchHandler {
     public static final String GITHUB_HTTPS_ROOT = "https://github.com/";
     public static final String GITLAB_HTTPS_ROOT = "https://gitlab.com/";
-    public static final int GIT_TIME_OUT = 60 * 1000;    // 60 seconds
+    public static final int GIT_TIME_OUT = 10 * 60 * 1000;    // 10分钟
     public static final int GIT_TIME_OUT_CLONE = 10 * 60 * 1000;    // 10 minutes
 
     public boolean validate(RecipeDo recipeDo, Map<String, Object> extra) {
@@ -70,7 +70,6 @@ public class GitFetchHandler implements FetchHandler {
             PullCommand pullCommand = git.pull();
             pullCommand.setTimeout(GIT_TIME_OUT);
             PullResult result = pullCommand.call();
-
             // http://stackoverflow.com/questions/13399990/usage-of-pull-command-in-jgit
             //FetchResult fetchResult = result.getFetchResult();
             //MergeResult mergeResult = result.getMergeResult();
@@ -78,6 +77,8 @@ public class GitFetchHandler implements FetchHandler {
 
             //FetchResult result = git.fetch().setCheckFetchedObjects(true).call();
             //System.out.println("Messages: " + result.getMessages());
+
+            LeapLogger.info("finished github fetch update:" + localPath);
         } catch (Exception e) {
             LeapLogger.warn("error update" + localPath, e);
         }
