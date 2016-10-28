@@ -21,7 +21,7 @@ public class BuildingExcutorPool {
     @Autowired
     private PkgBuildService pkgBuildService;
 
-    private final ExecutorService exector = Executors.newFixedThreadPool(4);
+    private final ExecutorService exector = Executors.newFixedThreadPool(1);
 
     public ExecutorService getExector() {
         return exector;
