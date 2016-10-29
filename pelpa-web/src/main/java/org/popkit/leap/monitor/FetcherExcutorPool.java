@@ -1,18 +1,17 @@
 package org.popkit.leap.monitor;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.entity.ActorStatus;
 import org.popkit.leap.elpa.services.PkgFetchService;
-import org.popkit.leap.monitor.entity.FetcherStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Aborn Jiang
@@ -72,6 +71,7 @@ public class FetcherExcutorPool {
                         continue;
                     }
 
+                    /*
                     List<FetcherTask> fetcherTasks = getFetcherGroupTask();
                     if (CollectionUtils.isEmpty(fetcherTasks)) {
                         continue;
@@ -100,28 +100,9 @@ public class FetcherExcutorPool {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+                    */
 
-                    /**
-                     FetcherTask fetcherTask = new FetcherTask(pkgName, pkgFetchService);
-                     FutureTask<FetcherStatus> futureTask = new FutureTask<FetcherStatus>(fetcherTask);
-                     EXECUTOR_POOL.execute(futureTask);
-                     try {
-                     FetcherStatus status = futureTask.get(10, TimeUnit.MINUTES);
-                     if (status == null) {
-                     LeapLogger.warn("fetcher [" + pkgName + "] timeout!!");
-                     // 这里也更新状态为成功
-                     RoundStatusMonitor.updateFetcherStatus(pkgName, ActorStatus.FINISHED);
-                     } else {
-                     LeapLogger.warn("fetcher [" + pkgName + "] success!!" + status.getInfo());
-                     }
-                     } catch (InterruptedException e) {
-                     e.printStackTrace();
-                     } catch (ExecutionException e) {
-                     e.printStackTrace();
-                     } catch (TimeoutException e) {
-                     e.printStackTrace();
-                     }
-                     **/
+                    EXECUTOR_POOL.execute(new FetcherTask(pkgName, pkgFetchService));
                 }
             }
         }).start();
