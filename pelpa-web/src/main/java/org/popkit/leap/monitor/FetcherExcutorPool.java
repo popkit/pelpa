@@ -4,12 +4,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.entity.ActorStatus;
 import org.popkit.leap.elpa.services.PkgFetchService;
+import org.popkit.leap.monitor.entity.FetcherStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * Created by Aborn Jiang
@@ -22,10 +21,10 @@ public class FetcherExcutorPool {
     @Autowired
     private PkgFetchService pkgFetchService;
 
-    private final ExecutorService exector = Executors.newFixedThreadPool(4);
+    private final ExecutorService EXECUTOR_POOL = Executors.newFixedThreadPool(4);
 
     public ExecutorService getExector() {
-        return exector;
+        return EXECUTOR_POOL;
     }
 
     public void excute() {
@@ -49,7 +48,25 @@ public class FetcherExcutorPool {
                         if (actorStatus == ActorStatus.READY) {
                             LeapLogger.info("pkgName:" + pkgName + " added to fetch working queue!");
                             RoundStatusMonitor.updateFetcherStatus(pkgName, ActorStatus.WORKING);
-                            exector.execute(new FetcherTask(pkgName, pkgFetchService));
+                            FetcherTask fetcherTask = new FetcherTask(pkgName, pkgFetchService);
+                            FutureTask<FetcherStatus> futureTask = new FutureTask<FetcherStatus>(fetcherTask);
+                            EXECUTOR_POOL.execute(futureTask);
+                            try {
+                                FetcherStatus status = futureTask.get(10, TimeUnit.MINUTES);
+                                if (status == null) {
+                                    LeapLogger.warn("fetcher [" + pkgName + "] timeout!!");
+                                    // 这里也更新状态为成功
+                                    RoundStatusMonitor.updateFetcherStatus(pkgName, ActorStatus.FINISHED);
+                                } else {
+                                    LeapLogger.warn("fetcher [" + pkgName + "] success!!" + status.getInfo());
+                                }
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            } catch (ExecutionException e) {
+                                e.printStackTrace();
+                            } catch (TimeoutException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }
