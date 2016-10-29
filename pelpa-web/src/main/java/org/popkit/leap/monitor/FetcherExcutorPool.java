@@ -21,7 +21,7 @@ import java.util.concurrent.*;
  */
 @Service
 public class FetcherExcutorPool {
-    private static final int GROUP_SIZE = 10;
+    private static final int GROUP_SIZE = 20;
 
     @Autowired
     private PkgFetchService pkgFetchService;
@@ -91,6 +91,7 @@ public class FetcherExcutorPool {
                                     LeapLogger.warn("fetcher [" + task.getPkgName() + "] success!!" + status.getInfo());
                                 }
                             } catch (ExecutionException e) {
+                                LeapLogger.warn("fetcher [" + task.getPkgName() + "] timeout!! exception..");
                                 e.printStackTrace();
                             } finally {
                                 RoundStatusMonitor.updateFetcherStatus(task.getPkgName(), ActorStatus.FINISHED);
