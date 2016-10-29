@@ -1,5 +1,6 @@
 package org.popkit.leap.monitor;
 
+import org.apache.commons.lang3.StringUtils;
 import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.entity.ActorStatus;
 import org.popkit.leap.elpa.services.PkgFetchService;
@@ -21,7 +22,6 @@ public class FetcherExcutorPool {
     @Autowired
     private PkgFetchService pkgFetchService;
 
-    // 初始起10个工作线程
     private final ExecutorService exector = Executors.newFixedThreadPool(2);
 
     public ExecutorService getExector() {
@@ -33,15 +33,18 @@ public class FetcherExcutorPool {
         new Thread(new Runnable() {
             public void run() {
                 while (true) {
-
                     String pkgName = RoundStatusMonitor.nexFetcherPkg();
-                    if (pkgName == null) {
-                        try {
-                            TimeUnit.SECONDS.sleep(2);
-                        } catch (InterruptedException e) {
-                            // TODO
+                    try {
+                        if (StringUtils.isBlank(pkgName)) {
+                            TimeUnit.SECONDS.sleep(10);
+                        } else {
+                            TimeUnit.SECONDS.sleep(1);
                         }
-                    } else {
+                    } catch (InterruptedException e) {
+                        LeapLogger.warn("InterruptedException + " + pkgName, e);
+                    }
+
+                    if (StringUtils.isNotBlank(pkgName)) {
                         ActorStatus actorStatus = RoundStatusMonitor.getFetcherStatus(pkgName);
                         if (actorStatus == ActorStatus.READY) {
                             LeapLogger.info("pkgName:" + pkgName + " added to fetch working queue!");

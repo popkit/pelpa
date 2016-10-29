@@ -30,7 +30,7 @@ public class PkgFetchService {
         try {
             RecipeDo recipeDo = LocalCache.getRecipeDo(pkgName);
             return downloadPackage(recipeDo);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             LeapLogger.warn("exception in downloadPackage@@@" + pkgName, e);
             return true;
         }
