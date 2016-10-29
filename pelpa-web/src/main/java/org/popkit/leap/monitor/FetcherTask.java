@@ -31,4 +31,8 @@ public class FetcherTask implements Callable<FetcherStatus> {
         LeapLogger.info("pkgName=[" + pkgName + "]fetch完成!");
         return new FetcherStatus(true, "pkgName=[" + pkgName + "]fetch完成!");
     }
+
+    public String getPkgName() {
+        return pkgName;
+    }
 }
