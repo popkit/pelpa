@@ -102,7 +102,11 @@ public class FetcherExcutorPool {
                     }
                     */
 
-                    EXECUTOR_POOL.execute(new FetcherTask(pkgName, pkgFetchService));
+                    ActorStatus actorStatus = RoundStatusMonitor.getFetcherStatus(pkgName);
+                    if (actorStatus == ActorStatus.READY) {
+                        RoundStatusMonitor.updateFetcherStatus(pkgName, ActorStatus.WORKING);
+                        EXECUTOR_POOL.execute(new FetcherTask(pkgName, pkgFetchService));
+                    }
                 }
             }
         }).start();
