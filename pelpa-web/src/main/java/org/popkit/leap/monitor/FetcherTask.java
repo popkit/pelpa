@@ -27,12 +27,17 @@ public class FetcherTask extends Thread {
         FutureTask<FetcherStatus> futureTask = new FutureTask<FetcherStatus>(
                 new Callable<FetcherStatus>() {
                     public FetcherStatus call() throws Exception {
-                        fetchService.downloadPackage(pkgName);
+                        try {
+                            fetchService.downloadPackage(pkgName);
+                        } catch (Throwable throwable) {
+                            LeapLogger.warn("downloadPackage [" + pkgName + "] throwable", throwable);
+                        }
                         return new FetcherStatus(true, "pkgName=[" + pkgName + "]fetch完成!");
                     }
                 }
         );
         futureTask.run();
+
         try {
             FetcherStatus status = futureTask.get(10, TimeUnit.MINUTES);
             if (status == null) {
@@ -41,11 +46,11 @@ public class FetcherTask extends Thread {
                 LeapLogger.info("pkgName=[" + pkgName + "] fetch future finished!" + status.getInfo());
             }
         } catch (InterruptedException e) {
-            LeapLogger.info("pkgName=[" + pkgName + "]fetch InterruptedException!");
+            LeapLogger.info("pkgName=[" + pkgName + "]fetch timeout InterruptedException!");
         } catch (ExecutionException e) {
-            LeapLogger.info("pkgName=[" + pkgName + "]fetch ExecutionException!");
+            LeapLogger.info("pkgName=[" + pkgName + "]fetch timeout ExecutionException!");
         } catch (TimeoutException e) {
-            LeapLogger.info("pkgName=[" + pkgName + "]fetch TimeoutException!");
+            LeapLogger.info("pkgName=[" + pkgName + "]fetch timeout TimeoutException!");
         } finally {
             RoundStatusMonitor.updateFetcherStatus(pkgName, ActorStatus.FINISHED);
         }
