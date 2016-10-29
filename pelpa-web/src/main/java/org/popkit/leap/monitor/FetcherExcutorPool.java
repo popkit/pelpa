@@ -22,7 +22,7 @@ public class FetcherExcutorPool {
     @Autowired
     private PkgFetchService pkgFetchService;
 
-    private final ExecutorService exector = Executors.newFixedThreadPool(2);
+    private final ExecutorService exector = Executors.newFixedThreadPool(1);
 
     public ExecutorService getExector() {
         return exector;
@@ -38,7 +38,7 @@ public class FetcherExcutorPool {
                         if (StringUtils.isBlank(pkgName)) {
                             TimeUnit.SECONDS.sleep(10);
                         } else {
-                            TimeUnit.SECONDS.sleep(1);
+                            TimeUnit.MILLISECONDS.sleep(500);
                         }
                     } catch (InterruptedException e) {
                         LeapLogger.warn("InterruptedException + " + pkgName, e);
