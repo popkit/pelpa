@@ -132,7 +132,7 @@ public class LocalCache {
     }
 
 
-    public static boolean initLocalCache() {
+    public static boolean initLocalCacheRecipes() {
         // 按时间来,超时2个小时更新一次
         if (lastUpdateTime != null
                 && lastUpdateTime.getTime() + UPDATE_RECIPE_TIME > new Date().getTime()) {

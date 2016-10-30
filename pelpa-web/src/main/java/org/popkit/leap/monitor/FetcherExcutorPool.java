@@ -23,9 +23,16 @@ public class FetcherExcutorPool {
 
     private final ExecutorService EXECUTOR_POOL = Executors.newFixedThreadPool(4);
 
+    private static Thread RUNNING_THREAD = null;
+
     public void excute() {
-        // // FIXME: 6/9/16 这里有个bug,一个pkg可能会循环加入fetch任务队列
-        new Thread(new Runnable() {
+        // 只需要创建一次
+        if (RUNNING_THREAD != null && RUNNING_THREAD.isAlive()) {
+            LeapLogger.info("FetcherExcutor RUNNING_THREAD is alive, do nothing!!");
+            return;
+        }
+
+        RUNNING_THREAD = new Thread(new Runnable() {
             public void run() {
                 while (true) {
                     String pkgName = RoundStatusMonitor.nexFetcherPkg();
@@ -50,6 +57,7 @@ public class FetcherExcutorPool {
                     }
                 }
             }
-        }).start();
+        });
+        RUNNING_THREAD.start();
     }
 }

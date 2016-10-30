@@ -23,12 +23,16 @@ public class BuildingExcutorPool {
 
     private final ExecutorService exector = Executors.newFixedThreadPool(1);
 
-    public ExecutorService getExector() {
-        return exector;
-    }
+    private static Thread RUNNING_THREAD = null;
 
     public void excute() {
-        new Thread(new Runnable() {
+        // 只需要创建一次
+        if (RUNNING_THREAD != null && RUNNING_THREAD.isAlive()) {
+            LeapLogger.info("BuildingExcutor RUNNING_THREAD is alive, do nothing!!");
+            return;
+        }
+
+        RUNNING_THREAD = new Thread(new Runnable() {
             public void run() {
                 while (true) {
                     String pkgName = RoundStatusMonitor.nextBuildingPkg();
@@ -48,6 +52,7 @@ public class BuildingExcutorPool {
                     }
                 }
             }
-        }).start();
+        });
+        RUNNING_THREAD.start();
     }
 }
