@@ -175,7 +175,7 @@ public class BuildController {
     @RequestMapping(value = "build.html")
     public CommonResponse build(String pkgName) {
         CommonResponse commonResponse = new CommonResponse();
-        if (StringUtils.isNotBlank(pkgName) && LocalCache.initLocalCache()) {
+        if (StringUtils.isNotBlank(pkgName) && LocalCache.initLocalCacheRecipes()) {
             RecipeDo recipeDo = LocalCache.getRecipeDo(pkgName);
             File workingPath = new File(PelpaUtils.getWorkingPath(pkgName));
             if (workingPath.exists() && workingPath.isDirectory()
