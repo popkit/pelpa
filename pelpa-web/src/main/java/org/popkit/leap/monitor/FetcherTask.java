@@ -22,35 +22,37 @@ public class FetcherTask extends Thread {
         this.fetchService = fetchService;
     }
 
+    @Override
     public void run() {
-        LeapLogger.info("pkgName=[" + pkgName + "]正在进行fetch...");
-        FutureTask<FetcherStatus> futureTask = new FutureTask<FetcherStatus>(
-                new Callable<FetcherStatus>() {
-                    public FetcherStatus call() throws Exception {
-                        try {
-                            fetchService.downloadPackage(pkgName);
-                        } catch (Throwable throwable) {
-                            LeapLogger.warn("downloadPackage [" + pkgName + "] throwable", throwable);
-                        }
-                        return new FetcherStatus(true, "pkgName=[" + pkgName + "]fetch完成!");
-                    }
+        Callable<FetcherStatus> downloadTask = new Callable<FetcherStatus>() {
+            public FetcherStatus call() throws Exception {
+                long beginTime = System.currentTimeMillis();
+                try {
+                    fetchService.downloadPackage(pkgName);
+                } catch (Exception throwable) {
+                    LeapLogger.warn("downloadPackage [" + pkgName + "] throwable", throwable);
                 }
-        );
-        futureTask.run();
+                long timeCost = (System.currentTimeMillis() - beginTime) / (1000);
+                return new FetcherStatus(true, "pkgName=[" + pkgName + "]fetch完成!" + ", 耗时:" + timeCost + "s.");
+            }
+        };
 
+        ExecutorService service = Executors.newSingleThreadExecutor();
+        Future<FetcherStatus> future = service.submit(downloadTask);
         try {
-            FetcherStatus status = futureTask.get(10, TimeUnit.MINUTES);
+            FetcherStatus status = future.get(10, TimeUnit.MINUTES);
             if (status == null) {
                 LeapLogger.info("pkgName=[" + pkgName + "] fetch future timeout!");
             } else {
                 LeapLogger.info("pkgName=[" + pkgName + "] fetch future finished!" + status.getInfo());
             }
         } catch (InterruptedException e) {
-            LeapLogger.info("pkgName=[" + pkgName + "]fetch timeout InterruptedException!");
+            LeapLogger.info("pkgName=[" + pkgName + "] fetch InterruptedException!");
         } catch (ExecutionException e) {
-            LeapLogger.info("pkgName=[" + pkgName + "]fetch timeout ExecutionException!");
+            LeapLogger.info("pkgName=[" + pkgName + "] fetch ExecutionException!");
         } catch (TimeoutException e) {
-            LeapLogger.info("pkgName=[" + pkgName + "]fetch timeout TimeoutException!");
+            future.cancel(true);
+            LeapLogger.info("pkgName=[" + pkgName + "] fetch timeout TimeoutException!");
         } finally {
             RoundStatusMonitor.updateFetcherStatus(pkgName, ActorStatus.FINISHED);
         }
