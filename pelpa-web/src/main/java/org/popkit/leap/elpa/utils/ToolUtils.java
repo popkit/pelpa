@@ -1,6 +1,10 @@
 package org.popkit.leap.elpa.utils;
 
+import org.apache.commons.io.FileUtils;
+import org.popkit.core.logger.LeapLogger;
+
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by Aborn Jiang
@@ -10,6 +14,39 @@ import java.io.File;
 public class ToolUtils {
     private ToolUtils() {}
 
+    public static void main(String[] args) {
+        String pkgWorkingPath = "/Users/aborn/github/pelpa/working/base16-theme";
+        String pkgName = "base16-theme";
+        cleanOldTempTarWorkingFile(pkgWorkingPath, pkgName, "20161013.222");
+    }
+
+    // 刪除老的临时文件
+    public static void cleanOldTempTarWorkingFile(
+            String pkgWorkingPath, String pkgName, String currentVersion) {
+        File pathFile = new File(pkgWorkingPath);
+
+        if (pathFile.exists() && pathFile.isDirectory()) {
+            for (File file : pathFile.listFiles()) {
+                if (!file.isDirectory()) {
+                    continue;
+                }
+
+                String fileName = file.getName();
+                if (fileName.equals(pkgName + "-" + currentVersion)) {
+                    continue;
+                }
+                if (fileName.startsWith(pkgName + "-20")) {
+                    try {
+                        LeapLogger.info("delete old temptar working path:" + file.getAbsolutePath());
+                        FileUtils.deleteDirectory(file);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+    }
     public static String toHumanable(long time_millsecod) {
         long second = time_millsecod / 1000;
         if (second < 60) {

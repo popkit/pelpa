@@ -9,6 +9,7 @@ import org.popkit.leap.elpa.entity.ArchiveVo;
 import org.popkit.leap.elpa.entity.PackageInfo;
 import org.popkit.leap.elpa.entity.RecipeDo;
 import org.popkit.leap.elpa.utils.PelpaUtils;
+import org.popkit.leap.elpa.utils.ToolUtils;
 import org.popkit.leap.elpa.utils.VersionUtils;
 
 import java.io.*;
@@ -111,6 +112,7 @@ public class FileTarHandler {
         if (pkgStatus) {
             tar(pkgName, fileList, tmpTarWorking, destTar);
         }
+        ToolUtils.cleanOldTempTarWorkingFile(pkgWorkingPath, pkgName, version);
     }
 
     public static void main(String[] args) {
