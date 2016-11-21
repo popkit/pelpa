@@ -71,6 +71,10 @@ public class PkgBuildService {
                 return null;
             } else if (recipeDoFiles.size() == 1) {
                 recipeFile = recipeDoFiles.get(0);
+                File singleFile = new File(workingPath + File.separator + recipeFile);
+                if (singleFile.exists()) {
+                    return singleFile;
+                }
             }
 
             List<File> elispFiles = PelpaUtils.getElispFile(workingPath);
