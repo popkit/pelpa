@@ -201,8 +201,11 @@ public class LogScanner {
         Matcher matcher = pattern.matcher(sCurrentLine);
 
         while (matcher.find()) {
-            String pkgFull = matcher.group().split("/packages/")[1];
-            return pkgFull.substring(0, pkgFull.lastIndexOf("-"));
+            String[] matches = matcher.group().split("/packages/");
+            if (matches.length > 1) {
+                String pkgFull = matches[1];
+                return pkgFull.substring(0, pkgFull.lastIndexOf("-"));
+            }
         }
 
         return null;
