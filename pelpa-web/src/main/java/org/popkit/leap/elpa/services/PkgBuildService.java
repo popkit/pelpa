@@ -77,7 +77,7 @@ public class PkgBuildService {
                 }
             }
 
-            List<File> elispFiles = PelpaUtils.getElispFile(workingPath);
+            List<File> elispFiles = PelpaUtils.getElispFile(workingPath, true);
             if (elispFiles.size() == 1) {
                 return elispFiles.get(0);
             } else {

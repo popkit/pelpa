@@ -221,12 +221,16 @@ public class PelpaUtils {
         return EnvEnum.BETA;
     }
 
-    public static List<File> getElispFile(String dir) {
+    public static List<File> getElispFile(String dir, boolean isDefault) {
         List<File> fileList = new ArrayList<File>();
         File directory = new File(dir);
         if (directory.isDirectory()) {
             for (File file : directory.listFiles()) {
-                if (file.getName().endsWith(".el")) {
+                if (isDefault && ((".dir-locals.el".equals(file.getName())) || (file.getName().endsWith("-tests.el")))) {
+                    continue;
+                }
+
+                if (file.getName().endsWith(".el")){
                     fileList.add(file);
                 }
             }
@@ -277,13 +281,13 @@ public class PelpaUtils {
                 }
 
                 if (":defaults".equals(fileName)) {
-                    elispFileList.addAll(PelpaUtils.getElispFile(workingPath));
+                    elispFileList.addAll(PelpaUtils.getElispFile(workingPath, true));
                 } else if (fileName.endsWith("*.el")) {
                     String sub = "";
                     if (fileName.contains("/")) {
                         sub = fileName.substring(0, fileName.lastIndexOf("/"));
                     }
-                    elispFileList.addAll(PelpaUtils.getElispFile(workingPath + File.separator + sub));
+                    elispFileList.addAll(PelpaUtils.getElispFile(workingPath + File.separator + sub, false));
                 } else {
                     if (fileName.endsWith("*")) {   // 某目录下所有文件
                         String sub = "";
@@ -356,7 +360,7 @@ public class PelpaUtils {
                 }
             }
         } else {
-            elispFileList.addAll(PelpaUtils.getElispFile(workingPath));
+            elispFileList.addAll(PelpaUtils.getElispFile(workingPath, true));
         }
 
         if (CollectionUtils.isNotEmpty(excludeList)
