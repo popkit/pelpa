@@ -2,6 +2,7 @@
 
 cd "$(dirname "$0")"
 cd ..
+git reset --hard
 git pull
 if [ -d "leap" ]; then
     cd leap
@@ -18,6 +19,8 @@ if [ -d "pelpa-web" ]; then
     rm -r pelpa-web/target
 fi
 
+# copy config file
+cp ~/config/appcontext-mybatis.xml pelpa-web/src/main/resources/config/spring
 # install it
 mvn install;
 
