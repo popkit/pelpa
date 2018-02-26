@@ -11,6 +11,9 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.popkit.core.config.LeapConfigLoader;
 import org.popkit.core.utils.ResponseUtils;
+import org.popkit.leap.wechart.entity.Records;
+import org.popkit.leap.wechart.mapper.RecordsMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -27,6 +30,15 @@ import java.io.InputStreamReader;
 @RequestMapping(value = "api/wechart")
 @Controller
 public class WechartController {
+
+    @Autowired
+    RecordsMapper recordsMapper;
+
+    @RequestMapping(value = "test.json")
+    public void test(HttpServletResponse response) {
+        Records records = recordsMapper.selectByPrimaryKey(1);
+        ResponseUtils.renderJson(response, JSONObject.toJSONString(records));
+    }
 
     @RequestMapping(value = "jscode2session")
     public void jscode2session(HttpServletResponse response, String code) {

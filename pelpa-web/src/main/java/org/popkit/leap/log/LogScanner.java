@@ -104,7 +104,11 @@ public class LogScanner {
         List<EachLogItem> result = new ArrayList<EachLogItem>();
         BufferedReader br = null;
         try {
-            br = new BufferedReader(new FileReader(getLogFileName()));
+            String pathFileName = getLogFileName();
+            if (StringUtils.isBlank(pathFileName)) {
+                return null;
+            }
+            br = new BufferedReader(new FileReader(pathFileName));
             String sCurrentLine;
             boolean needContinue = true;
             while ((sCurrentLine = br.readLine()) != null && needContinue) {
