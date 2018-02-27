@@ -1,4 +1,4 @@
-package org.popkit.leap.wechart;
+package org.popkit.leap.geekpen.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import org.apache.http.HttpEntity;
@@ -11,8 +11,8 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.popkit.core.config.LeapConfigLoader;
 import org.popkit.core.utils.ResponseUtils;
-import org.popkit.leap.wechart.entity.Records;
-import org.popkit.leap.wechart.mapper.RecordsMapper;
+import org.popkit.leap.geekpen.entity.Records;
+import org.popkit.leap.geekpen.mapper.RecordsMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

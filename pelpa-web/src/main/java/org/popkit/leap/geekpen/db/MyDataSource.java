@@ -1,4 +1,4 @@
-package org.popkit.leap.wechart.db;
+package org.popkit.leap.geekpen.db;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.lang3.StringUtils;

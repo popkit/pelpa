@@ -1,4 +1,4 @@
-package org.popkit.leap.wechart.entity;
+package org.popkit.leap.geekpen.entity;
 
 import java.util.Date;
 

@@ -1,6 +1,6 @@
-package org.popkit.leap.wechart.mapper;
+package org.popkit.leap.geekpen.mapper;
 
-import org.popkit.leap.wechart.entity.Records;
+import org.popkit.leap.geekpen.entity.Records;
 
 public interface RecordsMapper {
     /**
