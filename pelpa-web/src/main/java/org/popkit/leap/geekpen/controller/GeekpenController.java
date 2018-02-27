@@ -46,13 +46,18 @@ public class GeekpenController {
             simpleResult.update(false, "参数错误!");
         }
 
-        for (RecordVo vo : records.getRecords()) {
-            Records recordsDB = new Records();
-            recordsDB.setOpenid(records.getOpenid());
-            recordsDB.setBookName(vo.getBookName());
-            recordsDB.setType(vo.getType());
-            recordsDB.setCreateTime(new Date());
-            //recordsMapper.insert(recordsDB);
+        try {
+            for (RecordVo vo : records.getRecords()) {
+                Records recordsDB = new Records();
+                recordsDB.setOpenid(records.getOpenid());
+                recordsDB.setBookName(vo.getBookName());
+                recordsDB.setType(vo.getType());
+                recordsDB.setCreateTime(new Date());
+                //recordsMapper.insert(recordsDB);
+            }
+            simpleResult.update(true, "操作成功!");
+        } catch (Exception e) {
+            simpleResult.update(false, "操作失败!");
         }
 
         ResponseUtils.renderJson(response, JSONObject.toJSONString(simpleResult));
