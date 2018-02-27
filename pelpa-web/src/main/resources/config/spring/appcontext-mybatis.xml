@@ -16,7 +16,7 @@
     <context:component-scan base-package="org.popkit.leap"/>
 
     <!-- middleware datasource  -->
-    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+    <bean id="dataSource" class="org.popkit.leap.wechart.db.MyDataSource" destroy-method="close">
         <property name="driverClassName" value="com.mysql.jdbc.Driver" />
         <property name="url" value=""/>
         <property name="username" value="" />
