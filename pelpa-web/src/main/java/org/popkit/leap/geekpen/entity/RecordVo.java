@@ -1,5 +1,6 @@
 package org.popkit.leap.geekpen.entity;
 
+import java.util.Date;
 /**
  * Created by Aborn Jiang
  * Mail aborn.jiang@gmail.com
@@ -10,6 +11,7 @@ public class RecordVo {
     private String bookName;
     private int progress;
     private int type;
+    private Date time;
 
     public String getBookName() {
         return bookName;
@@ -33,5 +35,13 @@ public class RecordVo {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public Date getTime() {
+        return time;
+    }
+
+    public void setTime(Date time) {
+        this.time = time;
     }
 }

@@ -21,7 +21,15 @@
     $('#mockButton').on('click', function (e) {
         console.log("click");
         var postData = {};
+        var book = {};
+        book.bookName = "这个历史挺靠谱";
+        book.progress = 73;
+        book.type = 2;
+        book.time = new Date();
+
         postData.openid = 'o6Jzu0OvdlwmcmQ2N1FtFpIfslx4';
+        postData.records = [];
+        postData.records.push(book);
         $.ajax({
             type : 'post',
             url : '/geekpen/api/record.json',

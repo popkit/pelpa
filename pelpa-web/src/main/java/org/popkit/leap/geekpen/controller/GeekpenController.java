@@ -7,6 +7,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.popkit.core.entity.SimpleResult;
 import org.popkit.core.utils.ResponseUtils;
 import org.popkit.leap.geekpen.entity.ReadRecords;
+import org.popkit.leap.geekpen.entity.RecordVo;
+import org.popkit.leap.geekpen.entity.Records;
 import org.popkit.leap.geekpen.mapper.RecordsMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * Created by Aborn Jiang
@@ -41,6 +44,15 @@ public class GeekpenController {
         }
         if (records == null || StringUtils.isBlank(records.getOpenid()) || CollectionUtils.isEmpty(records.getRecords())) {
             simpleResult.update(false, "参数错误!");
+        }
+
+        for (RecordVo vo : records.getRecords()) {
+            Records recordsDB = new Records();
+            recordsDB.setOpenid(records.getOpenid());
+            recordsDB.setBookName(vo.getBookName());
+            recordsDB.setType(vo.getType());
+            recordsDB.setCreateTime(new Date());
+            //recordsMapper.insert(recordsDB);
         }
 
         ResponseUtils.renderJson(response, JSONObject.toJSONString(simpleResult));

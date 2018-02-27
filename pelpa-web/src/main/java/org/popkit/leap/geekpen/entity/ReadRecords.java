@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class ReadRecords {
     private String openid;
-    private List<Records> records;
+    private List<RecordVo> records;
 
 
     public String getOpenid() {
@@ -21,11 +21,11 @@ public class ReadRecords {
         this.openid = openid;
     }
 
-    public List<Records> getRecords() {
+    public List<RecordVo> getRecords() {
         return records;
     }
 
-    public void setRecords(List<Records> records) {
+    public void setRecords(List<RecordVo> records) {
         this.records = records;
     }
 }
