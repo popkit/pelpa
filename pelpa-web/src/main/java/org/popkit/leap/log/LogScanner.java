@@ -3,7 +3,6 @@ package org.popkit.leap.log;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections.map.HashedMap;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -12,12 +11,10 @@ import org.popkit.core.logger.LeapLogger;
 import org.popkit.leap.elpa.services.LocalCache;
 import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.popkit.leap.log.entity.DownloadCount;
-import org.popkit.leap.monitor.utils.BadgeUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
@@ -26,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,6 +45,7 @@ public class LogScanner {
 
     @PostConstruct
     public void generatorLogFile() {
+        /*
         new Thread(
                 new Runnable() {
                     public void run() {
@@ -79,6 +76,7 @@ public class LogScanner {
                     }
                 }
         ).start();
+        */
     }
 
     public DownloadCount toJSONString() {
@@ -225,9 +223,9 @@ public class LogScanner {
         System.out.println("c=" + extraPkgName(testC));
         System.out.println("" + extraTime(testLine));
 
-        Map<String, EachLogItem> logItemMap = readLogScanFile();
+        /*Map<String, EachLogItem> logItemMap = readLogScanFile();
         for (String pkgName : logItemMap.keySet()) {
             System.out.println("pkg:" + pkgName + ", " + logItemMap.get(pkgName).getCount());
-        }
+        }*/
     }
 }

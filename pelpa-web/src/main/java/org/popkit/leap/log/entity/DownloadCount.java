@@ -1,8 +1,8 @@
 package org.popkit.leap.log.entity;
 
 /**
- * Author: guobao.jiang
- * Email : guobao.jiang@dianping.com
+ * Author: aborn.jiang
+ * Email : aborn.jiang@foxmail.com.com
  * Date  : 07-07-2016
  * Time  : 9:57 AM
  */
