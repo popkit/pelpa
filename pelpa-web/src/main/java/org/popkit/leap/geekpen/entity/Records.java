@@ -64,7 +64,7 @@ public class Records {
      *
      * @mbggenerated Wed Feb 28 20:14:01 CST 2018
      */
-    private Integer isDeleted;
+    private Integer isDeleted = 0;
 
     /**
      *
