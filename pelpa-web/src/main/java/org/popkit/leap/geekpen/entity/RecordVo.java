@@ -8,10 +8,24 @@ import java.util.Date;
  * Time  : 8:03 PM
  */
 public class RecordVo {
+    private int id;
     private String bookName;
     private int progress;
     private int type;
+    private String openid;
     private Date time;
+
+    public RecordVo() {
+    }
+
+    public RecordVo(Records records) {
+        this.bookName = records.getBookName();
+        this.progress = records.getProgress();
+        this.type = records.getType();
+        this.time = records.getUpdateTime();
+        this.id = records.getId();
+        this.openid = records.getOpenid();
+    }
 
     public String getBookName() {
         return bookName;
@@ -43,5 +57,21 @@ public class RecordVo {
 
     public void setTime(Date time) {
         this.time = time;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getOpenid() {
+        return openid;
+    }
+
+    public void setOpenid(String openid) {
+        this.openid = openid;
     }
 }

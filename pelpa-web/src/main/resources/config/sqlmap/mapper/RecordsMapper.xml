@@ -14,6 +14,7 @@
     <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
     <result column="isDeleted" jdbcType="INTEGER" property="isDeleted" />
+    <result column="progress" jdbcType="INTEGER" property="progress" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--
@@ -34,6 +35,14 @@
     from Records
     where id = #{id,jdbcType=INTEGER}
   </select>
+
+  <select id="queryLatest" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM Records
+    ORDER BY updateTime DESC limit #{limit,jdbcType=INTEGER}
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     <!--
       WARNING - @mbggenerated
@@ -51,10 +60,10 @@
     -->
     insert into Records (id, openid, bookName, 
       type, updateTime, createTime, 
-      isDeleted)
+      isDeleted, progress)
     values (#{id,jdbcType=INTEGER}, #{openid,jdbcType=VARCHAR}, #{bookName,jdbcType=VARCHAR}, 
       #{type,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{isDeleted,jdbcType=INTEGER})
+      #{isDeleted,jdbcType=INTEGER}, #{progress,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="org.popkit.leap.geekpen.entity.Records">
     <!--

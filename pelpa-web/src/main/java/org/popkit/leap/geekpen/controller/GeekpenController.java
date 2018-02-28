@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Aborn Jiang
@@ -32,6 +34,21 @@ public class GeekpenController {
 
     @Autowired
     RecordsMapper recordsMapper;
+
+    @RequestMapping(value = "querylatest")
+    public void querylatest(HttpServletResponse response) {
+        List<Records> recordsList = recordsMapper.queryLatest(5);
+        List<RecordVo> recordVos = new ArrayList<RecordVo>();
+        if (CollectionUtils.isNotEmpty(recordsList)) {
+            for (Records records : recordsList) {
+                recordVos.add(new RecordVo(records));
+            }
+        }
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("data", recordVos);
+        ResponseUtils.renderJson(response, jsonObject.toJSONString());
+    }
 
     @RequestMapping(value = "record.json")
     public void record(@RequestBody ReadRecords records, HttpServletResponse response, HttpServletRequest request) {
@@ -53,6 +70,7 @@ public class GeekpenController {
                 recordsDB.setBookName(vo.getBookName());
                 recordsDB.setType(vo.getType());
                 recordsDB.setCreateTime(new Date());
+                recordsDB.setProgress(vo.getProgress());
                 //recordsMapper.insert(recordsDB);
             }
             simpleResult.update(true, "操作成功!");
