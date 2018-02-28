@@ -25,7 +25,7 @@
         book.bookName = "这个历史挺靠谱";
         book.progress = 73;
         book.type = 2;
-        book.time = new Date();
+        book.time = new Date('2018-02-28 17:55:55');
 
         postData.openid = 'o6Jzu0OvdlwmcmQ2N1FtFpIfslx4';
         postData.records = [];
