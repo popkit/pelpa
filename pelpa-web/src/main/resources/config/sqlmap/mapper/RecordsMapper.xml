@@ -186,6 +186,13 @@
     ORDER BY recordTime DESC limit #{limit,jdbcType=INTEGER}
   </select>
 
+  <select id="queryRecords" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM Records WHERE openid = #{openid, jdbcType=VARCHAR}
+    ORDER BY recordTime DESC limit 50;
+  </select>
+
   <select id="queryDatasFromTime" resultMap="BaseResultMap">
     SELECT
     <include refid="Base_Column_List" />

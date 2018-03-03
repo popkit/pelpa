@@ -57,6 +57,8 @@ public interface RecordsMapper {
 
     List<Records> queryLatest(Integer limit);
 
+    List<Records> queryRecords(String openid);
+
     List<Records> queryDatasFromTime(@Param(value = "openid") String openid, @Param(value = "beginTime") Date beginTime);
 
 }

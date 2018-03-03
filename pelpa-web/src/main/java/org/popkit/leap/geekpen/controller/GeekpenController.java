@@ -72,6 +72,29 @@ public class GeekpenController {
         ResponseUtils.renderJson(response, jsonObject.toJSONString());
     }
 
+    @RequestMapping(value = "queryrecords")
+    public void queryrecords(String openid, HttpServletResponse response) {
+        List<Records> result = new ArrayList<Records>();
+        SimpleResult<List<Records>> simpleResult = new SimpleResult<List<Records>>();
+        simpleResult.update(true, "");
+
+        if (StringUtils.isBlank(openid)) {
+            simpleResult.update(false, "参数错误!");
+            ResponseUtils.renderJson(response, JSONObject.toJSONString(simpleResult));
+        }
+
+        try {
+            List<Records> recordsList = recordsMapper.queryRecords(openid);
+            if (CollectionUtils.isNotEmpty(recordsList)) {
+                result = recordsList;
+            }
+        } catch (Exception e){
+            simpleResult.update(false, "服务器异常!");
+        }
+        simpleResult.setData(result);
+        ResponseUtils.renderJson(response, JSONObject.toJSONString(simpleResult));
+    }
+
     @RequestMapping(value = "record.json")
     public void record(@RequestBody ReadRecords records, HttpServletResponse response, HttpServletRequest request) {
         SimpleResult simpleResult = new SimpleResult();
