@@ -138,9 +138,9 @@ public class GeekpenController {
                 String key = buildKey(recordsDB.getBookName(), recordsDB.getRecordTime());
                 if (recordDBMap.containsKey(key)) {
                     recordsDB.setId(recordDBMap.get(key).getId());
-                    //recordsMapper.updateByPrimaryKey(recordsDB);
+                    recordsMapper.updateByPrimaryKey(recordsDB);
                 } else {
-                    //recordsMapper.insert(recordsDB);
+                    recordsMapper.insert(recordsDB);
                 }
             }
             simpleResult.update(true, "操作成功!");
