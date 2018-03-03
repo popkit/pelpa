@@ -6,6 +6,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.popkit.core.entity.SimpleResult;
+import org.popkit.core.logger.LeapLogger;
 import org.popkit.core.utils.ResponseUtils;
 import org.popkit.leap.geekpen.entity.ReadRecords;
 import org.popkit.leap.geekpen.entity.RecordVo;
@@ -63,6 +64,12 @@ public class GeekpenController {
         }
 
         try {
+            updateUserInfo(records.getUser());
+        } catch (Exception e) {
+            LeapLogger.warn("update info exception!", e);
+        }
+
+        try {
             // 同一本书，同一天只能上报一次, 只处理今天的
             String day = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -103,6 +110,17 @@ public class GeekpenController {
         }
 
         ResponseUtils.renderJson(response, JSONObject.toJSONString(simpleResult));
+    }
+
+    private boolean updateUserInfo(Users user) {
+        if (user == null || StringUtils.isBlank(user.getOpenid())) { return false;}
+        Users users = usersMapper.selectByOpenid(user.getOpenid());
+        if (users != null) {
+            usersMapper.updateByPrimaryKey(user);
+        } else {
+            usersMapper.insert(user);
+        }
+        return true;
     }
 
     private String buildKey(String bookName, Date date) {

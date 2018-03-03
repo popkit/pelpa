@@ -55,7 +55,7 @@ public class Users {
      *
      * @mbggenerated Sat Mar 03 21:47:15 CST 2018
      */
-    private Date createTime;
+    private Date createTime = new Date();
 
     /**
      *
@@ -64,7 +64,7 @@ public class Users {
      *
      * @mbggenerated Sat Mar 03 21:47:15 CST 2018
      */
-    private Integer isDeleted;
+    private Integer isDeleted = 0;
 
     /**
      *
