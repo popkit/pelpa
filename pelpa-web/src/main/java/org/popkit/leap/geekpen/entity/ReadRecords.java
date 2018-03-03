@@ -11,6 +11,7 @@ import java.util.List;
 public class ReadRecords {
     private String openid;
     private List<RecordVo> records;
+    private Users user;
 
 
     public String getOpenid() {
@@ -27,5 +28,13 @@ public class ReadRecords {
 
     public void setRecords(List<RecordVo> records) {
         this.records = records;
+    }
+
+    public Users getUser() {
+        return user;
+    }
+
+    public void setUser(Users user) {
+        this.user = user;
     }
 }

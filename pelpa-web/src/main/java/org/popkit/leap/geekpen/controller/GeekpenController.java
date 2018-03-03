@@ -4,11 +4,13 @@ import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 import org.popkit.core.entity.SimpleResult;
 import org.popkit.core.utils.ResponseUtils;
 import org.popkit.leap.geekpen.entity.ReadRecords;
 import org.popkit.leap.geekpen.entity.RecordVo;
 import org.popkit.leap.geekpen.entity.Records;
+import org.popkit.leap.geekpen.entity.Users;
 import org.popkit.leap.geekpen.mapper.RecordsMapper;
 import org.popkit.leap.geekpen.mapper.UsersMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,12 +58,6 @@ public class GeekpenController {
     @RequestMapping(value = "record.json")
     public void record(@RequestBody ReadRecords records, HttpServletResponse response, HttpServletRequest request) {
         SimpleResult simpleResult = new SimpleResult();
-        String postData = null;
-        try {
-            postData = IOUtils.toString(request.getInputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         if (records == null || StringUtils.isBlank(records.getOpenid()) || CollectionUtils.isEmpty(records.getRecords())) {
             simpleResult.update(false, "参数错误!");
         }
@@ -80,22 +76,27 @@ public class GeekpenController {
                 }
             }
 
+            DateTime dateTime = new DateTime();
+            int  dayOfYear = dateTime.dayOfYear().get();
+
             for (RecordVo vo : records.getRecords()) {
                 Records recordsDB = new Records();
                 recordsDB.setOpenid(records.getOpenid());
                 recordsDB.setBookName(vo.getBookName());
                 recordsDB.setType(vo.getType());
                 recordsDB.setRecordTime(vo.getTime());
+                int recordDay = new DateTime(vo.getTime()).dayOfYear().get();
+                if (recordDay != dayOfYear) { continue; } // 不是同一天直接跳过
+
                 recordsDB.setProgress(vo.getProgress());
                 String key = buildKey(recordsDB.getBookName(), recordsDB.getRecordTime());
                 if (recordDBMap.containsKey(key)) {
                     recordsDB.setId(recordDBMap.get(key).getId());
-                    recordsMapper.updateByPrimaryKey(recordsDB);
+                    //recordsMapper.updateByPrimaryKey(recordsDB);
                 } else {
-                    recordsMapper.insert(recordsDB);
+                    //recordsMapper.insert(recordsDB);
                 }
             }
-
             simpleResult.update(true, "操作成功!");
         } catch (Exception e) {
             simpleResult.update(false, "操作失败!");
@@ -112,5 +113,13 @@ public class GeekpenController {
     @RequestMapping(value = "mock")
     public String mock(HttpServletRequest request) {
         return "geekpen/mock";
+    }
+
+    @RequestMapping(value = "test.json")
+    public void test(HttpServletResponse response) {
+        Users users = usersMapper.selectByOpenid("o6Jzu0OvdlwmcmQ2N1FtFpIfslx4");
+        if (users != null) {
+            ResponseUtils.renderJson(response, JSONObject.toJSONString(users));
+        }
     }
 }
