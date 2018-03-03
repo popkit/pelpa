@@ -145,7 +145,7 @@ public class GeekpenController {
             }
             simpleResult.update(true, "操作成功!");
         } catch (Exception e) {
-            simpleResult.update(false, "操作失败!");
+            simpleResult.update(false, "操作失败!" + e.getMessage());
         }
 
         ResponseUtils.renderJson(response, JSONObject.toJSONString(simpleResult));

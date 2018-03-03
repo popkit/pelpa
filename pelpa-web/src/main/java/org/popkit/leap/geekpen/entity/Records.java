@@ -46,7 +46,7 @@ public class Records {
      *
      * @mbggenerated Thu Mar 01 20:18:41 CST 2018
      */
-    private Date updateTime;
+    private Date updateTime = new Date();
 
     /**
      *
@@ -64,7 +64,7 @@ public class Records {
      *
      * @mbggenerated Thu Mar 01 20:18:41 CST 2018
      */
-    private Integer isDeleted;
+    private Integer isDeleted = 0;
 
     /**
      *
@@ -73,7 +73,7 @@ public class Records {
      *
      * @mbggenerated Thu Mar 01 20:18:41 CST 2018
      */
-    private Integer progress;
+    private Integer progress = 0;
 
     /**
      *
