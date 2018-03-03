@@ -14,6 +14,7 @@ import org.popkit.leap.geekpen.entity.Records;
 import org.popkit.leap.geekpen.entity.Users;
 import org.popkit.leap.geekpen.mapper.RecordsMapper;
 import org.popkit.leap.geekpen.mapper.UsersMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -52,7 +53,9 @@ public class GeekpenController {
                 RecordVo vo = new RecordVo(records);
 
                 if (usersMap.containsKey(records.getOpenid())) {
-                    vo.setUser(usersMap.get(records.getOpenid()));
+                    Users users = new Users();
+                    BeanUtils.copyProperties(usersMap.get(records.getOpenid()), users);
+                    vo.setUser(users);
                 } else {
                     Users user = usersMapper.selectByOpenid(records.getOpenid());
                     if (user != null) {
