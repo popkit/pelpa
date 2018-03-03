@@ -131,6 +131,7 @@ public class GeekpenController {
                 recordsDB.setBookName(vo.getBookName());
                 recordsDB.setType(vo.getType());
                 recordsDB.setRecordTime(vo.getTime());
+                recordsDB.setIsDeleted(0);
                 int recordDay = new DateTime(vo.getTime()).dayOfYear().get();
                 if (recordDay != dayOfYear) { continue; } // 不是同一天直接跳过
 
