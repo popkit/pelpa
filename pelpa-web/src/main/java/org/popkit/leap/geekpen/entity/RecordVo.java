@@ -14,6 +14,7 @@ public class RecordVo {
     private int type;
     private String openid;
     private Date time;
+    private Users user;
 
     public RecordVo() {
     }
@@ -73,5 +74,13 @@ public class RecordVo {
 
     public void setOpenid(String openid) {
         this.openid = openid;
+    }
+
+    public Users getUser() {
+        return user;
+    }
+
+    public void setUser(Users user) {
+        this.user = user;
     }
 }

@@ -44,10 +44,23 @@ public class GeekpenController {
     @RequestMapping(value = "querylatest")
     public void querylatest(HttpServletResponse response) {
         List<Records> recordsList = recordsMapper.queryLatest(5);
+        Map<String, Users> usersMap = new HashMap<String, Users>();
+
         List<RecordVo> recordVos = new ArrayList<RecordVo>();
         if (CollectionUtils.isNotEmpty(recordsList)) {
             for (Records records : recordsList) {
-                recordVos.add(new RecordVo(records));
+                RecordVo vo = new RecordVo(records);
+
+                if (usersMap.containsKey(records.getOpenid())) {
+                    vo.setUser(usersMap.get(records.getOpenid()));
+                } else {
+                    Users user = usersMapper.selectByOpenid(records.getOpenid());
+                    if (user != null) {
+                        vo.setUser(user);
+                        usersMap.put(records.getOpenid(), user);
+                    }
+                }
+                recordVos.add(vo);
             }
         }
 
@@ -116,7 +129,7 @@ public class GeekpenController {
         if (user == null || StringUtils.isBlank(user.getOpenid())) { return false;}
         Users users = usersMapper.selectByOpenid(user.getOpenid());
         if (users != null) {
-            usersMapper.updateByPrimaryKey(user);
+            //usersMapper.updateByPrimaryKey(user);
         } else {
             usersMapper.insert(user);
         }

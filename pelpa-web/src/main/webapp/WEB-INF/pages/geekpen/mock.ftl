@@ -30,6 +30,18 @@
         postData.openid = 'o6Jzu0OvdlwmcmQ2N1FtFpIfslx4';
         postData.records = [];
         postData.records.push(book);
+
+        var user = {};
+        user.openid = 'o6Jzu0OvdlwmcmQ2N1FtFpIfslx4';
+        user.userName = '大宝大';
+        user.avatar = 'https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTLvgf4G3t9GVibcAW4QAbCGNXK4JkEm2XibUQLkLBrVPBKCkeqk0BL0bg5BGRVlHwQ4YKBF1bfleXHQ/0';
+        user.city = 'Changning';
+        user.country = 'China';
+        user.gender = '1';
+        user.province = 'Shanghai';
+        user.language = 'zh_CN';
+        postData.user = user;
+
         $.ajax({
             type : 'post',
             url : '/geekpen/api/record.json',
