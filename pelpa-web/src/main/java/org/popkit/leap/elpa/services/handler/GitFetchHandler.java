@@ -1,9 +1,6 @@
 package org.popkit.leap.elpa.services.handler;
 
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.PullCommand;
-import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRefNameException;
 import org.eclipse.jgit.lib.Constants;
@@ -19,8 +16,10 @@ import org.popkit.leap.elpa.services.FetchHandler;
 import org.popkit.leap.elpa.utils.PelpaUtils;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Map;
 
 /**
@@ -54,37 +53,15 @@ public class GitFetchHandler implements FetchHandler {
         File pkgPathFile = new File(pkgPath);
         if (pkgPathFile.exists() && pkgPathFile.isDirectory()
                 && new File(pkgPath + "/.git").exists()) {
-            update(pkgPath);
+            doExecute(recipeDo, pkgPath, false);
         } else {
-            create(recipeDo, pkgPath);
+            doExecute(recipeDo, pkgPath, true);
         }
     }
 
-    private void update(String localPath) {
-        try {
-            LeapLogger.info("github fetch update:" + localPath);
-            Repository repository = FileRepositoryBuilder.create(new File(localPath + "/.git"));
-            //System.out.println("Starting fetch");
 
-            Git git = new Git(repository);
-            PullCommand pullCommand = git.pull();
-            pullCommand.setTimeout(GIT_TIME_OUT);
-            PullResult result = pullCommand.call();
-            // http://stackoverflow.com/questions/13399990/usage-of-pull-command-in-jgit
-            //FetchResult fetchResult = result.getFetchResult();
-            //MergeResult mergeResult = result.getMergeResult();
-            //mergeResult.getMergeStatus();  // this should be interesting
 
-            //FetchResult result = git.fetch().setCheckFetchedObjects(true).call();
-            //System.out.println("Messages: " + result.getMessages());
-
-            LeapLogger.info("finished github fetch update:" + localPath);
-        } catch (Exception e) {
-            LeapLogger.warn("error update" + localPath, e);
-        }
-    }
-
-    private void create(RecipeDo recipeDo, String localPathDir) {
+    private void doExecute(RecipeDo recipeDo, String localPathDir, boolean isCreate) {
         // prepare a new folder for the cloned repository
         LeapLogger.info("github fetch new:" + localPathDir);
         String remote_url = getRemoteGitUrl(recipeDo);
@@ -103,15 +80,17 @@ public class GitFetchHandler implements FetchHandler {
         // then clone
         LeapLogger.info("Cloning from " + remote_url + " to " + localPathDir);
         try {
-            Git result = Git.cloneRepository()
-                    .setCloneSubmodules(true)
-                    .setTimeout(GIT_TIME_OUT_CLONE)
-                    .setURI(remote_url)
-                    .setDirectory(new File(localPathDir))
-                    .call();
-            LeapLogger.info("Having repository: " + result.getRepository().getDirectory());
-            // Note: the call() returns an opened repository already which needs to be closed to avoid file handle leaks!
-            result.close();
+            String command = isCreate ? "git clone " + remote_url + " " + localPathDir : "git pull";
+            String workingPath = isCreate ? PelpaUtils.getWorkingPath("") : PelpaUtils.getWorkingPath(recipeDo.getPkgName());
+            Process p = Runtime.getRuntime().exec(command, null, new File(workingPath));
+            p.waitFor();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String line;
+            StringBuffer result = new StringBuffer();
+            while ((line = reader.readLine()) != null) {
+                result.append(line);
+            }
+            System.out.println(result);
         } catch (Exception e) {
             LeapLogger.warn("error create" + localPathDir, e);
         } finally {
