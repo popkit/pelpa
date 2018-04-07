@@ -85,13 +85,13 @@ public class GitFetchHandler implements FetchHandler {
             p.waitFor();
             BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String line;
-            StringBuffer result = new StringBuffer();
+            StringBuilder result = new StringBuilder();
             while ((line = reader.readLine()) != null) {
                 result.append(line);
             }
             LeapLogger.info(result.toString());
         } catch (Exception e) {
-            LeapLogger.warn("error create" + localPathDir, e);
+            LeapLogger.warn("error in doExecute" + localPathDir, e);
         } finally {
             //
         }
