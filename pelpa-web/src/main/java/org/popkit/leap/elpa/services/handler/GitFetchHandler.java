@@ -74,13 +74,12 @@ public class GitFetchHandler implements FetchHandler {
             File localPath = File.createTempFile(localPathDir, "");
             localPath.delete();
         } catch (Exception e) {
-            LeapLogger.warn("error create!");
+            LeapLogger.warn("error doExecute!");
         }
 
-        // then clone
-        LeapLogger.info("Cloning from " + remote_url + " to " + localPathDir);
         try {
             String command = isCreate ? "git clone --depth=1 " + remote_url + " " + localPathDir : "git pull";
+            LeapLogger.info("command:" + command);
             String workingPath = isCreate ? PelpaUtils.getWorkingPath("") : PelpaUtils.getWorkingPath(recipeDo.getPkgName());
             Process p = Runtime.getRuntime().exec(command, null, new File(workingPath));
             p.waitFor();
@@ -90,7 +89,7 @@ public class GitFetchHandler implements FetchHandler {
             while ((line = reader.readLine()) != null) {
                 result.append(line);
             }
-            System.out.println(result);
+            LeapLogger.info(result.toString());
         } catch (Exception e) {
             LeapLogger.warn("error create" + localPathDir, e);
         } finally {
