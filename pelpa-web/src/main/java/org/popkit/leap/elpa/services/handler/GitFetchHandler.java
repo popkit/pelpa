@@ -63,7 +63,7 @@ public class GitFetchHandler implements FetchHandler {
 
     private void doExecute(RecipeDo recipeDo, String localPathDir, boolean isCreate) {
         // prepare a new folder for the cloned repository
-        LeapLogger.info("github fetch new:" + localPathDir);
+        LeapLogger.info(isCreate ? "github fetch new:" + localPathDir : "github update:" + localPathDir);
         String remote_url = getRemoteGitUrl(recipeDo);
         if (StringUtils.isBlank(remote_url)) {
             LeapLogger.info("remote url is blank, pkgName:" + recipeDo.getPkgName());
