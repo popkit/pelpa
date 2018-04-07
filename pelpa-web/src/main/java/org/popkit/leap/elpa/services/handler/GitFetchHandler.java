@@ -80,7 +80,7 @@ public class GitFetchHandler implements FetchHandler {
         // then clone
         LeapLogger.info("Cloning from " + remote_url + " to " + localPathDir);
         try {
-            String command = isCreate ? "git clone " + remote_url + " " + localPathDir : "git pull";
+            String command = isCreate ? "git clone --depth=1 " + remote_url + " " + localPathDir : "git pull";
             String workingPath = isCreate ? PelpaUtils.getWorkingPath("") : PelpaUtils.getWorkingPath(recipeDo.getPkgName());
             Process p = Runtime.getRuntime().exec(command, null, new File(workingPath));
             p.waitFor();
