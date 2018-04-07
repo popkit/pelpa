@@ -44,7 +44,6 @@ public class GitFetchHandler implements FetchHandler {
                 && (!recipeDo.getUrl().contains("https://gist.github.com"))) {   // non gist.github repo
             return true;
         }
-
         return false;
     }
 
@@ -58,8 +57,6 @@ public class GitFetchHandler implements FetchHandler {
             doExecute(recipeDo, pkgPath, true);
         }
     }
-
-
 
     private void doExecute(RecipeDo recipeDo, String localPathDir, boolean isCreate) {
         // prepare a new folder for the cloned repository
