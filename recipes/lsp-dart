@@ -1,3 +1,1 @@
-(lsp-dart
- :fetcher github
- :repo "twlz0ne/lsp-dart")
+(lsp-dart :repo "emacs-lsp/lsp-dart" :fetcher github )
